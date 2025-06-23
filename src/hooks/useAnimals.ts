@@ -1,0 +1,132 @@
+import { useEffect, useState, useCallback } from "react"
+
+export interface AnimalTableRow {
+  id: number
+  nickname: string
+  type: string
+  breed: string
+  size: string
+  sex: string
+  birthdate: string
+  descriptionHistory: string
+  status: string
+  isSterilized: boolean
+}
+
+export interface CreateAnimalInput {
+  nickname: string
+  type: string
+  breed: string
+  size: string
+  sex: string
+  status: string
+  birthdate: string
+  descriptionHistory: string
+  isSterilized: boolean
+}
+
+export interface EditAnimalInput {
+  nickname: string
+  breed: string
+  size: string
+  sex: string
+  birthdate: string
+  descriptionHistory: string
+  isSterilized: boolean
+}
+
+export interface EditAnimalStatusInput {
+  status: string
+}
+
+export function useAnimals() {
+  const [animals, setAnimals] = useState<AnimalTableRow[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchAnimals = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const token = localStorage.getItem("accessToken")
+      const res = await fetch("https://hope-nest-backend-production.up.railway.app/animals", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
+      if (!res.ok) throw new Error("Error al obtener animales")
+      const data = await res.json()
+      setAnimals(data)
+    } catch (err: any) {
+      setError(err.message || "Error desconocido")
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchAnimals()
+  }, [fetchAnimals])
+
+  const createAnimal = async (input: CreateAnimalInput) => {
+    const token = localStorage.getItem("accessToken")
+    const res = await fetch("https://hope-nest-backend-production.up.railway.app/animals", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(input)
+    })
+    if (!res.ok) throw new Error("Error al registrar animal")
+    await fetchAnimals()
+    return await res.json()
+  }
+
+  const updateAnimal = async (id: number, input: EditAnimalInput) => {
+    const token = localStorage.getItem("accessToken")
+    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(input)
+    })
+    if (!res.ok) throw new Error("Error al editar animal")
+    await fetchAnimals()
+    return await res.json()
+  }
+
+  const updateAnimalStatus = async (id: number, input: EditAnimalStatusInput) => {
+    const token = localStorage.getItem("accessToken")
+    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}/status`, {
+      method: "PATCH",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(input)
+    })
+    if (!res.ok) throw new Error("Error al editar estado")
+    await fetchAnimals()
+    return await res.json()
+  }
+
+  const deleteAnimal = async (id: number) => {
+    const token = localStorage.getItem("accessToken")
+    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    if (!res.ok) throw new Error("Error al eliminar animal")
+    await fetchAnimals()
+    return true
+  }
+
+  return { animals, loading, error, createAnimal, updateAnimal, deleteAnimal }
+}
