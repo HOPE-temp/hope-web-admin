@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Sidebar from "@/components/ui/sidebar";
-import Header from "@/components/layout/Header/header";
+import ClientLayout from "./ClientLayout"; // Nuevo componente para lógica de cliente
 
 export const metadata: Metadata = {
   title: "HOPE",
@@ -8,13 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 p-6">
-        <Header />
-        {children}
-      </main>
-    </div>
-  );
+  return <ClientLayout>{children}</ClientLayout>;
 }
