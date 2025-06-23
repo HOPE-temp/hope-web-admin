@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useState, useEffect } from 'react'
 import { Label } from "@/components/ui/label"
-import { FaUser } from "react-icons/fa"
+import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa"
 import { useLogin } from '@/hooks/useLogin'
 import {
   AlertDialog,
@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation'
 export default function page() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false) // <-- nuevo estado
   const { login, loading, error } = useLogin()
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -31,7 +32,7 @@ export default function page() {
     e.preventDefault()
     const rol = await login(email, password)
     if (rol === 'admin') router.push('/admin')
-    else if (rol === 'voluntario') router.push('/voluntario')
+    else if (rol === 'volunteer') router.push('/voluntario')
     else if (rol === 'medico') router.push('/medico')
     // else: puedes mostrar un error si el rol no es válido
   }
@@ -71,13 +72,24 @@ export default function page() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Contraseña</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+                  onClick={() => setShowPassword(v => !v)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <div className="text-right">
               <a
