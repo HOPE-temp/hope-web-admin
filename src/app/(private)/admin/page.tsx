@@ -5,9 +5,12 @@ import Link from "next/link"
 import { PawPrint, Users, Heart } from "lucide-react"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { usePanel } from "@/hooks/usePanel" // <-- importa el hook
 
 export default function Home() {
   const router = useRouter()
+  const { counts, loading, error } = usePanel() // <-- usa el hook
+
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
     if (!token) router.push('/login')
@@ -23,10 +26,12 @@ export default function Home() {
               <PawPrint className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">
+                {loading ? "..." : counts?.animal ?? 0}
+              </div>
               <p className="text-xs text-muted-foreground">Mascotas en el albergue</p>
               <Button asChild className="w-full mt-4" size="sm">
-                <Link href="/mascotas">Ver mascotas</Link>
+                <Link href="animales">Ver mascotas</Link>
               </Button>
             </CardContent>
           </Card>
@@ -36,10 +41,12 @@ export default function Home() {
               <Users className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">
+                {loading ? "..." : counts?.adopter ?? 0}
+              </div>
               <p className="text-xs text-muted-foreground">Adoptantes registrados</p>
               <Button asChild className="w-full mt-4" size="sm">
-                <Link href="/adoptantes">Ver adoptantes</Link>
+                <Link href="admin/adoptantes">Ver adoptantes</Link>
               </Button>
             </CardContent>
           </Card>
@@ -49,7 +56,9 @@ export default function Home() {
               <Heart className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">
+                {loading ? "..." : counts?.adoption ?? 0}
+              </div>
               <p className="text-xs text-muted-foreground">Adopciones realizadas</p>
               <Button asChild className="w-full mt-4" size="sm">
                 <Link href="/adopciones">Ver adopciones</Link>
@@ -57,6 +66,9 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
+        {error && (
+          <div className="text-red-500 text-center">{error}</div>
+        )}
       </div>    
   )
 }
