@@ -1,17 +1,19 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useLocalStorage } from '@/hooks/useLocalStogare';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [token] = useLocalStorage<string>('token', null);
+  const { token, loaded } = useAuth();
 
   useEffect(() => {
-    if (!token) {
-      router.push('/login');
+    if (loaded && !token) {
+      router.push( "/login");
     }
-  }, [token]);
+  }, [loaded, token]);
+
+  if (!loaded) return null; // Espera a que cargue el token
 
   return <>{children}</>;
 }
