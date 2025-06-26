@@ -16,9 +16,10 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
       <AppSidebar />
       <main className="w-full overflow-x-auto realtive">
           <SidebarTrigger
+            hidden
             variant='default'
             className={
-              cn("absolute rounded-l-none p-0 top-4",
+              cn("absolute rounded-l-none p-0 top-3",
                 "p-4 pl-3 m-0",
                 "shadow-lg shadow-indigo-500/50",
                 "hover:pl-6 shadow-xl/20",
@@ -26,7 +27,7 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
                 )
               }
           />
-        <div >
+        <div className="p-1">
           {children}
         </div>
       </main>

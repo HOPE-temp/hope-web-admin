@@ -9,9 +9,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/AuthContext"
 import { navbarItems } from "./Menu"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 export function AppSidebar() {
   const {role} = useAuth()
@@ -28,20 +31,23 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupContent className="relative">
+            <SidebarTrigger className="absolute right-0"/>
+          </SidebarGroupContent>
           <SidebarGroupLabel>
-          <div className="border-b px-6 py-4">
-          <h2 className="text-lg font-semibold">Albergue de Mascotas</h2>
-        </div>
+            <div className="border-b px-6 py-4">
+              <h2 className="text-lg font-semibold">Albergue de Mascotas</h2>
+            </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items && items.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild>
-                    <a href={item.href}>
+                    <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.label}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
