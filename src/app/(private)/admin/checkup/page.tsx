@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"
-import { Dialog, DialogTrigger } from "@/components/private/admin/checkup/Dialog"
+import { Dialog,DialogTrigger, DialogHeader } from "@/components/private/admin/checkup/Dialog"
 import { Alert, AlertTitle, AlertDescription } from "@/components/private/admin/checkup/Alert" // Alerta de inicio de chequeo
 import { DialogRed } from "@/components/private/admin/checkup/DialogRed" // Dialog para el historial de chequeos
 
