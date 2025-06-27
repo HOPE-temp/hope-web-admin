@@ -6,15 +6,18 @@ type AuthContextType = {
   token: string | null;
   setToken: (token: string | null) => void;
   loaded: boolean;
+  role: RoleUser | null;
+  setRole: (token: RoleUser | null) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken, loaded] = useLocalStorage<string>("accessToken", null);
+  const [role, setRole] = useLocalStorage<RoleUser>("rol", null);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, loaded }}>
+    <AuthContext.Provider value={{ token, setToken, role, setRole, loaded }}>
       {children}
     </AuthContext.Provider>
   );
