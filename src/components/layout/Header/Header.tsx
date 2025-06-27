@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function Header() {
+export function Header() {
   const [fullName, setFullName] = useState<string>("")
   const router = useRouter()
 
