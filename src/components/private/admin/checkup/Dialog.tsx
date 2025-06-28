@@ -6,6 +6,18 @@ import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/private/admin/checkup/Alert-dialog"
+
 const Dialog = DialogPrimitive.Root
 const DialogTrigger = DialogPrimitive.Trigger
 const DialogPortal = DialogPrimitive.Portal
@@ -54,9 +66,7 @@ export function DialogCheckup({ onSave }: { onSave: (data: any) => void }) {
         <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] bg-white p-6 rounded-lg shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Iniciar Chequeo Médico</h2>
-            <DialogPrimitive.Close
-              className="text-gray-500 hover:text-gray-700"
-            >
+            <DialogPrimitive.Close className="text-gray-500 hover:text-gray-700">
               <X className="h-5 w-5" />
             </DialogPrimitive.Close>
           </div>
@@ -84,11 +94,34 @@ export function DialogCheckup({ onSave }: { onSave: (data: any) => void }) {
               </div>
             ))}
           </form>
-          <div className="flex justify-end mt-4">
+
+          <div className="flex justify-end gap-2 mt-6">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="text-gray-700 border border-gray-400 px-4 py-2 rounded hover:bg-gray-100">
+                  Cancelar
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Se perderán los datos ingresados. Esta acción no se puede deshacer.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Volver</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => setOpen(false)}>
+                    Sí, cancelar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
             <button
               onClick={handleSubmit}
               className="text-white bg-black hover:bg-gray-800 px-4 py-2 rounded"
-            >             
+            >
               Guardar
             </button>
           </div>

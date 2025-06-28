@@ -5,7 +5,7 @@ import { DialogCheckup } from "@/components/private/admin/checkup/Dialog"
 import { DialogRed } from "@/components/private/admin/checkup/DialogRed"
 import TableCheckups from "@/components/private/admin/checkup/TableCheckups"
 import SelectFilter from "@/components/private/admin/checkup/SelectFilter"
-import { Toaster } from "@/components/private/admin/checkup/Sonner" 
+import { Toaster } from "@/components/private/admin/checkup/Sonner"
 
 export default function Page() {
   const [status, setStatus] = useState("Registrado")
@@ -54,11 +54,10 @@ export default function Page() {
         }}
       />
 
-      {/* Detalle en modal */}
+      {/* Detalle en modal (sin onClose porque ya no hay botón de cierre) */}
       {showDetail && selectedCheckup && (
-        <DialogRed data={selectedCheckup} onClose={() => setShowDetail(false)} />
+        <DialogRed data={selectedCheckup} onClose={() => setSelectedCheckup(null)} />
       )}
     </div>
   )
 }
-
