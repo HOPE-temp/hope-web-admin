@@ -32,32 +32,36 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6 space-y-4 bg-white shadow-md rounded-md">
-      {/* Notificaciones toast */}
-      <Toaster />
+    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="rounded-lg bg-white shadow p-6">  
+     
+        <Toaster />
 
-      {/* Título y botón de registrar */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold">Chequeos Médicos</h1>
-        <DialogCheckup onSave={handleSaveCheckup} />
+        {/* Título y botón de registrar */}
+            
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-xl font-semibold">Lista Chequeos Médicos</h1>
+            <DialogCheckup onSave={handleSaveCheckup} />
+          </div>
+
+        {/* Filtro por estado */}
+        <SelectFilter value={status} onChange={setStatus} />
+
+        {/* Tabla de chequeos */}
+        <TableCheckups
+          data={checkups.filter((item) => item.estado === status)}
+          onView={(item) => {
+            setSelectedCheckup(item)
+            setShowDetail(true)
+          }}
+        />
+
+        {/* Detalle en modal (sin onClose porque ya no hay botón de cierre) */}
+        {showDetail && selectedCheckup && (
+          <DialogRed data={selectedCheckup} onClose={() => setSelectedCheckup(null)} />
+        )}
       </div>
-
-      {/* Filtro por estado */}
-      <SelectFilter value={status} onChange={setStatus} />
-
-      {/* Tabla de chequeos */}
-      <TableCheckups
-        data={checkups.filter((item) => item.estado === status)}
-        onView={(item) => {
-          setSelectedCheckup(item)
-          setShowDetail(true)
-        }}
-      />
-
-      {/* Detalle en modal (sin onClose porque ya no hay botón de cierre) */}
-      {showDetail && selectedCheckup && (
-        <DialogRed data={selectedCheckup} onClose={() => setSelectedCheckup(null)} />
-      )}
     </div>
+    
   )
 }

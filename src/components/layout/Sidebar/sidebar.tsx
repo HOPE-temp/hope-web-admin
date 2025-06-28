@@ -67,7 +67,7 @@ export default function Sidebar({ className }: SidebarProps) {
       href: "/admin/adopter",
       label: "Adoptantes",
       icon: <Users className="h-4 w-4" />,      
-      active: (path) => path.startsWith("/admin/adopter"),
+      active: (path) => path.startsWith("/adopter"),
     },
     {
       href: "/adopciones",

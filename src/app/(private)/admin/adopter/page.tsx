@@ -60,7 +60,8 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="rounded-lg bg-white shadow p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Lista de Adoptantes</h1>
         <button onClick={handleAdd} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded">
@@ -149,6 +150,7 @@ export default function Page() {
         initialData={selectedAdopter}
         isEdit={!!selectedAdopter}
       />
+    </div>
     </div>
   )
 }
