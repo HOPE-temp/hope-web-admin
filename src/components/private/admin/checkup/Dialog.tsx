@@ -54,7 +54,11 @@ export function DialogCheckup({ onSave }: { onSave: (data: any) => void }) {
         <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] bg-white p-6 rounded-lg shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Iniciar Chequeo Médico</h2>
-            
+            <DialogPrimitive.Close
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-5 w-5" />
+            </DialogPrimitive.Close>
           </div>
           <form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[

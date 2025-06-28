@@ -5,7 +5,6 @@ import { DialogCheckup } from "@/components/private/admin/checkup/Dialog"
 import { DialogRed } from "@/components/private/admin/checkup/DialogRed"
 import TableCheckups from "@/components/private/admin/checkup/TableCheckups"
 import SelectFilter from "@/components/private/admin/checkup/SelectFilter"
-//import DialogWithAlert from "@/components/private/admin/checkup/DialogWithAlert"
 import { Toaster } from "@/components/private/admin/checkup/Sonner" 
 
 export default function Page() {
@@ -34,19 +33,19 @@ export default function Page() {
 
   return (
     <div className="p-6 space-y-4 bg-white shadow-md rounded-md">
-      {/* Toast de notificaciones */}
+      {/* Notificaciones toast */}
       <Toaster />
 
-      {/* Encabezado */}
+      {/* Título y botón de registrar */}
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold">Chequeos Médicos</h1>
         <DialogCheckup onSave={handleSaveCheckup} />
       </div>
 
-      {/* Filtro */}
+      {/* Filtro por estado */}
       <SelectFilter value={status} onChange={setStatus} />
 
-      {/* Tabla */}
+      {/* Tabla de chequeos */}
       <TableCheckups
         data={checkups.filter((item) => item.estado === status)}
         onView={(item) => {
@@ -55,7 +54,7 @@ export default function Page() {
         }}
       />
 
-      {/* Detalle */}
+      {/* Detalle en modal */}
       {showDetail && selectedCheckup && (
         <DialogRed data={selectedCheckup} onClose={() => setShowDetail(false)} />
       )}
