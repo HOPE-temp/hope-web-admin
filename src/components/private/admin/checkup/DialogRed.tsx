@@ -1,70 +1,40 @@
 "use client"
 
-import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/private/admin/checkup/Button"
 
-export function DialogRed({ data, onClose }: { data: any; onClose: () => void }) {
-  const handlePrint = () => {
-    const originalContents = document.body.innerHTML
-    const printContents = document.getElementById("print-area")?.innerHTML
-    if (printContents) {
-      document.body.innerHTML = printContents
-      window.print()
-      document.body.innerHTML = originalContents
-      window.location.reload()
-    }
-  }
-
+export function DialogRed({
+  data,
+  onClose,
+}: {
+  data: any
+  onClose: () => void
+}) {
   return (
-    <DialogPrimitive.Root open onOpenChange={onClose}>
+    <DialogPrimitive.Root open={!!data} onOpenChange={onClose}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80" />
-        <DialogPrimitive.Content
-          className={cn(
-            "fixed left-[50%] top-[50%] z-50 w-full max-w-xl translate-x-[-50%] translate-y-[-50%] bg-white p-6 rounded-lg shadow-lg"
-          )}
-        >
-          {/* Encabezado con botón Imprimir y Cerrar (X) */}
-          <div className="flex justify-between items-start mb-4">
+        <DialogPrimitive.Overlay className="fixed inset-0 bg-black/50 z-50" />
+        <DialogPrimitive.Content className="fixed left-1/2 top-1/2 z-50 w-full max-w-xl -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Detalle del Chequeo Médico</h2>
-            <div className="flex items-center gap-2 no-print">
-              <Button variant="outline" size="sm" onClick={handlePrint}>
-                Imprimir
-              </Button>
-              <DialogPrimitive.Close asChild>
-                <button
-                  onClick={onClose}
-                  className="text-gray-500 hover:text-gray-700"
-                  aria-label="Cerrar"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </DialogPrimitive.Close>
-            </div>
+            <DialogPrimitive.Close
+              className="text-gray-500 hover:text-gray-700"
+              onClick={onClose}
+            >
+              <X className="w-5 h-5" />
+            </DialogPrimitive.Close>
           </div>
-
-          {/* Cuerpo del detalle */}
-          <div id="print-area" className="grid grid-cols-2 sm:grid-cols-2 gap-4 text-sm">
-            {[
-              { label: "Estado", value: data.estado },
-              { label: "Fecha Inicio", value: data.fechaInicio },
-              { label: "Fecha Fin", value: data.fechaFin },
-              { label: "Mascota", value: data.mascota },
-              { label: "Peso", value: data.peso },
-              { label: "Temperatura", value: data.temperatura },
-              { label: "Observaciones", value: data.observaciones },
-              { label: "Diagnóstico", value: data.diagnostico },
-              { label: "Tratamiento", value: data.tratamiento },
-              { label: "Monto", value: data.monto },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <span className="font-medium">{label}:</span>
-                <p className="text-gray-700">{value || "—"}</p>
-              </div>
-            ))}
+          <div className="space-y-2 text-sm">
+            <p><strong>Estado:</strong> {data.estado}</p>
+            <p><strong>Fecha Inicio:</strong> {data.fechaInicio}</p>
+            <p><strong>Fecha Fin:</strong> {data.fechaFin}</p>
+            <p><strong>Mascota:</strong> {data.mascota}</p>
+            <p><strong>Peso:</strong> {data.peso}</p>
+            <p><strong>Temperatura:</strong> {data.temperatura}</p>
+            <p><strong>Observaciones:</strong> {data.observaciones}</p>
+            <p><strong>Diagnóstico:</strong> {data.diagnostico}</p>
+            <p><strong>Tratamiento:</strong> {data.tratamiento}</p>
+            <p><strong>Monto:</strong> {data.monto}</p>
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>

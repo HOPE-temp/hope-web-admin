@@ -1,13 +1,28 @@
 "use client"
 
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, } from "@/components/ui/table"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table"
+import { Eye, Pencil, Trash2 } from "lucide-react"
+import { DialogEdit } from "./DialogEdit"
 
 export default function TableCheckups({
   data,
   onView,
+  setCheckups,
+  setSelectedCheckup,
+  onDelete,
 }: {
   data: any[]
   onView: (item: any) => void
+  setCheckups: (callback: (prev: any[]) => any[]) => void
+  setSelectedCheckup: (item: any) => void
+  onDelete: (item: any) => void
 }) {
   return (
     <Table>
@@ -37,12 +52,31 @@ export default function TableCheckups({
             <TableCell>{item.observaciones}</TableCell>
             <TableCell>{item.diagnostico}</TableCell>
             <TableCell>{item.tratamiento}</TableCell>
-            <TableCell>
+            <TableCell className="flex items-center space-x-2">
               <button
                 onClick={() => onView(item)}
-                 className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-sm"
+                title="Ver"
+                className="text-black hover:text-gray-700"
               >
-                Ver
+                <Eye className="w-4 h-4" />
+              </button>
+
+              <DialogEdit
+                data={item}
+                setCheckups={setCheckups}
+                setSelectedCheckup={setSelectedCheckup}
+              >
+                <button title="Editar" className="text-black hover:text-gray-700">
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </DialogEdit>
+
+              <button
+                onClick={() => onDelete(item)}
+                title="Eliminar"
+                className="text-red-600 hover:text-red-800"
+              >
+                <Trash2 className="w-4 h-4" />
               </button>
             </TableCell>
           </TableRow>
