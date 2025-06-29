@@ -26,7 +26,7 @@ export const itemsNavAdmin: NavItem[] = [
     href: "/admin/adopter",
     label: "Adoptantes",
     icon: Users,
-    active: (path) => path.startsWith("/admin/adopter"),
+    active: (path) => path.startsWith("/admin/adopter"),   
   },
   {
     href: "/adopciones",
