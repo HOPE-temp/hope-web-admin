@@ -23,10 +23,10 @@ export const itemsNavAdmin: NavItem[] = [
     active: (path) => path.startsWith("/animales"),
   },
   {
-    href: "/adoptantes",
+    href: "/admin/adopter",
     label: "Adoptantes",
     icon: Users,
-    active: (path) => path.startsWith("/adoptantes"),
+    active: (path) => path.startsWith("/admin/adopter"),   
   },
   {
     href: "/adopciones",
@@ -35,10 +35,10 @@ export const itemsNavAdmin: NavItem[] = [
     active: (path) => path.startsWith("/adopciones"),
   },
   {
-    href: "/historial-medico",
+    href: "/admin/checkup",
     label: "Historial Médico",
     icon: Stethoscope,
-    active: (path) => path.startsWith("/historial-medico"),
+    active: (path) => path.startsWith("/admin/checkup"),
   },
   {
     href: "/admin/usuarios",
