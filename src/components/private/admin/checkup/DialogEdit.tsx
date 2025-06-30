@@ -51,7 +51,7 @@ export function DialogEdit({
 
           <form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { label: "Mascota", name: "mascota" },
+              { label: "Id Mascota", name: "idmascota" },
               { label: "Fecha Inicio", name: "fechaInicio", type: "date" },
               { label: "Fecha Fin", name: "fechaFin", type: "date" },
               { label: "Peso", name: "peso" },

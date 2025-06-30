@@ -14,13 +14,13 @@ export default function Page() {
       estado: "Registrado",
       fechaInicio: "09/06/2025",
       fechaFin: "16/06/2025",
-      mascota: "Mushu",
+      idmascota: "1",
       peso: "5kg",
       temperatura: "38.5°C",
       observaciones: "Ninguna",
       diagnostico: "Infección respiratoria",
       tratamiento: "Antibióticos por 7 días",
-      monto: "150.00 PEN",
+      monto: "50.00",
     },
   ])
 
