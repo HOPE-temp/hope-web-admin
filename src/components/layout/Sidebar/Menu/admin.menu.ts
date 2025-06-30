@@ -47,10 +47,10 @@ export const itemsNavAdmin: NavItem[] = [
     active: (path) => path.startsWith("/usuarios"),
   },
   {
-    href: "/tareas",
-    label: "Gestión de Tareas",
+    href: "/admin/actividades",
+    label: "Gestión de Actividades",
     icon: ClipboardList,
-    active: (path) => path.startsWith("/tareas") && !path.startsWith("/tareas/mis-tareas"),
+    active: (path) => path.startsWith("admmin/actividades"),
   },
   {
     href: "/tareas/mis-tareas",
