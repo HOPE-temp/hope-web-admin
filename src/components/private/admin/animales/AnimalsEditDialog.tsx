@@ -17,6 +17,7 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Form,
     FormField,
@@ -187,7 +188,7 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
                                     <FormItem>
                                         <FormLabel>Historia</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Textarea {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

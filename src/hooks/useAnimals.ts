@@ -1,16 +1,17 @@
 import { useEffect, useState, useCallback } from "react"
 
 export interface AnimalTableRow {
-  id: number
-  nickname: string
-  type: string
-  breed: string
-  size: string
-  sex: string
-  birthdate: string
-  descriptionHistory: string
-  status: string
-  isSterilized: boolean
+  id: number;
+  imageUrl: string | null;
+  nickname: string;
+  type: string;
+  breed: string;
+  size: string;
+  sex: string;
+  birthdate: string;
+  status: string;
+  descriptionHistory: string;
+  isSterilized: boolean;
 }
 
 export interface CreateAnimalInput {
@@ -109,7 +110,11 @@ export function useAnimals() {
       },
       body: JSON.stringify(input)
     })
-    if (!res.ok) throw new Error("Error al editar estado")
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.error("Error al editar estado:", errorData);
+      throw new Error(errorData.message || "Error al editar estado");
+    }
     await fetchAnimals()
     return await res.json()
   }
@@ -128,5 +133,22 @@ export function useAnimals() {
     return true
   }
 
-  return { animals, loading, error, createAnimal, updateAnimal, deleteAnimal }
+  const uploadImage = async (id: number, file: File) => {
+    const token = localStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}/image`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    if (!res.ok) throw new Error("Error al subir imagen");
+    await fetchAnimals();
+    return await res.json();
+  };
+
+  return { animals, loading, error, createAnimal, updateAnimal, updateAnimalStatus, deleteAnimal, uploadImage }
 }
