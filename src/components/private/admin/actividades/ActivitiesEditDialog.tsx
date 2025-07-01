@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import * as React from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Pencil, Upload, Link, Calendar, Save } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogTrigger,
@@ -15,223 +15,279 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Activity, UpdateActivityInput } from "@/hooks/useActivities";
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
+import { Card, CardContent } from "@/components/ui/card"
+import type { Activity } from "./ActivitiesTable"
 
-const schema = z.object({
-  title: z.string().min(3, "El título debe tener al menos 3 caracteres"),
-  imageUrl: z.string().url("Debe ser una URL válida"),
-  imagePublicId: z.string().min(1, "El ID de la imagen es requerido"),
-  resourceUrl: z.string().url("Debe ser una URL válida"),
-  scheduleStartAt: z.string().min(1, "La fecha de inicio es requerida"),
-  scheduleEndAt: z.string().min(1, "La fecha de fin es requerida"),
-  finished: z.boolean(),
-  admin: z.boolean(),
-});
+const schema = z
+  .object({
+    title: z
+      .string()
+      .min(3, "El título debe tener al menos 3 caracteres")
+      .max(100, "El título no puede exceder 100 caracteres"),
+    imageUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+    imagePublicId: z.string().optional().or(z.literal("")),
+    resourceUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+    scheduleStartAt: z.string().optional().or(z.literal("")),
+    scheduleEndAt: z.string().optional().or(z.literal("")),
+    admin: z.boolean(),
+  })
+  .refine(
+    (data) => {
+      if (data.scheduleStartAt && data.scheduleEndAt) {
+        return new Date(data.scheduleStartAt) < new Date(data.scheduleEndAt)
+      }
+      return true
+    },
+    {
+      message: "La fecha de fin debe ser posterior a la fecha de inicio",
+      path: ["scheduleEndAt"],
+    },
+  )
 
-type FormValues = z.infer<typeof schema>;
+type FormValues = z.infer<typeof schema>
+
+export interface UpdateActivityInput {
+  title?: string
+  imageUrl?: string | null
+  imagePublicId?: string | null
+  resourceUrl?: string | null
+  scheduleStartAt?: string | null
+  scheduleEndAt?: string | null
+  admin?: boolean
+}
 
 type Props = {
-  activity: Activity;
-  updateActivity: (id: number, input: UpdateActivityInput) => Promise<any>;
-};
+  activity: Activity
+  updateActivity: (id: number, input: UpdateActivityInput) => Promise<any>
+}
 
 export function ActivitiesEditDialog({ activity, updateActivity }: Props) {
-  const [open, setOpen] = React.useState(false);
-  const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
+  const [open, setOpen] = React.useState(false)
+  const [formSuccess, setFormSuccess] = React.useState<string | null>(null)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: activity.title ?? "",
-      imageUrl: activity.imageUrl ?? "",
-      imagePublicId: activity.imagePublicId ?? "",
-      resourceUrl: activity.resourceUrl ?? "",
-      scheduleStartAt: activity.scheduleStartAt ?? "",
-      scheduleEndAt: activity.scheduleEndAt ?? "",
-      finished: activity.finished ?? false,
-      admin: activity.admin ?? false,
+      title: activity.title || "",
+      imageUrl: activity.imageUrl || "",
+      imagePublicId: activity.imagePublicId || "",
+      resourceUrl: activity.resourceUrl || "",
+      scheduleStartAt: activity.scheduleStartAt ? new Date(activity.scheduleStartAt).toISOString().slice(0, 16) : "",
+      scheduleEndAt: activity.scheduleEndAt ? new Date(activity.scheduleEndAt).toISOString().slice(0, 16) : "",
+      admin: activity.admin,
     },
-  });
+  })
 
-  // Reset form values when dialog opens
   React.useEffect(() => {
     if (open) {
       form.reset({
-        title: activity.title ?? "",
-        imageUrl: activity.imageUrl ?? "",
-        imagePublicId: activity.imagePublicId ?? "",
-        resourceUrl: activity.resourceUrl ?? "",
-        scheduleStartAt: activity.scheduleStartAt ?? "",
-        scheduleEndAt: activity.scheduleEndAt ?? "",
-        finished: activity.finished ?? false,
-        admin: activity.admin ?? false,
-      });
-      setFormSuccess(null);
+        title: activity.title || "",
+        imageUrl: activity.imageUrl || "",
+        imagePublicId: activity.imagePublicId || "",
+        resourceUrl: activity.resourceUrl || "",
+        scheduleStartAt: activity.scheduleStartAt ? new Date(activity.scheduleStartAt).toISOString().slice(0, 16) : "",
+        scheduleEndAt: activity.scheduleEndAt ? new Date(activity.scheduleEndAt).toISOString().slice(0, 16) : "",
+        admin: activity.admin,
+      })
+      setFormSuccess(null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, activity]);
+  }, [open, activity, form])
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await updateActivity(activity.id, data);
-      setFormSuccess("Actividad actualizada correctamente");
+      
+      const payload = {
+        title: data.title,
+        resourceUrl: data.resourceUrl || "",
+        scheduleStartAt: data.scheduleStartAt || "",
+        scheduleEndAt: data.scheduleEndAt || "",
+        admin: data.admin,
+      }
+
+      await updateActivity(activity.id, payload)
+      setFormSuccess("Actividad actualizada correctamente")
       setTimeout(() => {
-        setOpen(false);
-        setFormSuccess(null);
-      }, 1200);
+        setOpen(false)
+        setFormSuccess(null)
+      }, 1500)
     } catch (err: any) {
-      form.setError("root", { message: err.message || "Error desconocido" });
+      form.setError("root", { message: err.message || "Error desconocido" })
     }
-  };
+  }
+
+  const handleDialogChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (!newOpen) {
+      setFormSuccess(null)
+    }
+  }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
           <Pencil className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Editar Actividad</DialogTitle>
-          <DialogDescription>
-            Modifica los datos de la actividad y guarda los cambios.
-          </DialogDescription>
+          <DialogTitle className="flex items-center gap-2">
+            <Save className="w-5 h-5" />
+            Editar Actividad
+          </DialogTitle>
+          <DialogDescription>Modifica la información de la actividad "{activity.title}"</DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL de Imagen</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="url" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imagePublicId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ID Público de Imagen</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="resourceUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL de Recurso</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="url" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="scheduleStartAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Fecha y hora de inicio</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="datetime-local" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="scheduleEndAt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Fecha y hora de fin</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="datetime-local" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="finished"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Finalizada</FormLabel>
-                    <FormControl>
-                      <input
-                        type="checkbox"
-                        checked={field.value}
-                        onChange={e => field.onChange(e.target.checked)}
-                        className="mr-2"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="admin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>¿Es de administración?</FormLabel>
-                    <FormControl>
-                      <input
-                        type="checkbox"
-                        checked={field.value}
-                        onChange={e => field.onChange(e.target.checked)}
-                        className="mr-2"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Estado Actual</h3>
+                  <div className="flex gap-2">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        activity.admin ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {activity.admin ? "Solo Admin" : "Regular"}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Información Básica</h3>
+
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Título *</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Nombre de la actividad" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="admin"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <input
+                            type="checkbox"
+                            checked={field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>Actividad de administración</FormLabel>
+                          <FormDescription>Solo administradores pueden finalizarla</FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Upload className="w-4 h-4" />
+                    <h3 className="text-lg font-medium">Recursos Multimedia</h3>
+                  </div>
+
+                 
+
+                  <FormField
+                    control={form.control}
+                    name="resourceUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>URL de Recurso</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                            <Input {...field} type="url" placeholder="https://..." className="pl-10" />
+                          </div>
+                        </FormControl>
+                        <FormDescription>Enlace a redes sociales, páginas web, seguimientos, etc.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            
+            <Card>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    <h3 className="text-lg font-medium">Programación</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="scheduleStartAt"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fecha y Hora de Inicio</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="datetime-local" />
+                          </FormControl>
+                          <FormDescription>Cuándo debe comenzar la actividad</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="scheduleEndAt"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fecha y Hora de Fin</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="datetime-local" />
+                          </FormControl>
+                          <FormDescription>Cuándo debe finalizar la actividad</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Mensajes de error y éxito */}
             {form.formState.errors.root && (
-              <div className="text-red-500 text-sm">{form.formState.errors.root.message}</div>
+              <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+                {form.formState.errors.root.message}
+              </div>
             )}
-            {formSuccess && (
-              <div className="text-green-600 text-sm">{formSuccess}</div>
-            )}
+
+            {formSuccess && <div className="bg-green-50 text-green-700 text-sm p-3 rounded-md">{formSuccess}</div>}
+
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="outline">
@@ -239,12 +295,12 @@ export function ActivitiesEditDialog({ activity, updateActivity }: Props) {
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Guardando..." : "Guardar cambios"}
+                {form.formState.isSubmitting ? "Guardando..." : "Guardar Cambios"}
               </Button>
             </DialogFooter>
           </form>
         </Form>
-        </DialogContent>
+      </DialogContent>
     </Dialog>
-  );
+  )
 }

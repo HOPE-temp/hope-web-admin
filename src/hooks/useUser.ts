@@ -13,7 +13,7 @@ export interface UserTableRow {
   username: string
 }
 
-// Aquí definimos el tipo para crear y actualizar un usuario
+
 export type CreateUserInput = {
   username: string;  
   firstName: string;
@@ -41,7 +41,7 @@ export function useUsers() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 1. Extrae fetchUsers y hazlo reutilizable
+  
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -78,7 +78,7 @@ export function useUsers() {
     fetchUsers()
   }, [fetchUsers])
 
-  // 2. Llama a fetchUsers después de crear un usuario
+ 
   const createUser = async (input: CreateUserInput) => {
     try {
       const token = localStorage.getItem("accessToken")
@@ -94,14 +94,14 @@ export function useUsers() {
         const errorData = await res.json().catch(() => ({}))
         throw new Error(errorData.message || "Error al crear usuario")
       }
-      await fetchUsers() // <-- recarga la tabla
+      await fetchUsers() 
       return await res.json()
     } catch (err: any) {
       throw new Error(err.message || "Error desconocido")
     }
   }
 
-  // Método para editar usuario
+  
   const updateUser = async (id: number, input: UpdateUserInput) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -124,7 +124,7 @@ export function useUsers() {
     }
   }
 
-// Metodo para eliminar usuario (opcional)
+
   const deleteUser = async (id: number) => {
     try {
       const token = localStorage.getItem("accessToken")
@@ -139,7 +139,7 @@ export function useUsers() {
         const errorData = await res.json().catch(() => ({}))
         throw new Error(errorData.message || "Error al eliminar usuario")
       }
-      await fetchUsers() // Recarga la tabla
+      await fetchUsers() 
     } catch (err: any) {
       throw new Error(err.message || "Error desconocido")
     }

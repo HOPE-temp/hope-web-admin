@@ -1,32 +1,33 @@
 import { useEffect, useState, useCallback } from "react";
 
-export interface Activity {
+export interface ActivityTableRow {
   id: number;
   title: string;
-  imageUrl: string;
-  imagePublicId: string;
-  resourceUrl: string;
-  scheduleStartAt: string;
-  scheduleEndAt: string;
+  imageUrl: string | null;
+  imagePublicId: string | null;
+  resourceUrl: string | null;
+  scheduleStartAt: string | null;
+  scheduleEndAt: string | null;
   finished: boolean;
   admin: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type CreateActivityInput = {
   title: string;
-  imageUrl: string;
-  imagePublicId: string;
+};
+
+export type UpdateActivityInput = {
+  title: string;
   resourceUrl: string;
   scheduleStartAt: string;
   scheduleEndAt: string;
-  finished: boolean;
   admin: boolean;
 };
 
-export type UpdateActivityInput = Partial<CreateActivityInput>;
-
 export function useActivities() {
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<ActivityTableRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +44,20 @@ export function useActivities() {
       });
       if (!res.ok) throw new Error("Error al obtener actividades");
       const data = await res.json();
-      setActivities(data);
+      const mapped: ActivityTableRow[] = data.map((a: any) => ({
+        id: a.id,
+        title: a.title,
+        imageUrl: a.imageUrl,
+        imagePublicId: a.imagePublicId,
+        resourceUrl: a.resourceUrl,
+        scheduleStartAt: a.scheduleStartAt,
+        scheduleEndAt: a.scheduleEndAt,
+        finished: a.finished,
+        admin: a.admin,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt,
+      }));
+      setActivities(mapped);
     } catch (err: any) {
       setError(err.message || "Error desconocido");
     } finally {
@@ -113,11 +127,32 @@ export function useActivities() {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.message || "Error al eliminar actividad");
       }
-      await fetchActivities();
+      await fetchActivities(); 
     } catch (err: any) {
       throw new Error(err.message || "Error desconocido");
     }
   };
 
-  return { activities, loading, error, createActivity, updateActivity, deleteActivity };
+  const finishActivity = async (id: number) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/activities/${id}/finish`, {
+        method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error al finalizar actividad");
+      }
+      await fetchActivities();
+      return await res.json();
+    } catch (err: any) {
+      throw new Error(err.message || "Error desconocido");
+    }
+  };
+
+  return { activities, loading, error, createActivity, updateActivity, deleteActivity, finishActivity };
 }

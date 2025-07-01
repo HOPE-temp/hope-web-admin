@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Trash2, AlertTriangle } from "lucide-react"
+import { Check, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -16,24 +16,25 @@ import type { Activity } from "./ActivitiesTable"
 
 type Props = {
   activity: Activity
-  deleteActivity: (id: number) => Promise<any>
+  finishActivity: (id: number) => Promise<any>
+  children: React.ReactNode
 }
 
-export function ActivitiesDeleteDialog({ activity, deleteActivity }: Props) {
+export function ActivitiesFinishDialog({ activity, finishActivity, children }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [deleting, setDeleting] = React.useState(false)
+  const [finishing, setFinishing] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
-  const handleDelete = async () => {
-    setDeleting(true)
+  const handleFinish = async () => {
+    setFinishing(true)
     setError(null)
     try {
-      await deleteActivity(activity.id)
+      await finishActivity(activity.id)
       setOpen(false)
     } catch (err: any) {
-      setError(err.message || "Error desconocido al eliminar la actividad")
+      setError(err.message || "Error desconocido al finalizar la actividad")
     } finally {
-      setDeleting(false)
+      setFinishing(false)
     }
   }
 
@@ -46,32 +47,24 @@ export function ActivitiesDeleteDialog({ activity, deleteActivity }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-red-600">
-            <AlertTriangle className="w-5 h-5" />
-            Eliminar Actividad
+          <DialogTitle className="flex items-center gap-2 text-green-600">
+            <Check className="w-5 h-5" />
+            Finalizar Actividad
           </DialogTitle>
           <DialogDescription className="space-y-3">
             <div>
-              ¿Estás seguro de que deseas eliminar la actividad{" "}
+              ¿Estás seguro de que deseas marcar como finalizada la actividad{" "}
               <strong className="text-foreground">"{activity.title}"</strong>?
             </div>
 
             <div className="bg-muted p-3 rounded-lg space-y-2">
               <div className="text-sm font-medium">Información de la actividad:</div>
               <div className="flex flex-wrap gap-2">
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    activity.finished ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                  }`}
-                >
-                  {activity.finished ? "Finalizada" : "Pendiente"}
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Pendiente
                 </span>
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -85,31 +78,31 @@ export function ActivitiesDeleteDialog({ activity, deleteActivity }: Props) {
               {activity.imageUrl && <div className="text-xs text-muted-foreground">Tiene imagen asociada</div>}
             </div>
 
-            <div className="text-sm text-red-600 font-medium">Esta acción no se puede deshacer.</div>
+            {activity.admin && (
+              <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-2 rounded-md">
+                <AlertCircle className="w-4 h-4" />
+                <div className="text-sm">Esta es una actividad de administración</div>
+              </div>
+            )}
           </DialogDescription>
         </DialogHeader>
 
         {error && <div className="bg-red-50 text-red-700 text-sm p-3 rounded-md">{error}</div>}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={deleting}>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={finishing}>
             Cancelar
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleting}
-            className="bg-red-600 hover:bg-red-700"
-          >
-            {deleting ? (
+          <Button onClick={handleFinish} disabled={finishing} className="bg-green-600 hover:bg-green-700 text-white">
+            {finishing ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                Eliminando...
+                Finalizando...
               </>
             ) : (
               <>
-                <Trash2 className="w-4 h-4 mr-2" />
-                Eliminar
+                <Check className="w-4 h-4 mr-2" />
+                Finalizar Actividad
               </>
             )}
           </Button>

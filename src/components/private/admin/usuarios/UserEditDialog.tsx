@@ -59,7 +59,7 @@ export function UserEditDialog({ user, updateUser }: Props) {
     },
   });
 
-  // Reset form values when dialog opens
+  
   React.useEffect(() => {
     if (open) {
       form.reset({
@@ -72,7 +72,7 @@ export function UserEditDialog({ user, updateUser }: Props) {
       });
       setFormSuccess(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [open, user]);
 
   const onSubmit = async (data: FormValues) => {
@@ -158,7 +158,7 @@ export function UserEditDialog({ user, updateUser }: Props) {
                         inputMode="numeric"
                         maxLength={9}
                         onInput={e => {
-                          // Solo permite números
+                          
                           e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
                           field.onChange(e);
                         }}

@@ -9,7 +9,6 @@ import { ColumnDef} from "@tanstack/react-table";
 
 export default function UsuariosPage() {
   const { users, loading, error, createUser, updateUser, deleteUser } = useUsers();
-  // Columnas de la tabla
   const columns = React.useMemo<ColumnDef<UserTableRow>[]>(() => [
     { accessorKey: "id", header: "ID" },
     { accessorKey: "username", header: "Usuario" },

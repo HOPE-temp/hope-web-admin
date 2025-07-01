@@ -8,8 +8,6 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export default function AnimalesPage() {
   const { animals, loading, error, createAnimal, updateAnimal, deleteAnimal } = useAnimals();
-
-  // Ejemplo de columnas para AnimalTable  
   const columns = React.useMemo<ColumnDef<AnimalTableRow>[]>(() => [
     { accessorKey: "id", header: "ID" },
     { accessorKey: "nickname", header: "Nombre" },

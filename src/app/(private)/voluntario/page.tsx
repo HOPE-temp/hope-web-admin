@@ -5,11 +5,11 @@ import Link from "next/link"
 import { PawPrint, Users, Heart } from "lucide-react"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { usePanel } from "@/hooks/usePanel" // <-- importa el hook
+import { usePanel } from "@/hooks/usePanel"
 
 export default function Home() {
   const router = useRouter()
-  const { counts, loading, error } = usePanel() // <-- usa el hook
+  const { counts, loading, error } = usePanel()
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
