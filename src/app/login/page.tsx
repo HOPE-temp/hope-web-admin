@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation'
 export default function page() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false) // <-- nuevo estado
+  const [showPassword, setShowPassword] = useState(false)
   const { login, loading, error } = useLogin()
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -34,7 +34,7 @@ export default function page() {
     if (rol === 'admin') router.push('/admin')
     else if (rol === 'volunteer') router.push('/voluntario')
     else if (rol === 'medico') router.push('/medico')
-    // else: puedes mostrar un error si el rol no es válido
+   
   }
 
   return (
