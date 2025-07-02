@@ -23,7 +23,10 @@ export default function AnimalesPage() {
       <div className="rounded-lg bg-white shadow p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Animales</h2>
-          <AnimalsCreateDialog createAnimal={createAnimal} />
+          <AnimalsCreateDialog 
+            createAnimal={createAnimal}
+            uploadImage={uploadImage}
+          />
         </div>
         {loading ? (
           <div className="text-center py-10">Cargando animales...</div>

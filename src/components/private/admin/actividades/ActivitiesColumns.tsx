@@ -24,12 +24,14 @@ interface ActivitiesColumnsProps {
   updateActivity: (id: number, input: any) => Promise<any>
   deleteActivity: (id: number) => Promise<any>
   finishActivity: (id: number) => Promise<any>
+  updaloadImageActivity: (id: number, file: File) => Promise<any>
 }
 
 export const createActivitiesColumns = ({
   updateActivity,
   deleteActivity,
-  finishActivity, 
+  finishActivity,
+  updaloadImageActivity
 }: ActivitiesColumnsProps): ColumnDef<Activity>[] => [
   {
     accessorKey: "imageUrl",
@@ -256,7 +258,7 @@ export const createActivitiesColumns = ({
 
       return (
         <div className="whitespace-nowrap">
-          <ActivitiesActions activity={activity} updateActivity={updateActivity} deleteActivity={deleteActivity} />
+          <ActivitiesActions activity={activity} updateActivity={updateActivity} deleteActivity={deleteActivity} updaloadImageActivity={updaloadImageActivity} />
         </div>
       )
     },

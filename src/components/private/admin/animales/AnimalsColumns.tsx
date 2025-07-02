@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 interface AnimalsColumnsProps {
   updateAnimal: (id: number, input: EditAnimalInput) => Promise<any>;
   deleteAnimal: (id: number) => Promise<any>;
-  uploadImage?: (id: number, file: File) => Promise<any>;
+  uploadImage: (id: number, file: File) => Promise<any>;
   updateAnimalStatus: (id: number, input: { status: string }) => Promise<any>;
 }
 
@@ -23,7 +23,7 @@ export function createAnimalsColumns({
       accessorKey: "imageUrl",
       header: "Imagen",
       cell: ({ row }) => {
-        const imageUrl = row.original.imageUrl as string | null;
+        const imageUrl = row.original.images ? row.original.images[0] : '';
         const nickname = row.original.nickname as string;
         return (
           <div className="flex items-center justify-center w-12 h-12 whitespace-nowrap">
@@ -60,7 +60,21 @@ export function createAnimalsColumns({
     { accessorKey: "type", header: "Tipo" },
     { accessorKey: "breed", header: "Raza" },
     { accessorKey: "size", header: "Tamaño" },
-    { accessorKey: "sex", header: "Sexo" },
+    { accessorKey: "sex", 
+      header: "Sexo",
+      cell: ({ row }) => {
+        const value= row.original.sex as 'male'| 'female' ;
+        const sexDict = {
+          'male': 'macho',
+          'female': 'hembra'
+        }
+        return (
+          <div className="whitespace-nowrap max-w-[150px] truncate" title={value}>
+            {sexDict[value]}
+          </div>
+        );
+      },
+    },
     { accessorKey: "birthdate", header: "Nacimiento" },
     {
       accessorKey: "descriptionHistory",

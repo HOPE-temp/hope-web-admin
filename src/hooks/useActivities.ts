@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-// TODO: subir imagenes de actividades
 export interface ActivityTableRow {
   id: number;
   title: string;
@@ -154,5 +153,38 @@ export function useActivities() {
     }
   };
 
-  return { activities, loading, error, createActivity, updateActivity, deleteActivity, finishActivity };
+  const updaloadImageActivity = async (id: number, file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const token = localStorage.getItem("accessToken");
+      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/activities/${id}/upload_image`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error al finalizar actividad");
+      }
+      await fetchActivities();
+      return await res.json();
+    } catch (err: any) {
+      throw new Error(err.message || "Error desconocido");
+    }
+  };
+
+  return { 
+    activities,
+    loading,
+    error,
+    createActivity,
+    updateActivity,
+    deleteActivity,
+    finishActivity,
+    updaloadImageActivity
+  };
 }
