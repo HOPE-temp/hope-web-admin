@@ -70,10 +70,10 @@ export default function Sidebar({ className }: SidebarProps) {
       active: (path) => path.startsWith("/adoptantes"),
     },
     {
-      href: "/adopciones",
+      href: "/admin/adoption",
       label: "Adopciones",
       icon: <Heart className="h-4 w-4" />,      
-      active: (path) => path.startsWith("/adopciones"),
+      active: (path) => path.startsWith("/admin/adoption"),
     },
     {
       href: "/historial-medico",

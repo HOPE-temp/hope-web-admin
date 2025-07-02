@@ -29,10 +29,10 @@ export const itemsNavAdmin: NavItem[] = [
     active: (path) => path.startsWith("/admin/adopter"),   
   },
   {
-    href: "/adopciones",
+    href: "/admin/adoption",
     label: "Adopciones",
     icon: Heart,
-    active: (path) => path.startsWith("/adopciones"),
+    active: (path) => path.startsWith("/admin/adoption"),
   },
   {
     href: "/admin/checkup",
