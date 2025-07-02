@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { AnimalTableRow } from "@/hooks/useAnimals";
 
@@ -22,11 +21,11 @@ type Props = {
 
 export function AnimalsDeleteDialog({ animal, deleteAnimal }: Props) {
   const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleDelete = async () => {
-    setLoading(true);
+    setDeleting(true);
     setError(null);
     try {
       await deleteAnimal(animal.id);
@@ -34,14 +33,14 @@ export function AnimalsDeleteDialog({ animal, deleteAnimal }: Props) {
     } catch (err: any) {
       setError(err.message || "Error al eliminar animal");
     } finally {
-      setLoading(false);
+      setDeleting(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
           <Trash2 className="w-4 h-4" />
         </Button>
       </DialogTrigger>
@@ -49,23 +48,18 @@ export function AnimalsDeleteDialog({ animal, deleteAnimal }: Props) {
         <DialogHeader>
           <DialogTitle>Eliminar Animal</DialogTitle>
           <DialogDescription>
-            ¿Estás seguro que deseas eliminar este animal? Esta acción no se puede deshacer.
+            ¿Estás seguro de que deseas eliminar este animal? Esta acción no se puede deshacer.
           </DialogDescription>
         </DialogHeader>
-        {error && <div className="text-red-500 text-sm">{error}</div>}
+        {error && (
+          <p className="text-sm text-red-500">{error}</p>
+        )}
         <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="outline" disabled={loading}>
-              Cancelar
-            </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={loading}
-          >
-            {loading ? "Eliminando..." : "Eliminar"}
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={deleting}>
+            Cancelar
+          </Button>
+          <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+            {deleting ? "Eliminando..." : "Eliminar"}
           </Button>
         </DialogFooter>
       </DialogContent>

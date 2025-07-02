@@ -18,10 +18,10 @@ export const itemsNavVolunteer: NavItem[] = [
     active: (path) => path === "/",
   },
   {
-    href: "/animales",
+    href: "/admin/animales",
     label: "Mascotas",
     icon: PawPrint,
-    active: (path) => path.startsWith("/animales"),
+    active: (path) => path.startsWith("/admin/animales"),
   },
   {
     href: "/adoptantes",

@@ -1,0 +1,81 @@
+"use client";
+
+import * as React from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { AnimalTableRow } from "@/hooks/useAnimals";
+
+interface Props {
+  animal: AnimalTableRow;
+  updateAnimalStatus: (id: number, input: { status: string }) => Promise<any>;
+  trigger?: React.ReactNode;
+}
+
+const STATUS_OPTIONS = [
+  { value: "in_adoption", label: "En Adopción" },
+  { value: "in_observation", label: "En Observación" },
+  { value: "adopted", label: "Adoptado" },
+  { value: "dead", label: "Fallecido" },
+];
+
+export function AnimalsEditStatusDialog({ animal, updateAnimalStatus, trigger }: Props) {
+  const [open, setOpen] = React.useState(false);
+  const [status, setStatus] = React.useState(animal.status);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleSave = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await updateAnimalStatus(animal.id, { status });
+      setOpen(false);
+    } catch (err: any) {
+      setError(err.message || "Error al actualizar estado");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (open) setStatus(animal.status);
+  }, [open, animal.status, animal.id]);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {trigger ?? (
+          <Button variant="outline" size="sm" className="whitespace-nowrap">
+            Editar Estado
+          </Button>
+        )}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Actualizar Estado</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-2">
+          <select
+            className="w-full border rounded px-3 py-2"
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            disabled={loading}
+          >
+            {STATUS_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+            Cancelar
+          </Button>
+          <Button onClick={handleSave} disabled={loading || status === animal.status}>
+            {loading ? "Guardando..." : "Guardar"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

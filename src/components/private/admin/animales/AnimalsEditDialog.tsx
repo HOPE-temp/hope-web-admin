@@ -17,6 +17,7 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
     Form,
     FormField,
@@ -61,7 +62,7 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
         },
     });
 
-    // Reset form values when dialog opens
+    
     React.useEffect(() => {
         if (open) {
             form.reset({
@@ -75,7 +76,7 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
             });
             setFormSuccess(null);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, [open, animal]);
 
     const onSubmit = async (data: FormValues) => {
@@ -187,7 +188,7 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
                                     <FormItem>
                                         <FormLabel>Historia</FormLabel>
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Textarea {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

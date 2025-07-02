@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/form";
 import { CreateUserInput } from "@/hooks/useUser";
 
-// Define schema con zod
+
 const schema = z.object({
   username: z.string().min(6, "El usuario debe tener al menos 6 caracteres"),
   location: z.string().min(1, "La ubicación no debe estar vacía"),

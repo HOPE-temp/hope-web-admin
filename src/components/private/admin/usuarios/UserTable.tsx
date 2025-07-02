@@ -39,7 +39,6 @@ interface UserTableProps<TData extends RowData> {
   columns: ColumnDef<TData, any>[];
 }
 
-// Filtro personalizado para múltiples campos
 const globalUserFilter: FilterFn<any> = (row, columnId, filterValue) => {
   if (!filterValue) return true;
   const value = filterValue.toLowerCase();

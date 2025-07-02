@@ -17,10 +17,10 @@ export const itemsNavAdmin: NavItem[] = [
     active: (path) => path === "/",
   },
   {
-    href: "/animales",
+    href: "/admin/animales",
     label: "Mascotas",
     icon: PawPrint,
-    active: (path) => path.startsWith("/animales"),
+    active: (path) => path.startsWith("/admin/animales"),
   },
   {
     href: "/admin/adopter",
@@ -44,13 +44,13 @@ export const itemsNavAdmin: NavItem[] = [
     href: "/admin/usuarios",
     label: "Usuarios y Roles",
     icon: UserCog,
-    active: (path) => path.startsWith("/usuarios"),
+    active: (path) => path.startsWith("/admin/usuarios"),
   },
   {
     href: "/admin/actividades",
     label: "Gestión de Actividades",
     icon: ClipboardList,
-    active: (path) => path.startsWith("admmin/actividades"),
+    active: (path) => path.startsWith("admin/actividades"),
   },
   {
     href: "/tareas/mis-tareas",
