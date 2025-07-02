@@ -1,5 +1,5 @@
 "use client"
-
+////TO DO, HOOK DE ADOPTER y validaciones//
 import { useState } from "react"
 import { DialogCheckup } from "@/components/private/admin/checkup/Dialog"
 import { DialogRed } from "@/components/private/admin/checkup/DialogRed"
@@ -28,11 +28,12 @@ export default function Page() {
   const [showDetail, setShowDetail] = useState(false)
 
   const handleSaveCheckup = (data: any) => {
-    setCheckups((prev) => [...prev, { ...data, id: crypto.randomUUID() }])
-  }
+  const newCheckup = { ...data, id: Date.now().toString() } 
+  setCheckups((prev) => [...prev, newCheckup])
+}
    const handleUpdateCheckup = (updatedItem: any) => {
     setCheckups((prev) =>
-      prev.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+      prev.map((item) => (item.idmascota === updatedItem.id ? updatedItem : item))
     )
     if (selectedCheckup?.id === updatedItem.id) {
       setSelectedCheckup(updatedItem)
@@ -40,7 +41,7 @@ export default function Page() {
   }
 
   const handleDeleteCheckup = (itemToDelete: any) => {
-    setCheckups((prev) => prev.filter((item) => item.id !== itemToDelete.id))
+    setCheckups((prev) => prev.filter((item) => item.idmascota !== itemToDelete.id))
     if (selectedCheckup?.id === itemToDelete.id) {
       setSelectedCheckup(null)
       setShowDetail(false)
@@ -70,7 +71,7 @@ export default function Page() {
             setSelectedCheckup(item)
             setShowDetail(true)
           }}
-          //onUpdate={handleUpdateCheckup}
+          onUpdate={handleUpdateCheckup}//TO DO//
           onDelete={handleDeleteCheckup}
         />
 

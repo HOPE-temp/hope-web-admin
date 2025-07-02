@@ -42,7 +42,7 @@ export default function TableCheckups({
       </TableHeader>
       <TableBody>
         {data.map((item, index) => (
-          <TableRow key={index}>
+          <TableRow key={item.idmascota}>
             <TableCell>{item.estado}</TableCell>
             <TableCell>{item.fechaInicio}</TableCell>
             <TableCell>{item.fechaFin}</TableCell>

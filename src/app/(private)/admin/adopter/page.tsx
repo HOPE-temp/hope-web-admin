@@ -1,5 +1,5 @@
 "use client"
-
+////TO DO, HOOK DE ADOPTER y validaciones//
 import { AdopterDialog } from "@/components/private/admin/adopter/AdopterDialog"
 import { useState } from "react"
 import { Plus } from "lucide-react"
