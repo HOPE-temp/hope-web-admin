@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-
+// TODO: subir imagenes de actividades
 export interface ActivityTableRow {
   id: number;
   title: string;

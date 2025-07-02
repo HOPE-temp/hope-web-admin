@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react"
-
+// TODO: subir imagenes de animales
+// TODO: idiomas de campos en español
 export interface AnimalTableRow {
   id: number;
   imageUrl: string | null;
