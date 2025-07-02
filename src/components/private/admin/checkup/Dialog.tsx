@@ -58,21 +58,21 @@ export function DialogCheckup({ onSave }: { onSave: (data: any) => void }) {
           }}
           className="text-white bg-black hover:bg-gray-800 px-4 py-2 rounded"
         >
-          Registro Chequeo Médico
+          Iniciar Chequeo Médico
         </button>
       </DialogTrigger>
       <DialogPortal>
         <DialogOverlay />
         <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] bg-white p-6 rounded-lg shadow-lg">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Registro Chequeo Médico</h2>
+            <h2 className="text-xl font-semibold">Iniciar Chequeo Médico</h2>
             <DialogPrimitive.Close className="text-gray-500 hover:text-gray-700">
               <X className="h-5 w-5" />
             </DialogPrimitive.Close>
           </div>
           <form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
-              { label: "IdMascota", name: "idmascota" },
+              { label: "Mascota", name: "mascota" },
               { label: "Fecha Inicio", name: "fechaInicio", type: "date" },
               { label: "Fecha Fin", name: "fechaFin", type: "date" },
               { label: "Peso", name: "peso" },

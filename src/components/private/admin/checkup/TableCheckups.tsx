@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/table"
 import { Eye, Pencil, Trash2 } from "lucide-react"
 import { DialogEdit } from "./DialogEdit"
-import { DialogDelete } from "./DialogDelete"
 
 export default function TableCheckups({
   data,
@@ -31,8 +30,8 @@ export default function TableCheckups({
         <TableRow>
           <TableHead>Estado</TableHead>
           <TableHead>Fecha Inicio</TableHead>
-          <TableHead>Fecha Finalizado</TableHead>
-          <TableHead>Id Mascota</TableHead>
+          <TableHead>Fecha Fin</TableHead>
+          <TableHead>Mascota</TableHead>
           <TableHead>Peso</TableHead>
           <TableHead>Temperatura</TableHead>
           <TableHead>Observaciones</TableHead>
@@ -47,7 +46,7 @@ export default function TableCheckups({
             <TableCell>{item.estado}</TableCell>
             <TableCell>{item.fechaInicio}</TableCell>
             <TableCell>{item.fechaFin}</TableCell>
-            <TableCell>{item.idmascota}</TableCell>
+            <TableCell>{item.mascota}</TableCell>
             <TableCell>{item.peso}</TableCell>
             <TableCell>{item.temperatura}</TableCell>
             <TableCell>{item.observaciones}</TableCell>
@@ -72,12 +71,13 @@ export default function TableCheckups({
                 </button>
               </DialogEdit>
 
-              <DialogDelete onConfirm={() => onDelete(item)}>
-                <button title="Eliminar" className="text-red-600 hover:text-red-800">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </DialogDelete>
-
+              <button
+                onClick={() => onDelete(item)}
+                title="Eliminar"
+                className="text-red-600 hover:text-red-800"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </TableCell>
           </TableRow>
         ))}

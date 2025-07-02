@@ -24,13 +24,28 @@ export default function Page() {
     },
   ])
 
-  const [selectedCheckup, setSelectedCheckup] = useState(null)
+  const [selectedCheckup, setSelectedCheckup] = useState<any>(null)
   const [showDetail, setShowDetail] = useState(false)
 
   const handleSaveCheckup = (data: any) => {
-    setCheckups((prev) => [...prev, data])
+    setCheckups((prev) => [...prev, { ...data, id: crypto.randomUUID() }])
+  }
+   const handleUpdateCheckup = (updatedItem: any) => {
+    setCheckups((prev) =>
+      prev.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+    )
+    if (selectedCheckup?.id === updatedItem.id) {
+      setSelectedCheckup(updatedItem)
+    }
   }
 
+  const handleDeleteCheckup = (itemToDelete: any) => {
+    setCheckups((prev) => prev.filter((item) => item.id !== itemToDelete.id))
+    if (selectedCheckup?.id === itemToDelete.id) {
+      setSelectedCheckup(null)
+      setShowDetail(false)
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-100 p-6">
     <div className="rounded-lg bg-white shadow p-6">  
@@ -55,6 +70,8 @@ export default function Page() {
             setSelectedCheckup(item)
             setShowDetail(true)
           }}
+          //onUpdate={handleUpdateCheckup}
+          onDelete={handleDeleteCheckup}
         />
 
         {/* Detalle en modal (sin onClose porque ya no hay botón de cierre) */}
