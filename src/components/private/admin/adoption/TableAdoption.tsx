@@ -62,8 +62,8 @@ export default function TableAdoption({ data }: Props) {
           <TableRow>
             <TableHead>Estado Resultado</TableHead>
             <TableHead>Estado Solicitud</TableHead>
-            <TableHead>Fecha evaluación</TableHead>
-            <TableHead>Fecha selección</TableHead>
+            <TableHead>Fecha Evaluación</TableHead>
+            <TableHead>Fecha Selección</TableHead>
             <TableHead className="text-center">Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -75,13 +75,13 @@ export default function TableAdoption({ data }: Props) {
               <TableCell>{item.fechaEvaluacion}</TableCell>
               <TableCell>{item.fechaSeleccion}</TableCell>
               <TableCell className="flex justify-center gap-3">
-                <button title="Ver detalles">
+                <button title="Evaluar solicitud adopción">
                   <ClipboardList className="h-5 w-5 text-black" />
                 </button>
-                <button title="Adjuntar archivos">
+                <button title="Vincular animal con adopción">
                   <Paperclip className="h-5 w-5 text-black" />
                 </button>
-                <button title="Aprobar">
+                <button title="Completar solicitud adopción">
                   <CheckSquare className="h-5 w-5 text-violet-600" />
                 </button>
               </TableCell>
