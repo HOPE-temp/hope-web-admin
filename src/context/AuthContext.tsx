@@ -1,6 +1,7 @@
 "use client";
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useEffect } from "react";
 import { useLocalStorage } from "../hooks/useLocalStogare";
+import axios from '@/lib/axiosInstance'
 
 type AuthContextType = {
   token: string | null;
@@ -8,6 +9,7 @@ type AuthContextType = {
   loaded: boolean;
   role: RoleUser | null;
   setRole: (token: RoleUser | null) => void;
+  axios: Axios.AxiosInstance;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,8 +18,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken, loaded] = useLocalStorage<string>("accessToken", null);
   const [role, setRole] = useLocalStorage<RoleUser>("rol", null);
 
+  useEffect(()=>{
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    } else {
+      delete axios.defaults.headers.common.Authorization
+    }
+  }, [token])
+
+
   return (
-    <AuthContext.Provider value={{ token, setToken, role, setRole, loaded }}>
+    <AuthContext.Provider value={{ token, setToken, role, setRole, loaded, axios }}>
       {children}
     </AuthContext.Provider>
   );

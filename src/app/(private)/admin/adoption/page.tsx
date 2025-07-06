@@ -32,7 +32,7 @@ export default function Page() {
       <div className="flex justify-end">
         <DialogRegAdoption onRegister={handleRegister} />
       </div>
-      <TableAdoption data={data} />
+      <TableAdoption />
     </main>
   )
 }

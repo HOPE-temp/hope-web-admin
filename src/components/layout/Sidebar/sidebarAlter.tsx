@@ -13,14 +13,12 @@ import {
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/AuthContext"
 import { navbarItems } from "./Menu"
-import { cn } from "@/lib/utils"
 import Link from "next/link"
 
 export function AppSidebar() {
   const {role} = useAuth()
 
   const items = useMemo(()=>{
-    console.log({role})
     if(role){
       return navbarItems(role)
     }

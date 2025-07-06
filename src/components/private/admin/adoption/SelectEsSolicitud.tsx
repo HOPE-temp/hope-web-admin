@@ -9,25 +9,25 @@ import {
 } from "@/components/ui/select"
 
 interface Props {
-  value: string
-  onChange: (value: string) => void
+  value?: StatusRequestApotion | 'all'
+  onChange: (value: StatusRequestApotion) => void
 }
 
 export default function SelectEsSolicitud({ value, onChange }: Props) {
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Estado Solicitud</label>
+      <label className="text-sm font-medium mb-1">Estado Solicitud {value}d</label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger>
-          <SelectValue placeholder="Todos" />
+        <SelectTrigger value={undefined}>
+          <SelectValue placeholder="Seleccionar" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Todos</SelectItem>
-          <SelectItem value="No evaluado">No evaluado</SelectItem>
-          <SelectItem value="Aprobado">Aprobado</SelectItem>
-          <SelectItem value="Rechazado">Rechazado</SelectItem>
+          <SelectItem value={'created'}>Creado</SelectItem>
+          <SelectItem value={'cancelled'}>Cancelado</SelectItem>
+          <SelectItem value={'adoption_completed'}>Finalizado</SelectItem>
         </SelectContent>
       </Select>
     </div>
   )
 }
+

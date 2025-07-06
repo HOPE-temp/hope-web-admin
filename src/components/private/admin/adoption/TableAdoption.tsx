@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Table,
   TableHeader,
@@ -16,33 +16,49 @@ import SelectEsSolicitud from "./SelectEsSolicitud"
 import SelectEsResult from "./SelectEsResult"
 
 import { ClipboardList, Paperclip, CheckSquare } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
+import { findAllAdoptions } from "@/services/hopeBackend/adoptiones"
+import { formatDate } from "@/lib/format/formatDate"
+import { Button } from "@/components/ui/button"
 
-interface Adoption {
-  id: string
-  estadoResultado: string
-  estadoSolicitud: string
-  fechaEvaluacion: string
-  fechaSeleccion: string
-}
+
 
 interface Props {
-  data: Adoption[]
+  data?: Adoption[]
 }
 
 export default function TableAdoption({ data }: Props) {
-  const [idAdopter, setIdAdopter] = useState("")
-  const [dniAdopter, setDniAdopter] = useState("")
-  const [estadoSolicitud, setEstadoSolicitud] = useState("")
-  const [estadoResultado, setEstadoResultado] = useState("")
 
-  const filteredData = data.filter((item) => {
-    return (
-      (idAdopter === "" || item.id.includes(idAdopter)) &&
-      (dniAdopter === "" || item.id.includes(dniAdopter)) && // Suponiendo que aquí también aplicas por ID. Ajusta si tienes `dni` real.
-      (estadoSolicitud === "all" || item.estadoSolicitud === estadoSolicitud) &&
-      (estadoResultado === "all" || item.estadoResultado === estadoResultado)
-    )
+  const {axios} = useAuth()
+  const [adoptions, setAdoptions] = useState<Adoption[]>()
+  const [filter, setFilter] = useState<FilterAdoptionDto>({
+    limit: 10,
+    offset: 5
   })
+
+
+  const getAdoptions = async ()=>{
+
+    if(axios){
+      console.log({filter})
+      const data = await findAllAdoptions(axios, filter)
+      console.log({data})
+      setAdoptions(data)
+    }
+
+  }
+
+  useEffect(()=> {
+    getAdoptions()
+  }, [axios, filter])
+  console.log(adoptions)
+
+  const handleResetButton = () => {
+    setFilter({
+      limit: 10,
+      offset: 5,
+    })
+  }
 
   return (
     <div className="border p-6 rounded-md space-y-4">
@@ -50,10 +66,27 @@ export default function TableAdoption({ data }: Props) {
 
       {/* Filtros */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <InputIdAdopter value={idAdopter} onChange={setIdAdopter} />
-        <SelectEsResult value={estadoResultado} onChange={setEstadoResultado} />
-        <SelectEsSolicitud value={estadoSolicitud} onChange={setEstadoSolicitud} />
-        <InputDniAdopter value={dniAdopter} onChange={setDniAdopter} />
+        <InputIdAdopter 
+          value={filter.idAdopter}
+          onValueChange={(value)=>setFilter({...filter, idAdopter:value})}
+        />
+        <SelectEsResult
+          value={filter.statusResult}
+          onChange={(value)=> setFilter({...filter, statusResult: value })}
+        />
+        <SelectEsSolicitud
+          value={filter.statusRequest}
+          onChange={(value)=>setFilter({...filter, statusRequest: value})}
+          />
+        <InputDniAdopter
+          value={filter.documentNumber}
+          onValueChange={(value)=>setFilter({...filter, documentNumber: value})}
+        />
+      </div>
+      <div>
+        <Button onClick={handleResetButton}>
+          Resetear
+        </Button>
       </div>
 
       {/* Tabla */}
@@ -68,12 +101,12 @@ export default function TableAdoption({ data }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData.map((item, index) => (
+          {adoptions && adoptions.map((item, index) => (
             <TableRow key={index}>
-              <TableCell>{item.estadoResultado}</TableCell>
-              <TableCell>{item.estadoSolicitud}</TableCell>
-              <TableCell>{item.fechaEvaluacion}</TableCell>
-              <TableCell>{item.fechaSeleccion}</TableCell>
+              <TableCell>{item.statusResult}</TableCell>
+              <TableCell>{item.statusRequest}</TableCell>
+              <TableCell>{formatDate(item.reviewRequestAt )}</TableCell>
+              <TableCell>{formatDate(item.selectedAnimalAt)}</TableCell>
               <TableCell className="flex justify-center gap-3">
                 <button title="Evaluar solicitud adopción">
                   <ClipboardList className="h-5 w-5 text-black" />
