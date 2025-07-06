@@ -21,6 +21,9 @@ import { findAllAdoptions } from "@/services/hopeBackend/adoptiones"
 import { formatDate } from "@/lib/format/formatDate"
 import { Button } from "@/components/ui/button"
 
+import DialogEvaluation from "./DialogEvaluation"
+import DialogLinked from "./DialogLinked"
+import DialogComplete from "./DialogComplete"
 
 
 interface Props {
@@ -61,8 +64,16 @@ export default function TableAdoption({ data }: Props) {
   }
 
   return (
-    <div className="border p-6 rounded-md space-y-4">
-      <h2 className="text-2xl font-bold">Adopciones</h2>
+    <div className="border p-6 rounded-md space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Adopciones</h2>
+        <button
+          onClick={onRegisterClick}
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+        >
+          + Registrar Adopción
+        </button>
+      </div>
 
       {/* Filtros */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -95,8 +106,8 @@ export default function TableAdoption({ data }: Props) {
           <TableRow>
             <TableHead>Estado Resultado</TableHead>
             <TableHead>Estado Solicitud</TableHead>
-            <TableHead>Fecha Evaluación</TableHead>
-            <TableHead>Fecha Selección</TableHead>
+            <TableHead>Fecha evaluación</TableHead>
+            <TableHead>Fecha selección</TableHead>
             <TableHead className="text-center">Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -108,15 +119,9 @@ export default function TableAdoption({ data }: Props) {
               <TableCell>{formatDate(item.reviewRequestAt )}</TableCell>
               <TableCell>{formatDate(item.selectedAnimalAt)}</TableCell>
               <TableCell className="flex justify-center gap-3">
-                <button title="Evaluar solicitud adopción">
-                  <ClipboardList className="h-5 w-5 text-black" />
-                </button>
-                <button title="Vincular animal con adopción">
-                  <Paperclip className="h-5 w-5 text-black" />
-                </button>
-                <button title="Completar solicitud adopción">
-                  <CheckSquare className="h-5 w-5 text-violet-600" />
-                </button>
+                <DialogEvaluation onSubmit={(data) => console.log("Evaluar:", data)} />
+                <DialogLinked onSubmit={(data) => console.log("Vincular:", data)} />
+                <DialogComplete onSubmit={(data) => console.log("Completar:", data)} />
               </TableCell>
             </TableRow>
           ))}
@@ -125,4 +130,3 @@ export default function TableAdoption({ data }: Props) {
     </div>
   )
 }
-
