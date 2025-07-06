@@ -1,9 +1,8 @@
 import { useEffect, useState, useCallback } from "react"
-// TODO: subir imagenes de animales
 // TODO: idiomas de campos en español
 export interface AnimalTableRow {
   id: number;
-  imageUrl: string | null;
+  images: string[] | null;
   nickname: string;
   type: string;
   breed: string;
@@ -59,6 +58,7 @@ export function useAnimals() {
       })
       if (!res.ok) throw new Error("Error al obtener animales")
       const data = await res.json()
+    console.log({data})
       setAnimals(data)
     } catch (err: any) {
       setError(err.message || "Error desconocido")
@@ -137,9 +137,9 @@ export function useAnimals() {
   const uploadImage = async (id: number, file: File) => {
     const token = localStorage.getItem("accessToken");
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("file", file);
 
-    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}/image`, {
+    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}/upload_image`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

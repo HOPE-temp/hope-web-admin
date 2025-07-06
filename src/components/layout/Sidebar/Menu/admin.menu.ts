@@ -34,12 +34,12 @@ export const itemsNavAdmin: NavItem[] = [
     icon: Heart,
     active: (path) => path.startsWith("/admin/adoption"),
   },
-  {
+  /*{
     href: "/admin/checkup",
     label: "Historial Médico",
     icon: Stethoscope,
     active: (path) => path.startsWith("/admin/checkup"),
-  },
+  },*/
   {
     href: "/admin/usuarios",
     label: "Usuarios y Roles",
@@ -52,12 +52,7 @@ export const itemsNavAdmin: NavItem[] = [
     icon: ClipboardList,
     active: (path) => path.startsWith("admin/actividades"),
   },
-  {
-    href: "/tareas/mis-tareas",
-    label: "Mis Tareas",
-    icon: ClipboardList,
-    active: (path) => path.startsWith("/tareas/mis-tareas"),
-  },
+  
   {
     href: "/perfil",
     label: "Mi Perfil",

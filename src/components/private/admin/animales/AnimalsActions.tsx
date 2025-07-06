@@ -10,7 +10,7 @@ interface Props {
   animal: AnimalTableRow;
   updateAnimal: (id: number, input: EditAnimalInput) => Promise<any>;
   deleteAnimal: (id: number) => Promise<any>;
-  uploadImage?: (id: number, file: File) => Promise<any>;
+  uploadImage: (id: number, file: File) => Promise<any>;
 }
 
 export const AnimalActions = ({ animal, updateAnimal, deleteAnimal, uploadImage }: Props) => {
@@ -26,7 +26,7 @@ export const AnimalActions = ({ animal, updateAnimal, deleteAnimal, uploadImage 
 
   return (
     <div className="flex gap-2 whitespace-nowrap">
-      <AnimalsEditDialog animal={animal} updateAnimal={updateAnimal} />
+      <AnimalsEditDialog animal={animal} updateAnimal={updateAnimal}  uploadImage={uploadImage}/>
       <AnimalsDeleteDialog animal={animal} deleteAnimal={deleteAnimal} />
       <Button variant="ghost" size="icon" onClick={() => setDialogOpen(true)} title="Subir Imagen">
         <ImageIcon className="w-5 h-5" />

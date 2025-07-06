@@ -18,6 +18,18 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
+import { useActivities } from "@/hooks/useActivities"
+
+const imageSchema = z
+  .custom<FileList>((v) => v instanceof FileList && v.length > 0, {
+    message: "Se requiere una imagen",
+  })
+  .refine((fileList) => fileList[0].type.startsWith("image/"), {
+    message: "El archivo debe ser una imagen",
+  })
+  .refine((fileList) => fileList[0].size <= 5 * 1024 * 1024, {
+    message: "La imagen no debe superar los 5MB",
+  })
 
 const schema = z
   .object({
@@ -25,7 +37,7 @@ const schema = z
       .string()
       .min(3, "El título debe tener al menos 3 caracteres")
       .max(100, "El título no puede exceder 100 caracteres"),
-    imageUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
+    imageUrl: imageSchema,
     imagePublicId: z.string().optional().or(z.literal("")),
     resourceUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
     scheduleStartAt: z.string().optional().or(z.literal("")),
@@ -59,9 +71,10 @@ export interface CreateActivityInput {
 
 type Props = {
   createActivity: (input: CreateActivityInput) => Promise<any>
+  updaloadImageActivity: (id: number, file: File) => Promise<any>
 }
 
-export function ActivitiesCreateDialog({ createActivity }: Props) {
+export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}: Props) {
   const [open, setOpen] = React.useState(false)
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null)
 
@@ -69,7 +82,7 @@ export function ActivitiesCreateDialog({ createActivity }: Props) {
     resolver: zodResolver(schema),
     defaultValues: {
       title: "",
-      imageUrl: "",
+      imageUrl: undefined,
       imagePublicId: "",
       resourceUrl: "",
       scheduleStartAt: "",
@@ -85,12 +98,18 @@ export function ActivitiesCreateDialog({ createActivity }: Props) {
         resourceUrl: data.resourceUrl,
         scheduleStartAt: data.scheduleStartAt,
         scheduleEndAt: data.scheduleEndAt,
-        imageUrl: data.imageUrl || undefined,
         imagePublicId: data.imagePublicId || undefined,
         admin: data.admin,
       };
 
-      await createActivity(payload);
+      
+      const {id} = await createActivity(payload);
+      if(data?.imageUrl){
+        const file = data?.imageUrl?.item(0)
+        if(file){
+          await updaloadImageActivity(id, file)
+        }
+      }
       setFormSuccess("Actividad creada correctamente");
       form.reset();
       setTimeout(() => {
@@ -199,6 +218,44 @@ export function ActivitiesCreateDialog({ createActivity }: Props) {
                   )}
                 />
               </div>
+            </div>
+
+            <div className="border rounded-lg p-6 space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Upload className="w-4 h-4" />
+                    <h3 className="text-lg font-medium">Image File</h3>
+                  </div>
+
+
+                  <FormField
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>URL de Recurso</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                            
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const fileList = e.target.files;
+                                if (fileList && fileList.length > 0) {
+                                  field.onChange(fileList); // pasamos el FileList al estado del form
+                                }
+                              }}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription>Enlace a redes sociales, páginas web, seguimientos, etc.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
             </div>
 
             <div className="border rounded-lg p-6 space-y-4">

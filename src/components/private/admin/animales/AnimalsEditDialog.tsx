@@ -26,26 +26,43 @@ import {
     FormControl,
     FormMessage,
 } from "@/components/ui/form";
-import { AnimalTableRow } from "@/hooks/useAnimals";
+import { AnimalTableRow, EditAnimalInput, useAnimals } from "@/hooks/useAnimals";
 
+const today = new Date().toISOString().split("T")[0]
+const imageSchema = z
+  .custom<FileList>((v) => v instanceof FileList && v.length > 0, {
+    message: "Se requiere una imagen",
+  })
+  .refine((fileList) => fileList[0].type.startsWith("image/"), {
+    message: "El archivo debe ser una imagen",
+  })
+  .refine((fileList) => fileList[0].size <= 5 * 1024 * 1024, {
+    message: "La imagen no debe superar los 5MB",
+  })
 const schema = z.object({
     nickname: z.string().min(2, "El nombre es requerido"),
     breed: z.string().min(2, "La raza es requerida"),
     size: z.enum(["small", "medium", "large"], { message: "Tamaño inválido" }),
     sex: z.enum(["male", "female"], { message: "Sexo inválido" }),
-    birthdate: z.string().min(1, "La fecha de nacimiento es requerida"),
+    birthdate: z
+        .string()
+        .refine((val) => !!val, { message: "La fecha de nacimiento es requerida" })
+        .refine((val) => !isNaN(Date.parse(val)), { message: "Fecha inválida" })
+        .refine((val) => val <= today, { message: "La fecha no puede ser mayor a hoy" }),
     descriptionHistory: z.string().min(2, "La historia es requerida"),
     isSterilized: z.boolean(),
+    image: imageSchema
 });
 
 type FormValues = z.infer<typeof schema>;
 
 type Props = {
     animal: AnimalTableRow;
-    updateAnimal: (id: number, input: FormValues) => Promise<any>;
+    updateAnimal: (id: number, input: EditAnimalInput) => Promise<any>;
+    uploadImage: (id: number, file: File) => Promise<any>;
 };
 
-export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
+export function AnimalsEditDialog({ animal, updateAnimal, uploadImage }: Props) {
     const [open, setOpen] = React.useState(false);
     const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
@@ -59,6 +76,7 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
             birthdate: animal.birthdate ?? "",
             descriptionHistory: animal.descriptionHistory ?? "",
             isSterilized: animal.isSterilized ?? false,
+            image: undefined
         },
     });
 
@@ -79,9 +97,15 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
         
     }, [open, animal]);
 
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async ({image, ...data}: FormValues ) => {
         try {
-            await updateAnimal(animal.id, data);
+            const { id }= await updateAnimal(animal.id, data);
+            if(image){
+                const file = image?.item(0)
+                if(file){
+                  await uploadImage(id, file)
+                }
+              }
             setFormSuccess("Animal actualizado correctamente");
             setTimeout(() => {
                 setOpen(false);
@@ -215,6 +239,31 @@ export function AnimalsEditDialog({ animal, updateAnimal }: Props) {
                                     </FormItem>
                                 )}
                             />
+                            <FormField
+                                control={form.control}
+                                name="image"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Imagen</FormLabel>
+                                    <FormControl>
+                                      <div className="flex items-center">
+                                        <input
+                                              type="file"
+                                              accept="image/*"
+                                              className="mr-2"
+                                              onChange={(e) => {
+                                                const fileList = e.target.files;
+                                                if (fileList && fileList.length > 0) {
+                                                  field.onChange(fileList); // pasamos el FileList al estado del form
+                                                }
+                                              }}
+                                            />
+                                      </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
                         </div>
                         {form.formState.errors.root && (
                             <div className="text-red-500 text-sm">{form.formState.errors.root.message}</div>
