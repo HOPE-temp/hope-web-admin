@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Table,
   TableBody,
@@ -27,25 +27,41 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Pencil, Trash2, SlidersHorizontal } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
+import { findAllAdopters } from "@/services/hopeBackend/adopters"
 
 interface Props {
-  data: any[]
   onEdit: (adopter: any) => void
-  onDelete: (id: string) => void
 }
+type OptionalUserFlags = Partial<Record<keyof Adopter, boolean>>;
 
-export function DataTableAdopter({ data, onEdit, onDelete }: Props) {
-  const [visibleColumns, setVisibleColumns] = useState({
+export function DataTableAdopter({onEdit }: Props) {
+  const { axios } = useAuth()
+  const [adopters, setAdopters] = useState<Adopter[]>()
+
+  const [visibleColumns, setVisibleColumns] = useState<OptionalUserFlags>({
     id: true,
-    nombre: true,
-    apellido: true,
-    dni: true,
-    celular: true,
-    email: true,
-    direccion: true,
-    distrito: true,
-    nacionalidad: true,
+    firstName: true,
+    lastName: true,
+    documentNumber: true,
+    phone: true,
+    address: true,
+    district: true,
+    nationality: true,
+
   })
+  const getAdopters = async ()=>{
+
+    if(axios){
+      const data = await findAllAdopters(axios)
+      setAdopters(data)
+    }
+
+  }
+
+  useEffect(()=> {
+    getAdopters()
+  }, [axios])
 
   const [adopterToDelete, setAdopterToDelete] = useState<any>(null)
 
@@ -85,30 +101,28 @@ export function DataTableAdopter({ data, onEdit, onDelete }: Props) {
         <TableHeader>
           <TableRow>
             {visibleColumns.id && <TableHead>ID</TableHead>}
-            {visibleColumns.nombre && <TableHead>Nombre</TableHead>}
-            {visibleColumns.apellido && <TableHead>Apellido</TableHead>}
-            {visibleColumns.dni && <TableHead>DNI</TableHead>}
-            {visibleColumns.celular && <TableHead>Celular</TableHead>}
-            {visibleColumns.email && <TableHead>Email</TableHead>}
-            {visibleColumns.direccion && <TableHead>Dirección</TableHead>}
-            {visibleColumns.distrito && <TableHead>Distrito</TableHead>}
-            {visibleColumns.nacionalidad && <TableHead>Nacionalidad</TableHead>}
+            {visibleColumns.firstName && <TableHead>Nombre</TableHead>}
+            {visibleColumns.lastName && <TableHead>Apellido</TableHead>}
+            {visibleColumns.documentNumber && <TableHead>DNI</TableHead>}
+            {visibleColumns.phone && <TableHead>Celular</TableHead>}
+            {visibleColumns.address && <TableHead>Dirección</TableHead>}
+            {visibleColumns.district && <TableHead>Distrito</TableHead>}
+            {visibleColumns.nationality && <TableHead>Nacionalidad</TableHead>}
             <TableHead>Acciones</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {data.map((adopter) => (
+          {adopters && adopters.map((adopter) => (
             <TableRow key={adopter.id} className="align-middle">
               {visibleColumns.id && <TableCell className="text-nowrap">{adopter.id}</TableCell>}
-              {visibleColumns.nombre && <TableCell className="text-nowrap">{adopter.nombre}</TableCell>}
-              {visibleColumns.apellido && <TableCell className="text-nowrap">{adopter.apellido}</TableCell>}
-              {visibleColumns.dni && <TableCell className="text-nowrap">{adopter.dni}</TableCell>}
-              {visibleColumns.celular && <TableCell className="text-nowrap">{adopter.celular}</TableCell>}
-              {visibleColumns.email && <TableCell className="text-nowrap">{adopter.email}</TableCell>}
-              {visibleColumns.direccion && <TableCell className="text-nowrap">{adopter.direccion}</TableCell>}
-              {visibleColumns.distrito && <TableCell className="text-nowrap">{adopter.distrito}</TableCell>}
-              {visibleColumns.nacionalidad && <TableCell className="text-nowrap">{adopter.nacionalidad}</TableCell>}
+              {visibleColumns.firstName && <TableCell className="text-nowrap">{adopter.firstName}</TableCell>}
+              {visibleColumns.lastName && <TableCell className="text-nowrap">{adopter.lastName}</TableCell>}
+              {visibleColumns.documentNumber && <TableCell className="text-nowrap">{adopter.documentNumber}</TableCell>}
+              {visibleColumns.phone && <TableCell className="text-nowrap">{adopter.phone}</TableCell>}
+              {visibleColumns.address && <TableCell className="text-nowrap">{adopter.address}</TableCell>}
+              {visibleColumns.district && <TableCell className="text-nowrap">{adopter.district}</TableCell>}
+              {visibleColumns.nationality && <TableCell className="text-nowrap">{adopter.nationality}</TableCell>}
               <TableCell>
                 <div className="flex gap-3 items-center">
                   <button
@@ -140,7 +154,6 @@ export function DataTableAdopter({ data, onEdit, onDelete }: Props) {
                         <AlertDialogAction
                           onClick={() => {
                             if (adopterToDelete) {
-                              onDelete(adopterToDelete.id)
                               setAdopterToDelete(null)
                             }
                           }}

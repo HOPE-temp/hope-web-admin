@@ -1,7 +1,18 @@
-export interface CreateAdopterDto{
-
+interface CreateAdopterDto{
+  firstName: string;
+  lastName: string;
+  documentNumber: string;
+  phone: string;
+  email: string;
+  district: string;
+  address: string;
+  nationality: string;
 }
 
-export interface FilterAdopterDto{
+interface UpdateAdopterDto extends Partial<CreateAdopterDto> {
+  id?: string
+}
+
+interface FilterAdopterDto{
 
 }

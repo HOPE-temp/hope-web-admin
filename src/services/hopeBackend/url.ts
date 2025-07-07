@@ -9,5 +9,12 @@ export const hopeBackendUrl = {
     'evaluate': (id: string) => `/adoptions/${id}/evaluate_request_adoption`,
     'linkAnimal': (id: string) => `/adoptions/${id}/linked_animal_with_adoption`,
     'completeAdoption': (id: string) => `/adoptions/${id}/complete_request_adoption`,
+  },
+  adopters:{
+    'create': `/adopters`,
+    'find': (params?:FilterAdopterDto ) => generateUrlWithParms<FilterAdopterDto>(`/adopters`,params),
+    'findOne': (id: string) => `/adopters/${id}`,
+    'update':(id: string) => `/adopters/${id}`,
+    'delete':(id: string) => `/adopters/${id}`,
   }
 }
