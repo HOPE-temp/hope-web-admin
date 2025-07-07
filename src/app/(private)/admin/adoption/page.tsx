@@ -29,9 +29,6 @@ export default function Page() {
 
   return (
     <main className="p-6 space-y-6">
-      <div className="flex justify-end">
-        <DialogRegAdoption onRegister={handleRegister} />
-      </div>
       <TableAdoption />
     </main>
   )

@@ -12,19 +12,32 @@ import {
 
 import { useState } from "react"
 import { CheckSquare } from "lucide-react"
+import { completeAdoption } from "@/services/hopeBackend/adoptiones"
+import { useAuth } from "@/context/AuthContext"
 
-export default function DialogComplete({ onSubmit }: { onSubmit: (data: any) => void }) {
-  const [historia, setHistoria] = useState("")
+interface Props {
+  data: Adoption
+}
+
+export default function DialogComplete({ data }: Props) {
+  const { axios } = useAuth()
+
+  const [open, setOpen] = useState<boolean>(false)
+
+  const [historia, setHistoria] = useState<string | undefined>(undefined)
   const [visible, setVisible] = useState(true)
 
   const handleSubmit = () => {
-    onSubmit({ historia, visible })
+    if(historia && visible ){
+      completeAdoption(axios, data.id, {adoptionHistory: historia, isWebVisible: visible})
+    }
     setHistoria("")
     setVisible(true)
+    setOpen(false)
   }
 
   return (
-    <Dialog>
+    <Dialog >
       <DialogTrigger asChild>
         <button title="Completar solicitud">
           <CheckSquare className="h-5 w-5 text-violet-600" />
@@ -71,7 +84,7 @@ export default function DialogComplete({ onSubmit }: { onSubmit: (data: any) => 
         </div>
 
         <DialogFooter className="mt-6">
-          <DialogClose asChild>
+          <DialogClose asChild >
             <button className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
               Cancelar
             </button>

@@ -47,7 +47,7 @@ export function useUsers() {
     setError(null)
     try {
       const token = localStorage.getItem("accessToken")
-      const res = await fetch("https://hope-nest-backend-production.up.railway.app/users", {
+      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/users", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -82,7 +82,7 @@ export function useUsers() {
   const createUser = async (input: CreateUserInput) => {
     try {
       const token = localStorage.getItem("accessToken")
-      const res = await fetch("https://hope-nest-backend-production.up.railway.app/users", {
+      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/users", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -105,7 +105,7 @@ export function useUsers() {
   const updateUser = async (id: number, input: UpdateUserInput) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/users/${id}/private`, {
+      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/users/${id}/private`, {
         method: "PATCH",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -128,7 +128,7 @@ export function useUsers() {
   const deleteUser = async (id: number) => {
     try {
       const token = localStorage.getItem("accessToken")
-      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/users/${id}`, {
+      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/users/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,

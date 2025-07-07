@@ -12,15 +12,26 @@ import {
 
 import { useState } from "react"
 import { Pencil } from "lucide-react"
+import SelectEsResult from "./SelectEsResult"
+import { evaluationAdoption } from "@/services/hopeBackend/adoptiones"
+import { useAuth } from "@/context/AuthContext"
 
-export default function DialogEvaluation({ onSubmit }: { onSubmit: (data: any) => void }) {
-  const [estado, setEstado] = useState("")
-  const [notas, setNotas] = useState("")
+interface Props {
+  data: Adoption
+}
+
+export default function DialogEvaluation({  data }: Props) {
+  const { axios } = useAuth()
+
+  const [estado, setEstado] = useState<StatusResultApotion | undefined>(data.statusResult)
+  const [notas, setNotas] = useState<string | undefined>(undefined)
 
   const handleSave = () => {
-    onSubmit({ estado, notas })
-    setEstado("")
-    setNotas("")
+    if(estado && notas ){
+      evaluationAdoption(axios,data.id, {reviewRequestNotes: notas, statusResult: estado})
+    }
+    setEstado(undefined)
+    setNotas(undefined)
   }
 
   return (
@@ -38,18 +49,15 @@ export default function DialogEvaluation({ onSubmit }: { onSubmit: (data: any) =
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
           <div>
-            <label className="text-sm font-medium mb-1 block">Estado de Resultado</label>
-            <input
-              type="text"
-              className="border rounded w-full p-2"
+            <SelectEsResult 
               value={estado}
-              onChange={(e) => setEstado(e.target.value)}
-            />
+              onChange={(value) => setEstado(value)}
+              />
           </div>
           <div>
             <label className="text-sm font-medium mb-1 block">Notas de Solicitud</label>
-            <input
-              type="text"
+            <textarea
+              rows={5}
               className="border rounded w-full p-2"
               value={notas}
               onChange={(e) => setNotas(e.target.value)}

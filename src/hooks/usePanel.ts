@@ -17,7 +17,7 @@ export function usePanel() {
       setError(null)
       try {
         const token = localStorage.getItem("accessToken")
-        const res = await fetch("https://hope-nest-backend-production.up.railway.app/reports/counts", {
+        const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/reports/counts", {
           headers: {
             "Authorization": token ? `Bearer ${token}` : "",
             "Content-Type": "application/json",

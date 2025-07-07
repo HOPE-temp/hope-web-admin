@@ -11,15 +11,21 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
+import { createAdoption } from "@/services/hopeBackend/adoptiones"
+import { useAuth } from "@/context/AuthContext"
 
-export default function DialogRegAdoption({ onRegister }: { onRegister: (formData: any) => void }) {
-  const [petId, setPetId] = useState("")
-  const [adopterId, setAdopterId] = useState("")
+export default function DialogRegAdoption() {
+  const { axios } = useAuth()
+
+  const [petId, setPetId] = useState<number | undefined>(undefined)
+  const [adopterId, setAdopterId] = useState<number | undefined>(undefined)
 
   const handleSubmit = () => {
-    onRegister({ petId, adopterId })
-    setPetId("")
-    setAdopterId("")
+    if(adopterId&&petId){
+      createAdoption(axios, {adopterId, animalsIds: [petId]})
+    }
+    setPetId(undefined)
+    setAdopterId(undefined)
   }
 
   return (
@@ -42,7 +48,7 @@ export default function DialogRegAdoption({ onRegister }: { onRegister: (formDat
               type="text"
               className="border p-2 w-full rounded"
               value={petId}
-              onChange={(e) => setPetId(e.target.value)}
+              onChange={(e) => setPetId(parseInt(e.target.value))}
             />
           </div>
           <div>
@@ -51,7 +57,7 @@ export default function DialogRegAdoption({ onRegister }: { onRegister: (formDat
               type="text"
               className="border p-2 w-full rounded"
               value={adopterId}
-              onChange={(e) => setAdopterId(e.target.value)}
+              onChange={(e) => setAdopterId(parseInt(e.target.value))}
             />
           </div>
         </div>

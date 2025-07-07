@@ -35,7 +35,7 @@ export function useActivities() {
     setError(null);
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch("https://hope-nest-backend-production.up.railway.app/activities", {
+      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/activities", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -71,7 +71,7 @@ export function useActivities() {
   const createActivity = async (input: CreateActivityInput) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch("https://hope-nest-backend-production.up.railway.app/activities", {
+      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/activities", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -93,7 +93,7 @@ export function useActivities() {
   const updateActivity = async (id: number, input: UpdateActivityInput) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/activities/${id}`, {
+      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}`, {
         method: "PATCH",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -115,7 +115,7 @@ export function useActivities() {
   const deleteActivity = async (id: number) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/activities/${id}`, {
+      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -135,7 +135,7 @@ export function useActivities() {
   const finishActivity = async (id: number) => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/activities/${id}/finish`, {
+      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}/finish`, {
         method: "PATCH",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -159,7 +159,7 @@ export function useActivities() {
       formData.append("file", file);
 
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`https://hope-nest-backend-production.up.railway.app/activities/${id}/upload_image`, {
+      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}/upload_image`, {
         method: "POST",
         body: formData,
         headers: {

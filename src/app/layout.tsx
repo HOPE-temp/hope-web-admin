@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ClientWrapper from "@/components/layout/ClientWrapper/clientWapper";
 import { AuthProvider } from "@/context/AuthContext";
+import { GlobalAlert } from "@/components/shared/GlobalAlert";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </ClientWrapper>
         </AuthProvider>
+        <GlobalAlert />
       </body>
     </html>
   );

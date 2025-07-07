@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import { useEffect, useState, useCallback } from "react"
 // TODO: idiomas de campos en español
 export interface AnimalTableRow {
@@ -48,9 +49,10 @@ export function useAnimals() {
   const fetchAnimals = useCallback(async () => {
     setLoading(true)
     setError(null)
+    console.log({env:process.env})
     try {
       const token = localStorage.getItem("accessToken")
-      const res = await fetch("https://hope-nest-backend-production.up.railway.app/animals", {
+      const res = await fetch(env.backend.hostname + "/animals", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -73,7 +75,7 @@ export function useAnimals() {
 
   const createAnimal = async (input: CreateAnimalInput) => {
     const token = localStorage.getItem("accessToken")
-    const res = await fetch("https://hope-nest-backend-production.up.railway.app/animals", {
+    const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/animals", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -88,7 +90,7 @@ export function useAnimals() {
 
   const updateAnimal = async (id: number, input: EditAnimalInput) => {
     const token = localStorage.getItem("accessToken")
-    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}`, {
+    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -103,7 +105,7 @@ export function useAnimals() {
 
   const updateAnimalStatus = async (id: number, input: EditAnimalStatusInput) => {
     const token = localStorage.getItem("accessToken")
-    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}/status`, {
+    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}/status`, {
       method: "PATCH",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -122,7 +124,7 @@ export function useAnimals() {
 
   const deleteAnimal = async (id: number) => {
     const token = localStorage.getItem("accessToken")
-    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}`, {
+    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}`, {
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -139,7 +141,7 @@ export function useAnimals() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`https://hope-nest-backend-production.up.railway.app/animals/${id}/upload_image`, {
+    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}/upload_image`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

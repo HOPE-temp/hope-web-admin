@@ -17,8 +17,8 @@ interface Props {
 export default function SelectEsResult({ value, onChange }: Props) {
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Estado Solicitud</label>
-      <Select value={value} onValueChange={onChange}>
+      <label className="text-sm font-medium mb-1">Estado Resultado</label>
+      <Select value={value} onValueChange={onChange} key={value ?? 'empty'}>
         <SelectTrigger>
           <SelectValue placeholder="Seleccionar" />
         </SelectTrigger>
@@ -26,6 +26,7 @@ export default function SelectEsResult({ value, onChange }: Props) {
           <SelectItem value={'not_evaluated'}>No evaluado</SelectItem>
           <SelectItem value={'approved'}>Aprobado</SelectItem>
           <SelectItem value={'rejected'}>Rechazado</SelectItem>
+          <SelectItem value={'banned'}>Baneado</SelectItem>
         </SelectContent>
       </Select>
     </div>

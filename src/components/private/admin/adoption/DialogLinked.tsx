@@ -12,15 +12,26 @@ import {
 
 import { useState } from "react"
 import { Paperclip } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
+import { linkAnimalAdoption } from "@/services/hopeBackend/adoptiones"
 
-export default function DialogLinked({ onSubmit }: { onSubmit: (data: any) => void }) {
-  const [idAnimal, setIdAnimal] = useState("")
-  const [notas, setNotas] = useState("")
+interface Props {
+  data: Adoption
+}
+
+export default function DialogLinked({ data }: Props) {
+  const { axios } = useAuth()
+
+  const [idAnimal, setIdAnimal] = useState<number | undefined>(data.animalsTemp[0])
+  const [notas, setNotas] = useState<string | undefined>(data.reviewRequestNotes)
+console.log(data.animalsTemp[0])
 
   const handleSubmit = () => {
-    onSubmit({ idAnimal, notas })
-    setIdAnimal("")
-    setNotas("")
+    if(idAnimal && notas ){
+      linkAnimalAdoption(axios,data.id, {reviewRequestNotes: notas, animalsIds: [idAnimal]})
+    }
+    setIdAnimal(undefined)
+    setNotas(undefined)
   }
 
   return (
@@ -40,16 +51,16 @@ export default function DialogLinked({ onSubmit }: { onSubmit: (data: any) => vo
           <div>
             <label className="text-sm font-medium mb-1 block">IDAnimal</label>
             <input
-              type="text"
+              type="number"
               className="border rounded w-full p-2"
               value={idAnimal}
-              onChange={(e) => setIdAnimal(e.target.value)}
+              onChange={(e) => setIdAnimal(parseInt(e.target.value))}
             />
           </div>
           <div>
             <label className="text-sm font-medium mb-1 block">Notas de Solicitud</label>
-            <input
-              type="text"
+            <textarea
+              rows={5}
               className="border rounded w-full p-2"
               value={notas}
               onChange={(e) => setNotas(e.target.value)}

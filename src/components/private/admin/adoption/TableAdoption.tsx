@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button"
 import DialogEvaluation from "./DialogEvaluation"
 import DialogLinked from "./DialogLinked"
 import DialogComplete from "./DialogComplete"
+import DialogRegAdoption from "./DialogRegAdoption"
+import { useAlertUIStore } from "@/lib/stores/alert.store"
 
 
 interface Props {
@@ -32,20 +34,19 @@ interface Props {
 
 export default function TableAdoption({ data }: Props) {
 
+  const { showAlert } = useAlertUIStore.getState();
+
   const {axios} = useAuth()
   const [adoptions, setAdoptions] = useState<Adoption[]>()
   const [filter, setFilter] = useState<FilterAdoptionDto>({
     limit: 10,
-    offset: 5
+    offset: 5,
   })
-
 
   const getAdoptions = async ()=>{
 
     if(axios){
-      console.log({filter})
       const data = await findAllAdoptions(axios, filter)
-      console.log({data})
       setAdoptions(data)
     }
 
@@ -54,25 +55,25 @@ export default function TableAdoption({ data }: Props) {
   useEffect(()=> {
     getAdoptions()
   }, [axios, filter])
-  console.log(adoptions)
 
   const handleResetButton = () => {
     setFilter({
       limit: 10,
       offset: 5,
     })
+    showAlert({
+      title: "Solicitud incorrecta",
+      description: "Revisa los campos enviados.",
+      variant: "destructive",
+    });
+
   }
 
   return (
     <div className="border p-6 rounded-md space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Adopciones</h2>
-        <button
-          onClick={onRegisterClick}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-        >
-          + Registrar Adopción
-        </button>
+        <DialogRegAdoption />
       </div>
 
       {/* Filtros */}
@@ -81,14 +82,14 @@ export default function TableAdoption({ data }: Props) {
           value={filter.idAdopter}
           onValueChange={(value)=>setFilter({...filter, idAdopter:value})}
         />
-        <SelectEsResult
-          value={filter.statusResult}
-          onChange={(value)=> setFilter({...filter, statusResult: value })}
-        />
         <SelectEsSolicitud
           value={filter.statusRequest}
           onChange={(value)=>setFilter({...filter, statusRequest: value})}
           />
+        <SelectEsResult
+          value={filter.statusResult}
+          onChange={(value)=> setFilter({...filter, statusResult: value })}
+        />
         <InputDniAdopter
           value={filter.documentNumber}
           onValueChange={(value)=>setFilter({...filter, documentNumber: value})}
@@ -119,9 +120,9 @@ export default function TableAdoption({ data }: Props) {
               <TableCell>{formatDate(item.reviewRequestAt )}</TableCell>
               <TableCell>{formatDate(item.selectedAnimalAt)}</TableCell>
               <TableCell className="flex justify-center gap-3">
-                <DialogEvaluation onSubmit={(data) => console.log("Evaluar:", data)} />
-                <DialogLinked onSubmit={(data) => console.log("Vincular:", data)} />
-                <DialogComplete onSubmit={(data) => console.log("Completar:", data)} />
+                <DialogEvaluation data={item} />
+                <DialogLinked data={item} />
+                <DialogComplete data={item}/>
               </TableCell>
             </TableRow>
           ))}

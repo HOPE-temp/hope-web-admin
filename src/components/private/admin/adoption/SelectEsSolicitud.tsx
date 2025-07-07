@@ -16,8 +16,8 @@ interface Props {
 export default function SelectEsSolicitud({ value, onChange }: Props) {
   return (
     <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Estado Solicitud {value}d</label>
-      <Select value={value} onValueChange={onChange}>
+      <label className="text-sm font-medium mb-1">Estado Solicitud</label>
+      <Select value={value ?? undefined} onValueChange={onChange} key={value ?? 'empty'}>
         <SelectTrigger value={undefined}>
           <SelectValue placeholder="Seleccionar" />
         </SelectTrigger>

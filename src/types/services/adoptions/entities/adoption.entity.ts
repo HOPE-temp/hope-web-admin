@@ -32,7 +32,7 @@ interface Adoption {
   adopter: Adopter;
   evaluator: User;
   adoptedAnimals: AdoptedAnimal[];
-  animalsTemp: Animal[];
+  animalsTemp: number[];
   statusResult: StatusResultApotion;
   statusRequest: StatusRequestApotion;
   reviewRequestNotes?: string;
