@@ -1,41 +1,41 @@
-"use client";
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useState, useEffect } from 'react'
-import { Label } from "@/components/ui/label"
-import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa"
-import { useLogin } from '@/hooks/useLogin'
+'use client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useState, useEffect } from 'react';
+import { Label } from '@/components/ui/label';
+import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
+import { useLogin } from '@/hooks/useLogin';
 import {
   AlertDialog,
-  AlertDialogAction,  
+  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { useRouter } from 'next/navigation'
+} from '@/components/ui/alert-dialog';
+import { useRouter } from 'next/navigation';
 
 export default function page() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const { login, loading, error } = useLogin()
-  const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loading, error } = useLogin();
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (error) setOpen(true)
-  }, [error])
+    if (error) setOpen(true);
+  }, [error]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const rol = await login(email, password)
-    if (rol === 'admin') router.push('/admin')
-    else if (rol === 'volunteer') router.push('/voluntario')
-    else if (rol === 'medico') router.push('/medico')
-   
-  }
+    e.preventDefault();
+    const rol = await login(email, password);
+    router.push('/admin');
+    // if (rol === 'admin') router.push('/admin')
+    // else if (rol === 'volunteer') router.push('/voluntario')
+    // else if (rol === 'medico') router.push('/medico')
+  };
 
   return (
     <main className="min-h-screen flex flex-col md:flex-row">
@@ -54,9 +54,11 @@ export default function page() {
           <div className="flex flex-col items-center space-y-2 pt-6">
             {/* Icono de persona */}
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-200">
-              <FaUser className="w-10 h-10" style={{ color: "#5DBFA7" }} />
+              <FaUser className="w-10 h-10" style={{ color: '#5DBFA7' }} />
             </span>
-            <h2 className="text-2xl font-semibold text-gray-700">Iniciar Sesión</h2>
+            <h2 className="text-2xl font-semibold text-gray-700">
+              Iniciar Sesión
+            </h2>
           </div>
           <section className="space-y-4">
             <div className="space-y-2">
@@ -75,7 +77,7 @@ export default function page() {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -111,9 +113,7 @@ export default function page() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Error al iniciar sesión</AlertDialogTitle>
-              <AlertDialogDescription>
-                {error}
-              </AlertDialogDescription>
+              <AlertDialogDescription>{error}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogAction onClick={() => setOpen(false)}>
@@ -124,5 +124,5 @@ export default function page() {
         </AlertDialog>
       </section>
     </main>
-  )
+  );
 }

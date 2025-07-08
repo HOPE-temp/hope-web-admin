@@ -1,8 +1,10 @@
-"use client";
-import { createContext, useContext, ReactNode, useEffect } from "react";
-import { useLocalStorage } from "../hooks/useLocalStogare";
-import axios from '@/lib/axiosInstance'
-import { useAlertUIStore } from "@/lib/stores/alert.store";
+'use client';
+import { createContext, useContext, ReactNode, useEffect } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStogare';
+import { axios } from '@/lib/axiosInstance';
+import toast from 'react-hot-toast';
+import { AxiosInstance } from 'axios';
+import { useRouter } from 'next/navigation';
 
 type AuthContextType = {
   token: string | null;
@@ -10,72 +12,62 @@ type AuthContextType = {
   loaded: boolean;
   role: RoleUser | null;
   setRole: (token: RoleUser | null) => void;
-  axios: Axios.AxiosInstance;
+  axios: AxiosInstance;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken, loaded] = useLocalStorage<string>("accessToken", null);
-  const [role, setRole] = useLocalStorage<RoleUser>("rol", null);
+  const [token, setToken, loaded] = useLocalStorage<string>(
+    'accessToken',
+    null
+  );
+  const [role, setRole] = useLocalStorage<RoleUser>('rol', null);
+  const router = useRouter();
 
-  useEffect(()=>{
-
-  // Interceptores de error
+  useEffect(() => {
+    // Interceptores de error
     axios.interceptors.response.use(
       res => res,
-      error => {
-        const status = error.response?.status
-        if (typeof window !== 'undefined') {
-          const { showAlert } = useAlertUIStore.getState();
+      err => {
+        const status = err.response?.status;
+        // Si ya se manejó localmente, no hagas nada
+        if (err._handled) return Promise.reject(err);
 
+        if (typeof window !== 'undefined') {
           switch (status) {
             case 400:
-              showAlert({
-                title: "Solicitud incorrecta",
-                description: "Revisa los campos enviados.",
-                variant: "destructive",
-              });
+              toast.error('Solicitud incorrecta: Revisa los campos enviados');
               break;
             case 401:
-              showAlert({
-                title: "No autorizado",
-                description: "Debes iniciar sesión.",
-                variant: "destructive",
-              });
+              toast.error('No autorizado: Debes iniciar sesión.');
+              router.push('/');
               break;
             case 200:
-              showAlert({
-                title: "¡Todo bien!",
-                description: "Operación completada con éxito.",
-                variant: "default",
-              });
+              toast.success('¡Todo bien!: Operación completada con éxito.');
               break;
             default:
-              showAlert({
-                title: "Error desconocido",
-                description: "Algo salió mal.",
-                variant: "destructive",
-              });
-            }
+              toast.error('Error desconocido: Algo salió mal.');
           }
+        }
 
-        return Promise.reject(error)
+        return Promise.reject(err);
       }
-    )
-  },[])
+    );
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (token) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     } else {
-      delete axios.defaults.headers.common.Authorization
+      delete axios.defaults.headers.common.Authorization;
     }
-  }, [token])
-
+  }, [token]);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, role, setRole, loaded, axios }}>
+    <AuthContext.Provider
+      value={{ token, setToken, role, setRole, loaded, axios }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -84,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

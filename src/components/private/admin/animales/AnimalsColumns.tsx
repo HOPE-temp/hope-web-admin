@@ -1,8 +1,8 @@
-import { Image as ImageIcon, RefreshCcw } from "lucide-react";
-import { AnimalActions } from "./AnimalsActions";
-import { AnimalsEditStatusDialog } from "./AnimalsUpdateStatusDialog";
-import type { AnimalTableRow, EditAnimalInput } from "@/hooks/useAnimals";
-import { ColumnDef } from "@tanstack/react-table";
+import { Image as ImageIcon, RefreshCcw } from 'lucide-react';
+import { AnimalActions } from './AnimalsActions';
+import { AnimalsEditStatusDialog } from './AnimalsUpdateStatusDialog';
+import type { AnimalTableRow, EditAnimalInput } from '@/hooks/useAnimals';
+import { ColumnDef } from '@tanstack/react-table';
 
 interface AnimalsColumnsProps {
   updateAnimal: (id: number, input: EditAnimalInput) => Promise<any>;
@@ -18,10 +18,10 @@ export function createAnimalsColumns({
   updateAnimalStatus,
 }: AnimalsColumnsProps): ColumnDef<AnimalTableRow>[] {
   return [
-    { accessorKey: "id", header: "ID" },
+    { accessorKey: 'id', header: 'ID' },
     {
-      accessorKey: "imageUrl",
-      header: "Imagen",
+      accessorKey: 'imageUrl',
+      header: 'Imagen',
       cell: ({ row }) => {
         const imageUrl = row.original.images ? row.original.images[0] : '';
         const nickname = row.original.nickname as string;
@@ -33,16 +33,18 @@ export function createAnimalsColumns({
                   src={imageUrl}
                   alt={nickname}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
+                  onError={e => {
+                    e.currentTarget.style.display = 'none';
                     if (e.currentTarget.nextElementSibling) {
-                      (e.currentTarget.nextElementSibling as HTMLElement).style.display = "flex";
+                      (
+                        e.currentTarget.nextElementSibling as HTMLElement
+                      ).style.display = 'flex';
                     }
                   }}
                 />
                 <div
                   className="w-full h-full bg-muted rounded-full flex items-center justify-center"
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                 >
                   <ImageIcon className="w-4 h-4 text-muted-foreground" />
                 </div>
@@ -56,47 +58,54 @@ export function createAnimalsColumns({
         );
       },
     },
-    { accessorKey: "nickname", header: "Nombre" },
-    { accessorKey: "type", header: "Tipo" },
-    { accessorKey: "breed", header: "Raza" },
-    { accessorKey: "size", header: "Tamaño" },
-    { accessorKey: "sex", 
-      header: "Sexo",
+    { accessorKey: 'nickname', header: 'Nombre' },
+    { accessorKey: 'type', header: 'Tipo' },
+    { accessorKey: 'breed', header: 'Raza' },
+    { accessorKey: 'size', header: 'Tamaño' },
+    {
+      accessorKey: 'sex',
+      header: 'Sexo',
       cell: ({ row }) => {
-        const value= row.original.sex as 'male'| 'female' ;
+        const value = row.original.sex as 'male' | 'female';
         const sexDict = {
-          'male': 'macho',
-          'female': 'hembra'
-        }
+          male: 'macho',
+          female: 'hembra',
+        };
         return (
-          <div className="whitespace-nowrap max-w-[150px] truncate" title={value}>
+          <div
+            className="whitespace-nowrap max-w-[150px] truncate"
+            title={value}
+          >
             {sexDict[value]}
           </div>
         );
       },
     },
-    { accessorKey: "birthdate", header: "Nacimiento" },
+    { accessorKey: 'birthdate', header: 'Nacimiento' },
     {
-      accessorKey: "descriptionHistory",
-      header: "Historia",
+      accessorKey: 'descriptionHistory',
+      header: 'Historia',
       cell: ({ row }) => {
         const value = row.original.descriptionHistory as string;
         return (
-          <div className="whitespace-nowrap max-w-[150px] truncate" title={value}>
+          <div
+            className="whitespace-nowrap max-w-[150px] truncate"
+            title={value}
+          >
             {value}
           </div>
         );
       },
     },
-    { accessorKey: "status", header: "Estado" },
+    { accessorKey: 'status', header: 'Estado' },
     {
-      accessorKey: "isSterilized",
-      header: "Esterilizado",
-      cell: ({ row }) => (row.original.isSterilized ? "Sí" : "No"),
+      accessorKey: 'isSterilized',
+      header: 'Esterilizado',
+      cell: ({ row }) => (row.original.isSterilized ? 'Sí' : 'No'),
     },
     {
-      id: "acciones",
-      header: "Acciones",
+      id: 'acciones',
+      header: 'Acciones',
       cell: ({ row }) => (
         <div className="flex gap-2 whitespace-nowrap">
           <AnimalActions
@@ -107,7 +116,6 @@ export function createAnimalsColumns({
           />
           <AnimalsEditStatusDialog
             animal={row.original}
-            updateAnimalStatus={updateAnimalStatus}
             trigger={
               <button
                 type="button"

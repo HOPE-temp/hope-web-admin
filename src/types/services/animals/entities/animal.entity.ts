@@ -1,25 +1,30 @@
-enum TypeAnimal {
+enum EnumTypeAnimal {
   DOG = 'dog',
   CAT = 'cat',
 }
-enum StatusAnimal {
+enum EnumStatusAnimal {
   IN_ADOPTION = 'in_adoption',
   IN_OBSERVATION = 'in_observation',
   ADOPTED = 'adopted',
   DEAD = 'dead',
 }
 
-enum SizeAnimal {
+enum EnumSizeAnimal {
   SMALL = 'small',
   MEDIUM = 'medium',
   LARGE = 'large',
   GIANT = 'giant',
 }
 
-enum SexAnimal {
+enum EnumSexAnimal {
   MALE = 'male',
   FEMALE = 'female',
 }
+
+type TypeAnimal = `${EnumTypeAnimal}`;
+type StatusAnimal = `${EnumStatusAnimal}`;
+type SizeAnimal = `${EnumSizeAnimal}`;
+type SexAnimal = `${EnumSexAnimal}`;
 
 interface Animal {
   id: number;

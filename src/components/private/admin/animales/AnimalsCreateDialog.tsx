@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -15,90 +15,108 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { CreateAnimalInput, useAnimals } from "@/hooks/useAnimals"
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form';
+import { CreateAnimalInput, useAnimals } from '@/hooks/useAnimals';
 
-const today = new Date().toISOString().split("T")[0]
+const today = new Date().toISOString().split('T')[0];
 const imageSchema = z
-  .custom<FileList>((v) => v instanceof FileList && v.length > 0, {
-    message: "Se requiere una imagen",
+  .custom<FileList>(v => v instanceof FileList && v.length > 0, {
+    message: 'Se requiere una imagen',
   })
-  .refine((fileList) => fileList[0].type.startsWith("image/"), {
-    message: "El archivo debe ser una imagen",
+  .refine(fileList => fileList[0].type.startsWith('image/'), {
+    message: 'El archivo debe ser una imagen',
   })
-  .refine((fileList) => fileList[0].size <= 5 * 1024 * 1024, {
-    message: "La imagen no debe superar los 5MB",
-  })
+  .refine(fileList => fileList[0].size <= 5 * 1024 * 1024, {
+    message: 'La imagen no debe superar los 5MB',
+  });
 
 const schema = z.object({
-  nickname: z.string().min(3, "El nombre debe tener al menos 3 caracteres").nonempty("El nombre es requerido"),
-  status: z.enum(["in_adoption", "in_observation"], { message: "Estado inválido" }),
-  type: z.enum(["dog", "cat"], { message: "Tipo inválido" }),
-  breed: z.string().min(3, "La raza debe tener al menos 3 caracteres").nonempty("La raza es requerida"),
-  size: z.enum(["small", "medium", "large", "giant"], { message: "Tamaño inválido" }),
-  sex: z.enum(["male", "female"], { message: "Sexo inválido" }),
+  nickname: z
+    .string()
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .nonempty('El nombre es requerido'),
+  status: z.enum(['in_adoption', 'in_observation'], {
+    message: 'Estado inválido',
+  }),
+  type: z.enum(['dog', 'cat'], { message: 'Tipo inválido' }),
+  breed: z
+    .string()
+    .min(3, 'La raza debe tener al menos 3 caracteres')
+    .nonempty('La raza es requerida'),
+  size: z.enum(['small', 'medium', 'large', 'giant'], {
+    message: 'Tamaño inválido',
+  }),
+  sex: z.enum(['male', 'female'], { message: 'Sexo inválido' }),
   birthdate: z
     .string()
-    .refine((val) => !!val, { message: "La fecha de nacimiento es requerida" })
-    .refine((val) => !isNaN(Date.parse(val)), { message: "Fecha inválida" })
-    .refine((val) => val <= today, { message: "La fecha no puede ser mayor a hoy" }),
+    .refine(val => !!val, { message: 'La fecha de nacimiento es requerida' })
+    .refine(val => !isNaN(Date.parse(val)), { message: 'Fecha inválida' })
+    .refine(val => val <= today, {
+      message: 'La fecha no puede ser mayor a hoy',
+    }),
   descriptionHistory: z
     .string()
-    .min(6, "La historia debe tener al menos 6 caracteres")
-    .nonempty("La historia es requerida"),
+    .min(6, 'La historia debe tener al menos 6 caracteres')
+    .nonempty('La historia es requerida'),
   isSterilized: z.boolean(),
-  image: imageSchema
-})
+  image: imageSchema,
+});
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
 type Props = {
-  createAnimal: (input: CreateAnimalInput) => Promise<any>,
-  uploadImage: (id: number, file: File) => Promise<any>
-}
+  createAnimal: (input: CreateAnimalInput) => Promise<any>;
+  uploadImage: (id: number, file: File) => Promise<any>;
+};
 
 export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
-  const [open, setOpen] = React.useState(false)
-  const [formSuccess, setFormSuccess] = React.useState<string | null>(null)
+  const [open, setOpen] = React.useState(false);
+  const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      nickname: "",
-      status: "in_observation",
-      type: "dog",
-      breed: "",
-      size: "medium",
-      sex: "female",
-      birthdate: "",
-      descriptionHistory: "",
+      nickname: '',
+      status: 'in_observation',
+      type: 'dog',
+      breed: '',
+      size: 'medium',
+      sex: 'female',
+      birthdate: '',
+      descriptionHistory: '',
       isSterilized: false,
-      image: undefined
+      image: undefined,
     },
-  })
+  });
 
-  const onSubmit = async ({image, ...data}: FormValues) => {
+  const onSubmit = async ({ image, ...data }: FormValues) => {
     try {
-
-      const {id} = await createAnimal(data)
-      if(image){
-        const file = image?.item(0)
-        if(file){
-          await uploadImage(id, file)
+      const { id } = await createAnimal(data);
+      if (image) {
+        const file = image?.item(0);
+        if (file) {
+          await uploadImage(id, file);
         }
       }
-      setFormSuccess("Animal registrado correctamente")
-      form.reset()
+      setFormSuccess('Animal registrado correctamente');
+      form.reset();
       setTimeout(() => {
-        setOpen(false)
-        setFormSuccess(null)
-      }, 1200)
+        setOpen(false);
+        setFormSuccess(null);
+      }, 1200);
     } catch (err: any) {
-      form.setError("root", { message: err.message || "Error desconocido" })
+      form.setError('root', { message: err.message || 'Error desconocido' });
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -111,7 +129,9 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Registrar Animal</DialogTitle>
-          <DialogDescription>Completa los campos para crear un nuevo animal.</DialogDescription>
+          <DialogDescription>
+            Completa los campos para crear un nuevo animal.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -136,7 +156,10 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                   <FormItem>
                     <FormLabel>Estado</FormLabel>
                     <FormControl>
-                      <select {...field} className="w-full border rounded-md px-3 py-2">
+                      <select
+                        {...field}
+                        className="w-full border rounded-md px-3 py-2"
+                      >
                         <option value="in_observation">En observación</option>
                         <option value="in_adoption">En adopción</option>
                       </select>
@@ -152,7 +175,10 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                   <FormItem>
                     <FormLabel>Tipo</FormLabel>
                     <FormControl>
-                      <select {...field} className="w-full border rounded-md px-3 py-2">
+                      <select
+                        {...field}
+                        className="w-full border rounded-md px-3 py-2"
+                      >
                         <option value="dog">Perro</option>
                         <option value="cat">Gato</option>
                       </select>
@@ -181,7 +207,10 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                   <FormItem>
                     <FormLabel>Tamaño</FormLabel>
                     <FormControl>
-                      <select {...field} className="w-full border rounded-md px-3 py-2">
+                      <select
+                        {...field}
+                        className="w-full border rounded-md px-3 py-2"
+                      >
                         <option value="small">Pequeño</option>
                         <option value="medium">Mediano</option>
                         <option value="large">Grande</option>
@@ -199,7 +228,10 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                   <FormItem>
                     <FormLabel>Sexo</FormLabel>
                     <FormControl>
-                      <select {...field} className="w-full border rounded-md px-3 py-2">
+                      <select
+                        {...field}
+                        className="w-full border rounded-md px-3 py-2"
+                      >
                         <option value="female">Hembra</option>
                         <option value="male">Macho</option>
                       </select>
@@ -245,10 +277,10 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                         <input
                           type="checkbox"
                           checked={field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
+                          onChange={e => field.onChange(e.target.checked)}
                           className="mr-2"
                         />
-                        <span>{field.value ? "Sí" : "No"}</span>
+                        <span>{field.value ? 'Sí' : 'No'}</span>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -264,16 +296,16 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                     <FormControl>
                       <div className="flex items-center">
                         <input
-                              type="file"
-                              accept="image/*"
-                              className="mr-2"
-                              onChange={(e) => {
-                                const fileList = e.target.files;
-                                if (fileList && fileList.length > 0) {
-                                  field.onChange(fileList); // pasamos el FileList al estado del form
-                                }
-                              }}
-                            />
+                          type="file"
+                          accept="image/*"
+                          className="mr-2"
+                          onChange={e => {
+                            const fileList = e.target.files;
+                            if (fileList && fileList.length > 0) {
+                              field.onChange(fileList); // pasamos el FileList al estado del form
+                            }
+                          }}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -282,9 +314,13 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
               />
             </div>
             {form.formState.errors.root && (
-              <div className="text-red-500 text-sm">{form.formState.errors.root.message}</div>
+              <div className="text-red-500 text-sm">
+                {form.formState.errors.root.message}
+              </div>
             )}
-            {formSuccess && <div className="text-green-600 text-sm">{formSuccess}</div>}
+            {formSuccess && (
+              <div className="text-green-600 text-sm">{formSuccess}</div>
+            )}
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="outline">
@@ -292,12 +328,12 @@ export function AnimalsCreateDialog({ createAnimal, uploadImage }: Props) {
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Registrando..." : "Registrar"}
+                {form.formState.isSubmitting ? 'Registrando...' : 'Registrar'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

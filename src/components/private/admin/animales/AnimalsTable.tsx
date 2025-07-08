@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   flexRender,
   getCoreRowModel,
@@ -12,8 +12,8 @@ import {
   ColumnDef,
   useReactTable,
   FilterFn,
-} from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
+} from '@tanstack/react-table';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -21,7 +21,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
+import { useAuth } from '@/context/AuthContext';
+import { FilterInputAnimal } from './FilterAnimal';
+import { findAllAnimals } from '@/services/hopeBackend/animals';
 
 interface AnimalTableProps<TData extends RowData> {
   data: TData[];
@@ -38,8 +41,13 @@ const globalAnimalFilter: FilterFn<any> = (row, columnId, filterValue) => {
   );
 };
 
-export function AnimalsTable<TData extends RowData>({ data, columns }: AnimalTableProps<TData>) {
-  const [globalFilter, setGlobalFilter] = React.useState("");
+export function AnimalsTable<TData extends RowData>({
+  data,
+  columns,
+}: AnimalTableProps<TData>) {
+  const { axios } = useAuth();
+  const [animal, setAnimal] = React.useState<Animal[]>([]);
+  const [globalFilter, setGlobalFilter] = React.useState('');
 
   const table = useReactTable({
     data,
@@ -54,9 +62,21 @@ export function AnimalsTable<TData extends RowData>({ data, columns }: AnimalTab
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  const getAnimals = async (param?: FilterAnimalDto) => {
+    const res = await findAllAnimals(axios, param);
+    setAnimal(res);
+  };
+
+  const handleFilter = (param: FilterAnimalDto) => {
+    getAnimals(param);
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
+        <FilterInputAnimal onGetData={data => handleFilter(data)} />
+      </div>
+      <div>
         <Input
           placeholder="Buscar animal, especie o raza..."
           value={globalFilter}
@@ -73,7 +93,10 @@ export function AnimalsTable<TData extends RowData>({ data, columns }: AnimalTab
                   <TableHead key={header.id}>
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -85,14 +108,20 @@ export function AnimalsTable<TData extends RowData>({ data, columns }: AnimalTab
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} className="whitespace-nowrap">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No hay resultados.
                 </TableCell>
               </TableRow>

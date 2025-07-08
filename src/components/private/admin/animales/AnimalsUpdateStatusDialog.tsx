@@ -1,26 +1,36 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { AnimalTableRow } from "@/hooks/useAnimals";
+import * as React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { AnimalTableRow } from '@/hooks/useAnimals';
+import { updateStatusAnimal } from '@/services/hopeBackend/animals';
+import { useAuth } from '@/context/AuthContext';
+import { FormSelectCustom } from '@/components/shared/Input';
 
 interface Props {
-  animal: AnimalTableRow;
-  updateAnimalStatus: (id: number, input: { status: string }) => Promise<any>;
+  animal: Animal;
   trigger?: React.ReactNode;
 }
 
 const STATUS_OPTIONS = [
-  { value: "in_adoption", label: "En Adopción" },
-  { value: "in_observation", label: "En Observación" },
-  { value: "adopted", label: "Adoptado" },
-  { value: "dead", label: "Fallecido" },
+  { value: 'in_adoption', label: 'En Adopción' },
+  { value: 'in_observation', label: 'En Observación' },
+  { value: 'adopted', label: 'Adoptado' },
+  { value: 'dead', label: 'Fallecido' },
 ];
 
-export function AnimalsEditStatusDialog({ animal, updateAnimalStatus, trigger }: Props) {
+export function AnimalsEditStatusDialog({ animal, trigger }: Props) {
+  const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
-  const [status, setStatus] = React.useState(animal.status);
+  const [status, setStatus] = React.useState<StatusAnimal>(animal.status);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -28,13 +38,19 @@ export function AnimalsEditStatusDialog({ animal, updateAnimalStatus, trigger }:
     setLoading(true);
     setError(null);
     try {
-      await updateAnimalStatus(animal.id, { status });
+      await updateStatusAnimal(axios, animal.id, { status });
       setOpen(false);
     } catch (err: any) {
-      setError(err.message || "Error al actualizar estado");
+      setError(err.message || 'Error al actualizar estado');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleChangeValue: React.ChangeEventHandler<HTMLSelectElement> = e => {
+    const value = e.target.value as StatusAnimal;
+
+    setStatus(value);
   };
 
   React.useEffect(() => {
@@ -58,21 +74,30 @@ export function AnimalsEditStatusDialog({ animal, updateAnimalStatus, trigger }:
           <select
             className="w-full border rounded px-3 py-2"
             value={status}
-            onChange={e => setStatus(e.target.value)}
+            onChange={handleChangeValue}
             disabled={loading}
           >
             {STATUS_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
             ))}
           </select>
           {error && <div className="text-red-500 text-sm">{error}</div>}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading}
+          >
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={loading || status === animal.status}>
-            {loading ? "Guardando..." : "Guardar"}
+          <Button
+            onClick={handleSave}
+            disabled={loading || status === animal.status}
+          >
+            {loading ? 'Guardando...' : 'Guardar'}
           </Button>
         </DialogFooter>
       </DialogContent>
