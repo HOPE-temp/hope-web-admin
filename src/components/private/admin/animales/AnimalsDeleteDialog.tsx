@@ -12,12 +12,11 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { AnimalTableRow } from '@/hooks/useAnimals';
 import { deleteAnimal } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
 
 type Props = {
-  animal: AnimalTableRow;
+  animal: Animal;
 };
 
 export function AnimalsDeleteDialog({ animal }: Props) {

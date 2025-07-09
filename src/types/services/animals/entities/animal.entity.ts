@@ -37,10 +37,11 @@ interface Animal {
   breed: string;
   size: SizeAnimal;
   sex: SexAnimal;
-  birthdate: Date;
+  birthdate: string;
   descriptionHistory: string;
   status: StatusAnimal;
   isSterilized: boolean;
+  images: string[];
   createdAt: Date;
   updatedAt?: Date;
   deletedAt?: Date;

@@ -32,10 +32,28 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
     onGetData(data);
   };
 
+  const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(ev.key);
+    if (ev.key === 'Enter') {
+      form.handleSubmit(onSubmit);
+    }
+  };
+
+  const handleClickReset = () => {
+    form.reset({
+      nickname: undefined,
+      status: undefined,
+      adopterDNI: undefined,
+      adopterName: undefined,
+      animalId: undefined,
+    });
+    onSubmit({});
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-8 gap-4">
           <FormInputCustom
             control={form.control}
             label="Nombre"
@@ -47,7 +65,7 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             name="status"
             label="Estado"
             options={[
-              { label: 'En adopción', value: 'in_adoption ' },
+              { label: 'En adopción', value: 'in_adoption' },
               { label: 'En observación', value: 'in_observation' },
               { label: 'Adoptado', value: 'adopted' },
               { label: 'Fallecido', value: 'dead' },
@@ -73,17 +91,12 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             type="number"
           />
           <div className="grid justify-center content-end">
-            <Button
-              onClick={() => {
-                form.reset({
-                  nickname: undefined,
-                  status: undefined,
-                  adopterDNI: undefined,
-                  adopterName: undefined,
-                  animalId: undefined,
-                });
-              }}
-            >
+            <Button hidden={true} type="submit">
+              Buscar
+            </Button>
+          </div>
+          <div className="grid justify-center content-end">
+            <Button type="button" onClick={handleClickReset}>
               Resetear
             </Button>
           </div>

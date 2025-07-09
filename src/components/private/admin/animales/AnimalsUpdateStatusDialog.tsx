@@ -10,10 +10,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { AnimalTableRow } from '@/hooks/useAnimals';
 import { updateStatusAnimal } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
-import { FormSelectCustom } from '@/components/shared/Input';
 
 interface Props {
   animal: Animal;
@@ -23,7 +21,6 @@ interface Props {
 const STATUS_OPTIONS = [
   { value: 'in_adoption', label: 'En Adopción' },
   { value: 'in_observation', label: 'En Observación' },
-  { value: 'adopted', label: 'Adoptado' },
   { value: 'dead', label: 'Fallecido' },
 ];
 

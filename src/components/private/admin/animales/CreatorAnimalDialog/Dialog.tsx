@@ -4,6 +4,9 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { isAxiosError } from 'axios';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -16,19 +19,23 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import { CreateAnimalInput } from '@/hooks/useAnimals';
 
-import toast from 'react-hot-toast';
-import { FormValues, schema, today } from './schema';
 import {
   FormCheckboxCustom,
   FormFileInputCustom,
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
+import {
+  createAnimal,
+  uploadImageAnimal,
+} from '@/services/hopeBackend/animals';
+
 import { useAuth } from '@/context/AuthContext';
-import { createAnimal, uploadImage } from '@/services/hopeBackend/animals';
-import { isAxiosError } from 'axios';
+
+//schema
+import { FormValues, schema } from './schema';
+import { today } from '../common/schema';
 
 type CreatorAnimalDialogProps = {};
 
@@ -62,7 +69,7 @@ export function CreatorAnimalDialog({}: CreatorAnimalDialogProps) {
       if (image) {
         const file = image?.item(0);
         if (file) {
-          await uploadImage(axios, id, file);
+          await uploadImageAnimal(axios, id, file);
         }
         toast.success(`Imagen de la mascota #${id} guardada`);
       }

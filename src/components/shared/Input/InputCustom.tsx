@@ -27,6 +27,7 @@ interface FormInputCustomProps<T extends FieldValues> {
   placeholder?: string;
   type?: React.HTMLInputTypeAttribute;
   max?: string | number;
+  onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 export function FormInputCustom<T extends FieldValues>({
@@ -36,6 +37,7 @@ export function FormInputCustom<T extends FieldValues>({
   placeholder,
   type = 'text',
   max,
+  onKeyUp,
 }: FormInputCustomProps<T>) {
   return (
     <FormField
@@ -45,7 +47,13 @@ export function FormInputCustom<T extends FieldValues>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input {...field} placeholder={placeholder} type={type} max={max} />
+            <Input
+              {...field}
+              placeholder={placeholder}
+              type={type}
+              max={max}
+              onKeyUp={onKeyUp}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

@@ -1,22 +1,12 @@
-import { Image as ImageIcon, RefreshCcw } from 'lucide-react';
+import { CatIcon, DogIcon, Image as ImageIcon } from 'lucide-react';
 import { AnimalActions } from './AnimalsActions';
-import { AnimalsEditStatusDialog } from './AnimalsUpdateStatusDialog';
-import type { AnimalTableRow, EditAnimalInput } from '@/hooks/useAnimals';
 import { ColumnDef } from '@tanstack/react-table';
+import { Badge } from '@/components/ui/badge';
+import { FaFemale } from 'react-icons/fa';
 
-interface AnimalsColumnsProps {
-  updateAnimal: (id: number, input: EditAnimalInput) => Promise<any>;
-  deleteAnimal: (id: number) => Promise<any>;
-  uploadImage: (id: number, file: File) => Promise<any>;
-  updateAnimalStatus: (id: number, input: { status: string }) => Promise<any>;
-}
+interface AnimalsColumnsProps {}
 
-export function createAnimalsColumns({
-  updateAnimal,
-  deleteAnimal,
-  uploadImage,
-  updateAnimalStatus,
-}: AnimalsColumnsProps): ColumnDef<AnimalTableRow>[] {
+export function createAnimalsColumns({}: AnimalsColumnsProps): ColumnDef<Animal>[] {
   return [
     { accessorKey: 'id', header: 'ID' },
     {
@@ -58,26 +48,67 @@ export function createAnimalsColumns({
         );
       },
     },
-    { accessorKey: 'nickname', header: 'Nombre' },
-    { accessorKey: 'type', header: 'Tipo' },
+    {
+      accessorKey: 'nickname',
+      header: 'Nombre',
+    },
+    {
+      accessorKey: 'type',
+      header: 'Tipo',
+      cell: ({ row }) => {
+        const value = row.original.type as TypeAnimal;
+        const typeAnimalDict = {
+          dog: { name: 'Perro', icon: <DogIcon /> },
+          cat: { name: 'Gato', icon: <CatIcon /> },
+        };
+        return (
+          <Badge variant={'outline'}>
+            <span>
+              {typeAnimalDict[value].icon}
+              {`${typeAnimalDict[value].name}`}
+            </span>
+          </Badge>
+        );
+      },
+    },
     { accessorKey: 'breed', header: 'Raza' },
-    { accessorKey: 'size', header: 'Tamaño' },
+    {
+      accessorKey: 'size',
+      header: 'Tamaño',
+      cell: ({ row }) => {
+        const value = row.original.size as SizeAnimal;
+        const sizeAnimalDict = {
+          small: { name: 'Pequeño', color: 'bg-orange-100' },
+          medium: { name: 'Mediano', color: 'bg-orange-200' },
+          large: { name: 'Grande', color: 'bg-orange-400' },
+          giant: { name: 'Muy grande', color: 'bg-orange-600' },
+        };
+        return (
+          <Badge
+            variant={'outline'}
+            className={`${sizeAnimalDict[value].color}`}
+          >
+            {`${sizeAnimalDict[value].name}`}
+          </Badge>
+        );
+      },
+    },
     {
       accessorKey: 'sex',
       header: 'Sexo',
       cell: ({ row }) => {
-        const value = row.original.sex as 'male' | 'female';
-        const sexDict = {
-          male: 'macho',
-          female: 'hembra',
+        const value = row.original.sex as SexAnimal;
+        const sexAnimalDict = {
+          male: { name: 'Macho', color: 'bg-blue-200' },
+          female: { name: 'Hembra', color: 'bg-red-200' },
         };
         return (
-          <div
-            className="whitespace-nowrap max-w-[150px] truncate"
-            title={value}
+          <Badge
+            variant={'outline'}
+            className={`${sexAnimalDict[value].color}`}
           >
-            {sexDict[value]}
-          </div>
+            {`${sexAnimalDict[value].name}`}
+          </Badge>
         );
       },
     },
@@ -97,7 +128,27 @@ export function createAnimalsColumns({
         );
       },
     },
-    { accessorKey: 'status', header: 'Estado' },
+    {
+      accessorKey: 'status',
+      header: 'Estado',
+      cell: ({ row }) => {
+        const value = row.original.status as StatusAnimal;
+        const statusAnimalDict = {
+          in_adoption: { name: 'En adopción', color: 'bg-green-600' },
+          in_observation: { name: 'En observacion', color: 'bg-yellow-600' },
+          adopted: { name: 'Adoptado', color: 'bg-blue-600' },
+          dead: { name: 'Fallecido', color: 'bg-red-600' },
+        };
+        return (
+          <Badge
+            variant={'destructive'}
+            className={`${statusAnimalDict[value].color}`}
+          >
+            {`${statusAnimalDict[value].name}`}
+          </Badge>
+        );
+      },
+    },
     {
       accessorKey: 'isSterilized',
       header: 'Esterilizado',
@@ -108,24 +159,7 @@ export function createAnimalsColumns({
       header: 'Acciones',
       cell: ({ row }) => (
         <div className="flex gap-2 whitespace-nowrap">
-          <AnimalActions
-            animal={row.original}
-            updateAnimal={updateAnimal}
-            deleteAnimal={deleteAnimal}
-            uploadImage={uploadImage}
-          />
-          <AnimalsEditStatusDialog
-            animal={row.original}
-            trigger={
-              <button
-                type="button"
-                className="p-2 rounded hover:bg-muted transition-colors"
-                title="Actualizar Estado"
-              >
-                <RefreshCcw className="w-4 h-4 text-blue-600" />
-              </button>
-            }
-          />
+          <AnimalActions animal={row.original} />
         </div>
       ),
       enableSorting: false,

@@ -17,7 +17,6 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import { AnimalTableRow, EditAnimalInput } from '@/hooks/useAnimals';
 import { FormValues, schema, today } from './schema';
 import {
   FormCheckboxCustom,
@@ -30,7 +29,7 @@ import { updateAnimal } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
 
 type Props = {
-  animal: AnimalTableRow;
+  animal: Animal;
 };
 
 export function EditorAnimalsDialog({ animal }: Props) {

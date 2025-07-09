@@ -9,11 +9,8 @@ import {
   getSortedRowModel,
   RowData,
   Table as ReactTable,
-  ColumnDef,
   useReactTable,
-  FilterFn,
 } from '@tanstack/react-table';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -23,39 +20,25 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useAuth } from '@/context/AuthContext';
-import { FilterInputAnimal } from './FilterAnimal';
 import { findAllAnimals } from '@/services/hopeBackend/animals';
+import { FilterInputAnimal } from '../FilterAnimal';
+import { createAnimalsColumns } from './Colums';
+import { Loader } from 'lucide-react';
 
-interface AnimalTableProps<TData extends RowData> {
-  data: TData[];
-  columns: ColumnDef<TData, any>[];
-}
+interface AnimalTableProps<TData extends RowData> {}
 
-const globalAnimalFilter: FilterFn<any> = (row, columnId, filterValue) => {
-  if (!filterValue) return true;
-  const value = filterValue.toLowerCase();
-  return (
-    (row.original.name?.toLowerCase().includes(value) ?? false) ||
-    (row.original.species?.toLowerCase().includes(value) ?? false) ||
-    (row.original.breed?.toLowerCase().includes(value) ?? false)
-  );
-};
-
-export function AnimalsTable<TData extends RowData>({
-  data,
-  columns,
-}: AnimalTableProps<TData>) {
+export function PanelAnimalsTable<
+  TData extends RowData
+>({}: AnimalTableProps<TData>) {
   const { axios } = useAuth();
   const [animal, setAnimal] = React.useState<Animal[]>([]);
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+
+  const columns = React.useMemo(() => createAnimalsColumns({}), []);
 
   const table = useReactTable({
-    data,
+    data: animal,
     columns,
-    filterFns: { globalAnimalFilter },
-    globalFilterFn: globalAnimalFilter,
-    onGlobalFilterChange: setGlobalFilter,
-    state: { globalFilter },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -63,27 +46,27 @@ export function AnimalsTable<TData extends RowData>({
   });
 
   const getAnimals = async (param?: FilterAnimalDto) => {
+    setLoading(true);
     const res = await findAllAnimals(axios, param);
     setAnimal(res);
+    setLoading(false);
   };
 
   const handleFilter = (param: FilterAnimalDto) => {
+    console.log({ param });
     getAnimals(param);
   };
+
+  React.useEffect(() => {
+    getAnimals();
+  }, []);
 
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <FilterInputAnimal onGetData={data => handleFilter(data)} />
       </div>
-      <div>
-        <Input
-          placeholder="Buscar animal, especie o raza..."
-          value={globalFilter}
-          onChange={e => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
-        />
-      </div>
+      <hr />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -103,6 +86,18 @@ export function AnimalsTable<TData extends RowData>({
             ))}
           </TableHeader>
           <TableBody>
+            {loading && (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <span className="flex justify-center">
+                    <Loader className="animate-[spin_1.5s_ease-in-out_infinite]" />
+                  </span>
+                </TableCell>
+              </TableRow>
+            )}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>

@@ -1,20 +1,6 @@
 import { env } from '@/config/env';
 import { useEffect, useState, useCallback } from 'react';
 // TODO: idiomas de campos en español
-export interface AnimalTableRow {
-  id: number;
-  images: string[] | null;
-  nickname: string;
-  type: string;
-  breed: string;
-  size: string;
-  sex: string;
-  birthdate: string;
-  status: string;
-  descriptionHistory: string;
-  isSterilized: boolean;
-}
-
 export interface CreateAnimalInput {
   nickname: string;
   type: string;
@@ -42,7 +28,7 @@ export interface EditAnimalStatusInput {
 }
 
 export function useAnimals() {
-  const [animals, setAnimals] = useState<AnimalTableRow[]>([]);
+  const [animals, setAnimals] = useState<Animal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,7 +62,8 @@ export function useAnimals() {
   const createAnimal = async (input: CreateAnimalInput) => {
     const token = localStorage.getItem('accessToken');
     const res = await fetch(
-      (process.env.HOPE_BACKEND_HOSTNAME || 'http://localhost:3000') + '/animals',
+      (process.env.HOPE_BACKEND_HOSTNAME || 'http://localhost:3000') +
+        '/animals',
       {
         method: 'POST',
         headers: {
@@ -93,29 +80,38 @@ export function useAnimals() {
 
   const updateAnimal = async (id: number, input: EditAnimalInput) => {
     const token = localStorage.getItem('accessToken');
-    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(input),
-    });
+    const res = await fetch(
+      `${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(input),
+      }
+    );
     if (!res.ok) throw new Error('Error al editar animal');
     await fetchAnimals();
     return await res.json();
   };
 
-  const updateAnimalStatus = async (id: number, input: EditAnimalStatusInput) => {
+  const updateAnimalStatus = async (
+    id: number,
+    input: EditAnimalStatusInput
+  ) => {
     const token = localStorage.getItem('accessToken');
-    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}/status`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(input),
-    });
+    const res = await fetch(
+      `${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}/status`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(input),
+      }
+    );
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
       console.error('Error al editar estado:', errorData);
@@ -127,13 +123,16 @@ export function useAnimals() {
 
   const deleteAnimal = async (id: number) => {
     const token = localStorage.getItem('accessToken');
-    const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const res = await fetch(
+      `${process.env.HOPE_BACKEND_HOSTNAME}/animals/${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     if (!res.ok) throw new Error('Error al eliminar animal');
     await fetchAnimals();
     return true;
@@ -145,7 +144,9 @@ export function useAnimals() {
     formData.append('file', file);
 
     const res = await fetch(
-      `${process.env.HOPE_BACKEND_HOSTNAME || 'http://localhost:3000'}/animals/${id}/upload_image`,
+      `${
+        process.env.HOPE_BACKEND_HOSTNAME || 'http://localhost:3000'
+      }/animals/${id}/upload_image`,
       {
         method: 'POST',
         headers: {
