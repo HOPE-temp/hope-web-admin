@@ -27,12 +27,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Interceptores de error
+
     axios.interceptors.response.use(
-      res => res,
+      res => {
+        console.log(res);
+        return res;
+      },
       err => {
         const status = err.response?.status;
         // Si ya se manejó localmente, no hagas nada
-        if (err._handled) return Promise.reject(err);
 
         if (typeof window !== 'undefined') {
           switch (status) {
@@ -41,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               break;
             case 401:
               toast.error('No autorizado: Debes iniciar sesión.');
-              router.push('/');
+              router.push('/login');
               break;
             case 200:
               toast.success('¡Todo bien!: Operación completada con éxito.');

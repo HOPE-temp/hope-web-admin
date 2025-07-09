@@ -31,7 +31,9 @@ export default function page() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const rol = await login(email, password);
-    router.push('/admin');
+    if (rol) {
+      router.push('/admin');
+    }
     // if (rol === 'admin') router.push('/admin')
     // else if (rol === 'volunteer') router.push('/voluntario')
     // else if (rol === 'medico') router.push('/medico')
