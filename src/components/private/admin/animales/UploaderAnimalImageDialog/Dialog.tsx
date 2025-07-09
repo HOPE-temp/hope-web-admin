@@ -24,10 +24,12 @@ import toast from 'react-hot-toast';
 
 interface UploaderAnimalImageDialogProps {
   animal: Animal;
+  onUpload?: () => void;
 }
 
 export function UploaderAnimalImageDialog({
   animal,
+  onUpload,
 }: UploaderAnimalImageDialogProps) {
   const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
@@ -49,11 +51,11 @@ export function UploaderAnimalImageDialog({
       if (image && animal.id) {
         const file = image?.item(0);
         if (file) {
-          // await uploadImageAnimal(axios, animal.id, file);
+          await uploadImageAnimal(axios, animal.id, file);
           toast.success(`Imagen de la mascota #${animal.id} guardada`);
         }
       }
-
+      onUpload && onUpload();
       form.reset();
       setTimeout(() => {
         setOpen(false);

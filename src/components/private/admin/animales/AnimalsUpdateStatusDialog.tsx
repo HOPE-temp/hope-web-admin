@@ -12,10 +12,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { updateStatusAnimal } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
+import { useAnimal } from '@/context/AnimalContext';
 
 interface Props {
   animal: Animal;
   trigger?: React.ReactNode;
+  onUpload?: () => void;
 }
 
 const STATUS_OPTIONS = [
@@ -24,7 +26,7 @@ const STATUS_OPTIONS = [
   { value: 'dead', label: 'Fallecido' },
 ];
 
-export function AnimalsEditStatusDialog({ animal, trigger }: Props) {
+export function AnimalsEditStatusDialog({ animal, trigger, onUpload }: Props) {
   const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [status, setStatus] = React.useState<StatusAnimal>(animal.status);
@@ -32,11 +34,12 @@ export function AnimalsEditStatusDialog({ animal, trigger }: Props) {
   const [error, setError] = React.useState<string | null>(null);
 
   const handleSave = async () => {
-    setLoading(true);
-    setError(null);
     try {
+      setLoading(true);
+      setError(null);
       await updateStatusAnimal(axios, animal.id, { status });
       setOpen(false);
+      onUpload && onUpload();
     } catch (err: any) {
       setError(err.message || 'Error al actualizar estado');
     } finally {

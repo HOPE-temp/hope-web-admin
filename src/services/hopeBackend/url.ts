@@ -1,5 +1,4 @@
 import { generateUrlWithParms } from '@/lib/generateUrlParma';
-import { env } from '@/config/env';
 
 export const hopeBackendUrl = {
   adoptions: {
@@ -29,5 +28,15 @@ export const hopeBackendUrl = {
     updateStatus: (id: number) => `/animals/${id}/status`,
     uploadImage: (id: number) => `/animals/${id}/upload_image`,
     delete: (id: number) => `/animals/${id}`,
+  },
+  users: {
+    create: `/users`,
+    find: (params?: FilterAnimalDto) =>
+      generateUrlWithParms<FilterAnimalDto>(`/users`, params),
+    findOne: (id: number) => `/users/${id}`,
+    updatePublic: (id: number) => `/users/${id}`,
+    updatePrivate: (id: number) => `/users/${id}/private`,
+    // uploadImage: (id: number) => `/users/${id}/upload_image`,
+    delete: (id: number) => `/users/${id}`,
   },
 };

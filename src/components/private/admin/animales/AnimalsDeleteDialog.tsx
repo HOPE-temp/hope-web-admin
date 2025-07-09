@@ -17,20 +17,22 @@ import { useAuth } from '@/context/AuthContext';
 
 type Props = {
   animal: Animal;
+  onDelete?: () => void;
 };
 
-export function AnimalsDeleteDialog({ animal }: Props) {
+export function AnimalsDeleteDialog({ animal, onDelete }: Props) {
   const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleDelete = async () => {
-    setDeleting(true);
-    setError(null);
     try {
+      setDeleting(true);
+      setError(null);
       await deleteAnimal(axios, animal.id);
       setOpen(false);
+      onDelete && onDelete();
     } catch (err: any) {
       setError(err.message || 'Error al eliminar animal');
     } finally {

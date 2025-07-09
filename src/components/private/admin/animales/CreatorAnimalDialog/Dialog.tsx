@@ -36,11 +36,15 @@ import { useAuth } from '@/context/AuthContext';
 //schema
 import { FormValues, schema } from './schema';
 import { today } from '../common/schema';
+import { useAnimal } from '@/context/AnimalContext';
 
-type CreatorAnimalDialogProps = {};
+type CreatorAnimalDialogProps = {
+  onCreated?: () => void;
+};
 
-export function CreatorAnimalDialog({}: CreatorAnimalDialogProps) {
+export function CreatorAnimalDialog({ onCreated }: CreatorAnimalDialogProps) {
   const { axios } = useAuth();
+  const { updateAnimals } = useAnimal();
 
   const [open, setOpen] = React.useState(false);
 
@@ -83,6 +87,7 @@ export function CreatorAnimalDialog({}: CreatorAnimalDialogProps) {
       }
     }
     form.reset();
+    updateAnimals();
     setTimeout(() => {
       setOpen(false);
     }, 1200);

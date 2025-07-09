@@ -1,12 +1,19 @@
-import { CatIcon, DogIcon, Image as ImageIcon } from 'lucide-react';
-import { AnimalActions } from './AnimalsActions';
+import { CatIcon, DogIcon, Image as ImageIcon, RefreshCcw } from 'lucide-react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
-import { FaFemale } from 'react-icons/fa';
+import { EditorAnimalsDialog } from '../EditorAnimalDialog';
+import { AnimalsDeleteDialog } from '../AnimalsDeleteDialog';
+import { UploaderAnimalImageDialog } from '../UploaderAnimalImageDialog';
+import { AnimalsEditStatusDialog } from '../AnimalsUpdateStatusDialog';
+import { useAnimal } from '@/context/AnimalContext';
 
-interface AnimalsColumnsProps {}
+interface AnimalsColumnsProps {
+  updateAnimals: () => void;
+}
 
-export function createAnimalsColumns({}: AnimalsColumnsProps): ColumnDef<Animal>[] {
+export function createAnimalsColumns({
+  updateAnimals,
+}: AnimalsColumnsProps): ColumnDef<Animal>[] {
   return [
     { accessorKey: 'id', header: 'ID' },
     {
@@ -159,7 +166,30 @@ export function createAnimalsColumns({}: AnimalsColumnsProps): ColumnDef<Animal>
       header: 'Acciones',
       cell: ({ row }) => (
         <div className="flex gap-2 whitespace-nowrap">
-          <AnimalActions animal={row.original} />
+          <div className="flex gap-2 whitespace-nowrap">
+            <EditorAnimalsDialog animal={row.original} onEdit={updateAnimals} />
+            <AnimalsDeleteDialog
+              animal={row.original}
+              onDelete={updateAnimals}
+            />
+            <UploaderAnimalImageDialog
+              animal={row.original}
+              onUpload={updateAnimals}
+            />
+            <AnimalsEditStatusDialog
+              animal={row.original}
+              onUpload={updateAnimals}
+              trigger={
+                <button
+                  type="button"
+                  className="p-2 rounded hover:bg-muted transition-colors"
+                  title="Actualizar Estado"
+                >
+                  <RefreshCcw className="w-4 h-4 text-blue-600" />
+                </button>
+              }
+            />
+          </div>
         </div>
       ),
       enableSorting: false,

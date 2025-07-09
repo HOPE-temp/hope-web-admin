@@ -24,20 +24,31 @@ import { findAllAnimals } from '@/services/hopeBackend/animals';
 import { FilterInputAnimal } from '../FilterAnimal';
 import { createAnimalsColumns } from './Colums';
 import { Loader } from 'lucide-react';
+import { useAnimal } from '@/context/AnimalContext';
+import PaginationTable from '../../../../shared/PaginationTable';
 
 interface AnimalTableProps<TData extends RowData> {}
 
 export function PanelAnimalsTable<
   TData extends RowData
 >({}: AnimalTableProps<TData>) {
-  const { axios } = useAuth();
-  const [animal, setAnimal] = React.useState<Animal[]>([]);
-  const [loading, setLoading] = React.useState(false);
+  const {
+    animals,
+    loading,
+    updateParams,
+    updateAnimals,
+    limit,
+    offset,
+    total,
+  } = useAnimal();
 
-  const columns = React.useMemo(() => createAnimalsColumns({}), []);
+  const columns = React.useMemo(
+    () => createAnimalsColumns({ updateAnimals }),
+    []
+  );
 
   const table = useReactTable({
-    data: animal,
+    data: animals,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -45,26 +56,14 @@ export function PanelAnimalsTable<
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const getAnimals = async (param?: FilterAnimalDto) => {
-    setLoading(true);
-    const res = await findAllAnimals(axios, param);
-    setAnimal(res);
-    setLoading(false);
-  };
-
-  const handleFilter = (param: FilterAnimalDto) => {
-    console.log({ param });
-    getAnimals(param);
-  };
-
-  React.useEffect(() => {
-    getAnimals();
-  }, []);
-
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <FilterInputAnimal onGetData={data => handleFilter(data)} />
+      <div className="py-4">
+        <FilterInputAnimal
+          onGetData={params =>
+            updateParams({ ...params, limit: 10, offset: 0 })
+          }
+        />
       </div>
       <hr />
       <div className="rounded-md border">
@@ -123,6 +122,16 @@ export function PanelAnimalsTable<
             )}
           </TableBody>
         </Table>
+        <br />
+        <hr />
+        <br />
+        <PaginationTable
+          limit={limit}
+          offset={offset}
+          total={total}
+          onChange={({ limit, offset }) => updateParams({ limit, offset })}
+        />
+        <br />
       </div>
     </div>
   );

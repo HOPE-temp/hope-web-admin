@@ -29,10 +29,11 @@ import { updateAnimal } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
 
 type Props = {
+  onEdit?: () => void;
   animal: Animal;
 };
 
-export function EditorAnimalsDialog({ animal }: Props) {
+export function EditorAnimalsDialog({ animal, onEdit }: Props) {
   const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
 
@@ -73,8 +74,11 @@ export function EditorAnimalsDialog({ animal }: Props) {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      console.log('dasd');
       await updateAnimal(axios, animal.id, data);
+      onEdit && onEdit();
+      setTimeout(() => {
+        setOpen(false);
+      }, 1200);
     } catch (error) {
       if (isAxiosError(error)) {
         const status = error.response?.status;
@@ -84,10 +88,6 @@ export function EditorAnimalsDialog({ animal }: Props) {
         }
       }
     }
-
-    setTimeout(() => {
-      setOpen(false);
-    }, 1200);
   };
 
   return (

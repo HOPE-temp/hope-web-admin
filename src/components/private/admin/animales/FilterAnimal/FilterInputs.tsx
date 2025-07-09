@@ -16,16 +16,18 @@ type FilterInputAnimalProps = {
   onGetData: (data: FormValues) => void;
 };
 
+const defaultValues = {
+  nickname: undefined,
+  status: undefined,
+  adopterDNI: undefined,
+  adopterName: undefined,
+  animalId: undefined,
+};
+
 export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      nickname: undefined,
-      status: undefined,
-      adopterDNI: undefined,
-      adopterName: undefined,
-      animalId: undefined,
-    },
+    defaultValues,
   });
 
   const onSubmit = async (data: FormValues) => {
@@ -40,14 +42,7 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
   };
 
   const handleClickReset = () => {
-    form.reset({
-      nickname: undefined,
-      status: undefined,
-      adopterDNI: undefined,
-      adopterName: undefined,
-      animalId: undefined,
-    });
-    onSubmit({});
+    form.reset();
   };
 
   return (
@@ -91,12 +86,10 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             type="number"
           />
           <div className="grid justify-center content-end">
-            <Button hidden={true} type="submit">
-              Buscar
-            </Button>
+            <Button type="submit">Buscar</Button>
           </div>
           <div className="grid justify-center content-end">
-            <Button type="button" onClick={handleClickReset}>
+            <Button type="submit" onClick={handleClickReset}>
               Resetear
             </Button>
           </div>
