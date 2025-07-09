@@ -39,4 +39,8 @@ export const hopeBackendUrl = {
     // uploadImage: (id: number) => `/users/${id}/upload_image`,
     delete: (id: number) => `/users/${id}`,
   },
+
+  reports: {
+    counts: `/reports/counts`,
+  },
 };
