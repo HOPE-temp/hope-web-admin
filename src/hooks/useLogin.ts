@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
 export function useLogin() {
-  const { setToken, setRole } = useAuth();
+  const { saveAuth } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,8 +17,11 @@ export function useLogin() {
       });
       if (!res.ok) throw new Error('Credenciales incorrectas');
       const data = await res.json();
-      setToken(data.accessToken);
-      setRole(data.user.rol);
+      saveAuth({
+        newRole: data.user.rol,
+        newToken: data.accessToken,
+        newUser: data.user,
+      });
       localStorage.setItem('fullName', data.user.fullName);
       return data.user.rol;
     } catch (err: any) {

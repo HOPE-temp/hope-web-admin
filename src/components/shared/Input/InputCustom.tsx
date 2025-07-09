@@ -177,7 +177,7 @@ export function FormFileInputCustom<T extends FieldValues>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <input
+            <Input
               type="file"
               accept={accept}
               onChange={e => {

@@ -6,12 +6,17 @@ import toast from 'react-hot-toast';
 import { AxiosInstance } from 'axios';
 import { useRouter } from 'next/navigation';
 
+type UserAuth = {
+  newToken: string;
+  newRole: RoleUser;
+  newUser: PrivateUser;
+};
 type AuthContextType = {
   token: string | null;
-  setToken: (token: string | null) => void;
-  loaded: boolean;
   role: RoleUser | null;
-  setRole: (token: RoleUser | null) => void;
+  user: PrivateUser | null;
+  saveAuth: (auth: UserAuth) => void;
+  loaded: boolean;
   axios: AxiosInstance;
 };
 
@@ -23,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     null
   );
   const [role, setRole] = useLocalStorage<RoleUser>('rol', null);
+  const [user, setUser] = useLocalStorage<PrivateUser>('user', null);
   const router = useRouter();
 
   useEffect(() => {
@@ -59,6 +65,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const saveAuth = ({ newToken, newRole, newUser }: UserAuth) => {
+    setToken(newToken);
+    setRole(newRole);
+    setUser(newUser);
+  };
+
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -69,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ token, setToken, role, setRole, loaded, axios }}
+      value={{ token, role, user, saveAuth, loaded, axios }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,23 +1,25 @@
-"use client"
-import { PawPrint, UserCircle, LogOut } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+'use client';
+import { PawPrint, UserCircle, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 export function Header() {
-  const [fullName, setFullName] = useState<string>("")
-  const router = useRouter()
+  const { user } = useAuth();
+  const [fullName, setFullName] = useState<string>('');
+  const router = useRouter();
 
   useEffect(() => {
-    const name = localStorage.getItem("fullName")
-    setFullName(name || "")
-  }, [])
+    const name = localStorage.getItem('fullName');
+    setFullName(name || '');
+  }, []);
 
   const handleLogout = () => {
-    localStorage.clear()
-    router.push("/login")
-  }
+    localStorage.clear();
+    router.push('/login');
+  };
 
   return (
     <header className="flex items-center justify-between rounded-xl bg-white/80 shadow px-6 py-4 mb-6 border">
@@ -27,7 +29,7 @@ export function Header() {
       </div>
       <div className="flex items-center gap-4">
         <span className="text-base text-gray-600 hidden sm:block">
-          ¡Bienvenido{fullName ? `, ${fullName}` : ""}!
+          ¡Bienvenido{user ? `, ${user.firstName} ${user.lastName}` : ''}!
         </span>
         <Button variant="outline" size="icon">
           <Avatar>
@@ -37,10 +39,15 @@ export function Header() {
             </AvatarFallback>
           </Avatar>
         </Button>
-        <Button variant="destructive" size="icon" onClick={handleLogout} title="Cerrar sesión">
+        <Button
+          variant="destructive"
+          size="icon"
+          onClick={handleLogout}
+          title="Cerrar sesión"
+        >
           <LogOut className="w-5 h-5" />
         </Button>
       </div>
     </header>
-  )
+  );
 }
