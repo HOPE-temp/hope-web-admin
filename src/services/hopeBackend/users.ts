@@ -10,7 +10,9 @@ export async function findAllUsers(
   axios: AxiosInstance,
   params?: FilterUserDto
 ) {
-  const res = await axios.get<User[]>(hopeBackendUrl.users.find(params));
+  const res = await axios.get<PaginationResponse<User>>(
+    hopeBackendUrl.users.find(params)
+  );
   return res.data;
 }
 

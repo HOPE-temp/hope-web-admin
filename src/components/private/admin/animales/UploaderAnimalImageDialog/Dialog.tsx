@@ -78,7 +78,7 @@ export function UploaderAnimalImageDialog({
           <ImageIcon className="w-5 h-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Subir Imagen</DialogTitle>
         </DialogHeader>

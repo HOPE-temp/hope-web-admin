@@ -19,26 +19,69 @@ import {
 } from '@/components/ui/select';
 
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 
-interface FormInputCustomProps<T extends FieldValues> {
+interface FormInputCustomProps<T extends FieldValues>
+  extends React.ComponentProps<'input'> {
   control: Control<T>;
   name: FieldPath<T>;
   label: string;
-  placeholder?: string;
-  type?: React.HTMLInputTypeAttribute;
-  max?: string | number;
-  onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 export function FormInputCustom<T extends FieldValues>({
   control,
   name,
   label,
-  placeholder,
   type = 'text',
-  max,
-  onKeyUp,
-}: FormInputCustomProps<T>) {
+  ...props
+}: FormInputCustomProps<T>): JSX.Element {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => {
+        const inputProps = {
+          ...field,
+          ...(type === 'number'
+            ? {
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  const val = e.target.value;
+                  field.onChange(val === '' ? undefined : +val); // convierte a number
+                },
+                value: field.value ?? '', // evita que sea undefined
+              }
+            : {}),
+        };
+
+        return (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <FormControl>
+              <Input {...inputProps} type={type} {...props} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+}
+
+interface FormTextareaCustomProps<T extends FieldValues>
+  extends React.ComponentProps<'textarea'> {
+  control: Control<T>;
+  name: FieldPath<T>;
+  label: string;
+  placeholder?: string;
+  type?: React.HTMLInputTypeAttribute;
+}
+
+export function FormTextareaCustom<T extends FieldValues>({
+  control,
+  name,
+  label,
+  ...props
+}: FormTextareaCustomProps<T>) {
   return (
     <FormField
       control={control}
@@ -47,13 +90,7 @@ export function FormInputCustom<T extends FieldValues>({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input
-              {...field}
-              placeholder={placeholder}
-              type={type}
-              max={max}
-              onKeyUp={onKeyUp}
-            />
+            <Textarea {...field} {...props} />
           </FormControl>
           <FormMessage />
         </FormItem>

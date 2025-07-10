@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -11,8 +11,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { useUsers, UserTableRow } from "@/hooks/useUser";
+} from '@/components/ui/dialog';
+import { useUsers, UserTableRow } from '@/hooks/useUser';
 
 type Props = {
   user: UserTableRow;
@@ -31,7 +31,7 @@ export function UserDeleteDialog({ user, deleteUser }: Props) {
       await deleteUser(user.id);
       setOpen(false);
     } catch (err: any) {
-      setError(err.message || "Error desconocido al eliminar el usuario");
+      setError(err.message || 'Error desconocido al eliminar el usuario');
     } finally {
       setDeleting(false);
     }
@@ -40,26 +40,37 @@ export function UserDeleteDialog({ user, deleteUser }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-red-600 hover:text-red-700"
+        >
           <Trash2 className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Eliminar Usuario</DialogTitle>
           <DialogDescription>
-            ¿Estás seguro de que deseas eliminar al usuario <strong>{user.username}</strong>? Esta acción no se puede deshacer.
+            ¿Estás seguro de que deseas eliminar al usuario{' '}
+            <strong>{user.username}</strong>? Esta acción no se puede deshacer.
           </DialogDescription>
         </DialogHeader>
-        {error && (
-          <p className="text-sm text-red-500">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={deleting}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={deleting}
+          >
             Cancelar
           </Button>
-          <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-            {deleting ? "Eliminando..." : "Eliminar"}
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            {deleting ? 'Eliminando...' : 'Eliminar'}
           </Button>
         </DialogFooter>
       </DialogContent>

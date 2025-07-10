@@ -66,7 +66,7 @@ export function AnimalsEditStatusDialog({ animal, trigger, onUpload }: Props) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Actualizar Estado</DialogTitle>
         </DialogHeader>

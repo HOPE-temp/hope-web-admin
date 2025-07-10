@@ -4,7 +4,7 @@ import { useLocalStorage } from '../hooks/useLocalStogare';
 import { axios } from '@/lib/axiosInstance';
 import toast from 'react-hot-toast';
 import { AxiosInstance } from 'axios';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 type UserAuth = {
   newToken: string;
@@ -31,40 +31,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useLocalStorage<PrivateUser>('user', null);
   const router = useRouter();
 
-  useEffect(() => {
-    // Interceptores de error
-
-    axios.interceptors.response.use(
-      res => {
-        console.log(res);
-        return res;
-      },
-      err => {
-        const status = err.response?.status;
-        // Si ya se manejó localmente, no hagas nada
-
-        if (typeof window !== 'undefined') {
-          switch (status) {
-            case 400:
-              toast.error('Solicitud incorrecta: Revisa los campos enviados');
-              break;
-            case 401:
-              toast.error('No autorizado: Debes iniciar sesión.');
-              router.push('/login');
-              break;
-            case 200:
-              toast.success('¡Todo bien!: Operación completada con éxito.');
-              break;
-            default:
-              toast.error('Error desconocido: Algo salió mal.');
-          }
-        }
-
-        return Promise.reject(err);
-      }
-    );
-  }, []);
-
   const saveAuth = ({ newToken, newRole, newUser }: UserAuth) => {
     setToken(newToken);
     setRole(newRole);
@@ -72,9 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (token) {
+    if (token && loaded) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } else {
+    }
+    if (!token && loaded) {
+      router.push('/login');
       delete axios.defaults.headers.common.Authorization;
     }
   }, [token]);

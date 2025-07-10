@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Pencil } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -15,8 +15,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormField,
@@ -24,16 +24,18 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { UpdateUserInput, UserTableRow } from "@/hooks/useUser";
+} from '@/components/ui/form';
+import { UpdateUserInput, UserTableRow } from '@/hooks/useUser';
 
 const schema = z.object({
-  firstName: z.string().min(6, "El nombre debe tener al menos 6 caracteres"),
-  lastName: z.string().min(6, "El apellido debe tener al menos 6 caracteres"),
-  email: z.string().email("El email no es válido"),
-  phone: z.string().regex(/^\d{9}$/, "El teléfono debe tener 9 dígitos"),
-  address: z.string().min(6, "La dirección debe tener al menos 6 caracteres"),
-  rol: z.enum(["admin", "volunteer", "veterinarian"], { message: "Rol inválido" }),
+  firstName: z.string().min(6, 'El nombre debe tener al menos 6 caracteres'),
+  lastName: z.string().min(6, 'El apellido debe tener al menos 6 caracteres'),
+  email: z.string().email('El email no es válido'),
+  phone: z.string().regex(/^\d{9}$/, 'El teléfono debe tener 9 dígitos'),
+  address: z.string().min(6, 'La dirección debe tener al menos 6 caracteres'),
+  rol: z.enum(['admin', 'volunteer', 'veterinarian'], {
+    message: 'Rol inválido',
+  }),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -50,41 +52,39 @@ export function UserEditDialog({ user, updateUser }: Props) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      firstName: user.firstName ?? "",
-      lastName: user.lastName ?? "",
-      email: user.email ?? "",
-      phone: user.phone ?? "",
-      address: user.address ?? "",
+      firstName: user.firstName ?? '',
+      lastName: user.lastName ?? '',
+      email: user.email ?? '',
+      phone: user.phone ?? '',
+      address: user.address ?? '',
       rol: undefined,
     },
   });
 
-  
   React.useEffect(() => {
     if (open) {
       form.reset({
-        firstName: user.firstName ?? "",
-        lastName: user.lastName ?? "",
-        email: user.email ?? "",
-        phone: user.phone ?? "",
-        address: user.address ?? "",
+        firstName: user.firstName ?? '',
+        lastName: user.lastName ?? '',
+        email: user.email ?? '',
+        phone: user.phone ?? '',
+        address: user.address ?? '',
         rol: undefined,
       });
       setFormSuccess(null);
     }
-    
   }, [open, user]);
 
   const onSubmit = async (data: FormValues) => {
     try {
       await updateUser(user.id, data);
-      setFormSuccess("Usuario actualizado correctamente");
+      setFormSuccess('Usuario actualizado correctamente');
       setTimeout(() => {
         setOpen(false);
         setFormSuccess(null);
       }, 1200);
     } catch (err: any) {
-      form.setError("root", { message: err.message || "Error desconocido" });
+      form.setError('root', { message: err.message || 'Error desconocido' });
     }
   };
 
@@ -95,7 +95,7 @@ export function UserEditDialog({ user, updateUser }: Props) {
           <Pencil className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Editar Usuario</DialogTitle>
           <DialogDescription>
@@ -158,8 +158,10 @@ export function UserEditDialog({ user, updateUser }: Props) {
                         inputMode="numeric"
                         maxLength={9}
                         onInput={e => {
-                          
-                          e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+                          e.currentTarget.value = e.currentTarget.value.replace(
+                            /[^0-9]/g,
+                            ''
+                          );
                           field.onChange(e);
                         }}
                       />
@@ -188,7 +190,10 @@ export function UserEditDialog({ user, updateUser }: Props) {
                   <FormItem>
                     <FormLabel>Rol</FormLabel>
                     <FormControl>
-                      <select {...field} className="w-full border rounded-md px-3 py-2">
+                      <select
+                        {...field}
+                        className="w-full border rounded-md px-3 py-2"
+                      >
                         <option value="">Selecciona un rol</option>
                         <option value="admin">Administrador</option>
                         <option value="volunteer">Voluntario</option>
@@ -201,7 +206,9 @@ export function UserEditDialog({ user, updateUser }: Props) {
               />
             </div>
             {form.formState.errors.root && (
-              <div className="text-red-500 text-sm">{form.formState.errors.root.message}</div>
+              <div className="text-red-500 text-sm">
+                {form.formState.errors.root.message}
+              </div>
             )}
             {formSuccess && (
               <div className="text-green-600 text-sm">{formSuccess}</div>
@@ -213,7 +220,9 @@ export function UserEditDialog({ user, updateUser }: Props) {
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Guardando..." : "Guardar cambios"}
+                {form.formState.isSubmitting
+                  ? 'Guardando...'
+                  : 'Guardar cambios'}
               </Button>
             </DialogFooter>
           </form>

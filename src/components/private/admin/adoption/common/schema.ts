@@ -1,0 +1,41 @@
+import { z } from 'zod';
+
+export const today = new Date().toISOString().split('T')[0];
+export const idAdopter = z.number().min(1, 'Id minimo 1');
+
+export const animalsIds = z.number().min(1, 'Id minimo 1');
+
+export const statusResult = z.enum(
+  ['not_evaluated', 'approved', 'rejected', 'banned'],
+  {
+    message: 'Estado inválido',
+  }
+);
+
+export const statusRequest = z
+  .enum(
+    [
+      'created',
+      'suitable',
+      'selected_animal',
+      'cancelled',
+      'adoption_completed',
+    ],
+    {
+      message: 'Estado inválido',
+    }
+  )
+  .optional();
+export const reviewRequestNotes = z
+  .string()
+  .min(3, 'La nombre debe tener al menos 3 caracteres');
+
+export const documentNumber = z
+  .string()
+  .min(3, 'La nombre debe tener al menos 3 caracteres');
+
+export const adoptionHistory = z
+  .string()
+  .min(3, 'La nombre debe tener al menos 3 caracteres');
+
+export const isWebVisible = z.boolean();

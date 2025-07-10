@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Trash2, AlertTriangle } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import * as React from 'react';
+import { Trash2, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -11,47 +11,51 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog"
-import type { Activity } from "./ActivitiesTable"
+} from '@/components/ui/dialog';
+import type { Activity } from './ActivitiesTable';
 
 type Props = {
-  activity: Activity
-  deleteActivity: (id: number) => Promise<any>
-}
+  activity: Activity;
+  deleteActivity: (id: number) => Promise<any>;
+};
 
 export function ActivitiesDeleteDialog({ activity, deleteActivity }: Props) {
-  const [open, setOpen] = React.useState(false)
-  const [deleting, setDeleting] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
+  const [open, setOpen] = React.useState(false);
+  const [deleting, setDeleting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   const handleDelete = async () => {
-    setDeleting(true)
-    setError(null)
+    setDeleting(true);
+    setError(null);
     try {
-      await deleteActivity(activity.id)
-      setOpen(false)
+      await deleteActivity(activity.id);
+      setOpen(false);
     } catch (err: any) {
-      setError(err.message || "Error desconocido al eliminar la actividad")
+      setError(err.message || 'Error desconocido al eliminar la actividad');
     } finally {
-      setDeleting(false)
+      setDeleting(false);
     }
-  }
+  };
 
   const handleDialogChange = (newOpen: boolean) => {
-    setOpen(newOpen)
+    setOpen(newOpen);
     if (!newOpen) {
-      setError(null)
+      setError(null);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+        >
           <Trash2 className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent aria-describedby={undefined} className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="w-5 h-5" />
@@ -59,40 +63,64 @@ export function ActivitiesDeleteDialog({ activity, deleteActivity }: Props) {
           </DialogTitle>
           <DialogDescription className="space-y-3">
             <div>
-              ¿Estás seguro de que deseas eliminar la actividad{" "}
+              ¿Estás seguro de que deseas eliminar la actividad{' '}
               <strong className="text-foreground">"{activity.title}"</strong>?
             </div>
 
             <div className="bg-muted p-3 rounded-lg space-y-2">
-              <div className="text-sm font-medium">Información de la actividad:</div>
+              <div className="text-sm font-medium">
+                Información de la actividad:
+              </div>
               <div className="flex flex-wrap gap-2">
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    activity.finished ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                    activity.finished
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
                   }`}
                 >
-                  {activity.finished ? "Finalizada" : "Pendiente"}
+                  {activity.finished ? 'Finalizada' : 'Pendiente'}
                 </span>
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    activity.admin ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
+                    activity.admin
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-gray-100 text-gray-800'
                   }`}
                 >
-                  {activity.admin ? "Solo Admin" : "Regular"}
+                  {activity.admin ? 'Solo Admin' : 'Regular'}
                 </span>
               </div>
-              {activity.resourceUrl && <div className="text-xs text-muted-foreground">Tiene recurso asociado</div>}
-              {activity.imageUrl && <div className="text-xs text-muted-foreground">Tiene imagen asociada</div>}
+              {activity.resourceUrl && (
+                <div className="text-xs text-muted-foreground">
+                  Tiene recurso asociado
+                </div>
+              )}
+              {activity.imageUrl && (
+                <div className="text-xs text-muted-foreground">
+                  Tiene imagen asociada
+                </div>
+              )}
             </div>
 
-            <div className="text-sm text-red-600 font-medium">Esta acción no se puede deshacer.</div>
+            <div className="text-sm text-red-600 font-medium">
+              Esta acción no se puede deshacer.
+            </div>
           </DialogDescription>
         </DialogHeader>
 
-        {error && <div className="bg-red-50 text-red-700 text-sm p-3 rounded-md">{error}</div>}
+        {error && (
+          <div className="bg-red-50 text-red-700 text-sm p-3 rounded-md">
+            {error}
+          </div>
+        )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={deleting}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={deleting}
+          >
             Cancelar
           </Button>
           <Button
@@ -116,5 +144,5 @@ export function ActivitiesDeleteDialog({ activity, deleteActivity }: Props) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

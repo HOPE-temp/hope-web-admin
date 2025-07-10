@@ -9,12 +9,9 @@ export async function findAllAnimals(
   axios: AxiosInstance,
   params?: FilterAnimalDto
 ) {
-  const res = await axios.get<{
-    items: Animal[];
-    total: number;
-    limit: number;
-    offset: number;
-  }>(hopeBackendUrl.animals.find(params));
+  const res = await axios.get<PaginationResponse<Animal>>(
+    hopeBackendUrl.animals.find(params)
+  );
   return res.data;
 }
 

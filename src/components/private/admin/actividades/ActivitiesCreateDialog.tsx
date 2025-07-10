@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Plus, Upload, Link, Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Plus, Upload, Link, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogTrigger,
@@ -15,81 +15,96 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
-import { useActivities } from "@/hooks/useActivities"
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormDescription,
+} from '@/components/ui/form';
+import { useActivities } from '@/hooks/useActivities';
 
 const imageSchema = z
-  .custom<FileList>((v) => v instanceof FileList && v.length > 0, {
-    message: "Se requiere una imagen",
+  .custom<FileList>(v => v instanceof FileList && v.length > 0, {
+    message: 'Se requiere una imagen',
   })
-  .refine((fileList) => fileList[0].type.startsWith("image/"), {
-    message: "El archivo debe ser una imagen",
+  .refine(fileList => fileList[0].type.startsWith('image/'), {
+    message: 'El archivo debe ser una imagen',
   })
-  .refine((fileList) => fileList[0].size <= 5 * 1024 * 1024, {
-    message: "La imagen no debe superar los 5MB",
-  })
+  .refine(fileList => fileList[0].size <= 5 * 1024 * 1024, {
+    message: 'La imagen no debe superar los 5MB',
+  });
 
 const schema = z
   .object({
     title: z
       .string()
-      .min(3, "El título debe tener al menos 3 caracteres")
-      .max(100, "El título no puede exceder 100 caracteres"),
+      .min(3, 'El título debe tener al menos 3 caracteres')
+      .max(100, 'El título no puede exceder 100 caracteres'),
     imageUrl: imageSchema,
-    imagePublicId: z.string().optional().or(z.literal("")),
-    resourceUrl: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
-    scheduleStartAt: z.string().optional().or(z.literal("")),
-    scheduleEndAt: z.string().optional().or(z.literal("")),
+    imagePublicId: z.string().optional().or(z.literal('')),
+    resourceUrl: z
+      .string()
+      .url('Debe ser una URL válida')
+      .optional()
+      .or(z.literal('')),
+    scheduleStartAt: z.string().optional().or(z.literal('')),
+    scheduleEndAt: z.string().optional().or(z.literal('')),
     admin: z.boolean(),
   })
   .refine(
-    (data) => {
+    data => {
       if (data.scheduleStartAt && data.scheduleEndAt) {
-        return new Date(data.scheduleStartAt) < new Date(data.scheduleEndAt)
+        return new Date(data.scheduleStartAt) < new Date(data.scheduleEndAt);
       }
-      return true
+      return true;
     },
     {
-      message: "La fecha de fin debe ser posterior a la fecha de inicio",
-      path: ["scheduleEndAt"],
-    },
-  )
+      message: 'La fecha de fin debe ser posterior a la fecha de inicio',
+      path: ['scheduleEndAt'],
+    }
+  );
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
 export interface CreateActivityInput {
-  title: string
-  imageUrl?: string | null
-  imagePublicId?: string | null
-  resourceUrl?: string | null
-  scheduleStartAt?: string | null
-  scheduleEndAt?: string | null
-  admin: boolean
+  title: string;
+  imageUrl?: string | null;
+  imagePublicId?: string | null;
+  resourceUrl?: string | null;
+  scheduleStartAt?: string | null;
+  scheduleEndAt?: string | null;
+  admin: boolean;
 }
 
 type Props = {
-  createActivity: (input: CreateActivityInput) => Promise<any>
-  updaloadImageActivity: (id: number, file: File) => Promise<any>
-}
+  createActivity: (input: CreateActivityInput) => Promise<any>;
+  updaloadImageActivity: (id: number, file: File) => Promise<any>;
+};
 
-export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}: Props) {
-  const [open, setOpen] = React.useState(false)
-  const [formSuccess, setFormSuccess] = React.useState<string | null>(null)
+export function ActivitiesCreateDialog({
+  createActivity,
+  updaloadImageActivity,
+}: Props) {
+  const [open, setOpen] = React.useState(false);
+  const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: "",
+      title: '',
       imageUrl: undefined,
-      imagePublicId: "",
-      resourceUrl: "",
-      scheduleStartAt: "",
-      scheduleEndAt: "",
+      imagePublicId: '',
+      resourceUrl: '',
+      scheduleStartAt: '',
+      scheduleEndAt: '',
       admin: false,
     },
-  })
+  });
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -102,32 +117,31 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
         admin: data.admin,
       };
 
-      
-      const {id} = await createActivity(payload);
-      if(data?.imageUrl){
-        const file = data?.imageUrl?.item(0)
-        if(file){
-          await updaloadImageActivity(id, file)
+      const { id } = await createActivity(payload);
+      if (data?.imageUrl) {
+        const file = data?.imageUrl?.item(0);
+        if (file) {
+          await updaloadImageActivity(id, file);
         }
       }
-      setFormSuccess("Actividad creada correctamente");
+      setFormSuccess('Actividad creada correctamente');
       form.reset();
       setTimeout(() => {
         setOpen(false);
         setFormSuccess(null);
       }, 1500);
     } catch (err: any) {
-      form.setError("root", { message: err.message || "Error desconocido" })
+      form.setError('root', { message: err.message || 'Error desconocido' });
     }
-  }
+  };
 
   const handleDialogChange = (newOpen: boolean) => {
-    setOpen(newOpen)
+    setOpen(newOpen);
     if (!newOpen) {
-      form.reset()
-      setFormSuccess(null)
+      form.reset();
+      setFormSuccess(null);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
@@ -137,11 +151,15 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
           Nueva Actividad
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
         <DialogHeader>
           <DialogTitle>Crear Nueva Actividad</DialogTitle>
           <DialogDescription>
-            Completa la información para crear una nueva actividad. Los campos marcados con * son obligatorios.
+            Completa la información para crear una nueva actividad. Los campos
+            marcados con * son obligatorios.
           </DialogDescription>
         </DialogHeader>
 
@@ -159,7 +177,10 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                     <FormItem>
                       <FormLabel>Título *</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Nombre de la actividad" />
+                        <Input
+                          {...field}
+                          placeholder="Nombre de la actividad"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -175,14 +196,15 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                         <input
                           type="checkbox"
                           checked={field.value}
-                          onChange={(e) => field.onChange(e.target.checked)}
+                          onChange={e => field.onChange(e.target.checked)}
                           className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel>Actividad de administración</FormLabel>
                         <FormDescription>
-                          Solo los administradores podrán marcar esta actividad como finalizada
+                          Solo los administradores podrán marcar esta actividad
+                          como finalizada
                         </FormDescription>
                       </div>
                     </FormItem>
@@ -199,7 +221,6 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                   <h3 className="text-lg font-medium">Recursos Multimedia</h3>
                 </div>
 
-                
                 <FormField
                   control={form.control}
                   name="resourceUrl"
@@ -209,10 +230,17 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                       <FormControl>
                         <div className="relative">
                           <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input {...field} type="url" placeholder="https://..." className="pl-10" />
+                          <Input
+                            {...field}
+                            type="url"
+                            placeholder="https://..."
+                            className="pl-10"
+                          />
                         </div>
                       </FormControl>
-                      <FormDescription>Enlace a redes sociales, páginas web, seguimientos, etc.</FormDescription>
+                      <FormDescription>
+                        Enlace a redes sociales, páginas web, seguimientos, etc.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -221,41 +249,42 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
             </div>
 
             <div className="border rounded-lg p-6 space-y-4">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Upload className="w-4 h-4" />
-                    <h3 className="text-lg font-medium">Image File</h3>
-                  </div>
-
-
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>URL de Recurso</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                            
-                            <Input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const fileList = e.target.files;
-                                if (fileList && fileList.length > 0) {
-                                  field.onChange(fileList); // pasamos el FileList al estado del form
-                                }
-                              }}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>Enlace a redes sociales, páginas web, seguimientos, etc.</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  <h3 className="text-lg font-medium">Image File</h3>
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>URL de Recurso</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={e => {
+                              const fileList = e.target.files;
+                              if (fileList && fileList.length > 0) {
+                                field.onChange(fileList); // pasamos el FileList al estado del form
+                              }
+                            }}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        Enlace a redes sociales, páginas web, seguimientos, etc.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <div className="border rounded-lg p-6 space-y-4">
@@ -275,7 +304,9 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                         <FormControl>
                           <Input {...field} type="datetime-local" />
                         </FormControl>
-                        <FormDescription>Cuándo debe comenzar la actividad</FormDescription>
+                        <FormDescription>
+                          Cuándo debe comenzar la actividad
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -290,7 +321,9 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                         <FormControl>
                           <Input {...field} type="datetime-local" />
                         </FormControl>
-                        <FormDescription>Cuándo debe finalizar la actividad</FormDescription>
+                        <FormDescription>
+                          Cuándo debe finalizar la actividad
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -306,7 +339,11 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
               </div>
             )}
 
-            {formSuccess && <div className="bg-green-50 text-green-700 text-sm p-3 rounded-md">{formSuccess}</div>}
+            {formSuccess && (
+              <div className="bg-green-50 text-green-700 text-sm p-3 rounded-md">
+                {formSuccess}
+              </div>
+            )}
 
             <DialogFooter>
               <DialogClose asChild>
@@ -315,12 +352,12 @@ export function ActivitiesCreateDialog({ createActivity, updaloadImageActivity}:
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Creando..." : "Crear Actividad"}
+                {form.formState.isSubmitting ? 'Creando...' : 'Crear Actividad'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

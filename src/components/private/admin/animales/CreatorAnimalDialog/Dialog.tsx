@@ -101,7 +101,7 @@ export function CreatorAnimalDialog({ onCreated }: CreatorAnimalDialogProps) {
           Registrar Animal
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Registrar Animal</DialogTitle>
           <DialogDescription>

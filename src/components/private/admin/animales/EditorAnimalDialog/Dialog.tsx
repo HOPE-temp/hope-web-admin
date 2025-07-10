@@ -97,7 +97,7 @@ export function EditorAnimalsDialog({ animal, onEdit }: Props) {
           <Pencil className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Editar Animal</DialogTitle>
           <DialogDescription>

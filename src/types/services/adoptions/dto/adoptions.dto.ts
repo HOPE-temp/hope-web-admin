@@ -1,10 +1,9 @@
-
-interface CreateAdoptionDto{
-  adopterId: number
-  animalsIds: number[]
+interface CreateAdoptionDto {
+  adopterId: number;
+  animalsIds: number[];
 }
 
-interface FilterAdoptionDto extends PaginationDto{
+interface FilterAdoptionDto extends PaginationDto {
   readonly idAdopter?: number;
   readonly statusRequest?: StatusRequestApotion;
   readonly statusResult?: StatusResultApotion;
@@ -13,20 +12,20 @@ interface FilterAdoptionDto extends PaginationDto{
 }
 
 interface UpdateAdoptionEvaluateDto {
-  statusResult: StatusResultApotion
-  reviewRequestNotes: string
+  statusResult: StatusResultApotion;
+  reviewRequestNotes: string;
 }
 
 interface UpdateAdoptionEvaluateDto {
-  statusResult: StatusResultApotion
-  reviewRequestNotes: string
+  statusResult: StatusResultApotion;
+  reviewRequestNotes: string;
 }
 
-interface UpdateLinkAnimalWithAdoption{
-  animalsIds: number[]
-  reviewRequestNotes: string
+interface UpdateLinkAnimalWithAdoption {
+  animalsIds: number[];
+  reviewRequestNotes: string;
 }
-interface UpdateCompleteRequestAdoption{
-  adoptionHistory: string,
-  isWebVisible: boolean
+interface UpdateCompleteRequestAdoption {
+  adoptionHistory: string;
+  isWebVisible: boolean;
 }

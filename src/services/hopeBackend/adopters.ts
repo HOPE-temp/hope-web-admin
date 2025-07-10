@@ -10,7 +10,9 @@ export async function findAllAdopters(
   axios: AxiosInstance,
   params?: FilterAdopterDto
 ) {
-  const res = await axios.get<Adopter[]>(hopeBackendUrl.adopters.find(params));
+  const res = await axios.get<PaginationResponse<Adopter>>(
+    hopeBackendUrl.adopters.find(params)
+  );
   return res.data;
 }
 

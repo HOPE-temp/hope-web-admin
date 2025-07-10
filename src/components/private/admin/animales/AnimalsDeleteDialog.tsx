@@ -51,7 +51,7 @@ export function AnimalsDeleteDialog({ animal, onDelete }: Props) {
           <Trash2 className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Eliminar Animal</DialogTitle>
           <DialogDescription>
