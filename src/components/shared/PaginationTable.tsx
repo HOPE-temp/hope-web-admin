@@ -59,14 +59,16 @@ export default function PaginationTable({
     <Pagination>
       <PaginationContent>
         {/* Botón Anterior */}
-        <PaginationItem>
-          <PaginationPrevious
-            onClick={() =>
-              onChange({ limit, offset: Math.max(0, offset - limit) })
-            }
-            // disabled={currentPage === 1}
-          />
-        </PaginationItem>
+        {currentPage !== 1 && (
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() =>
+                onChange({ limit, offset: Math.max(0, offset - limit) })
+              }
+              // disabled={currentPage === 1}
+            />
+          </PaginationItem>
+        )}
 
         {/* Primer página y ellipsis */}
         {startPage > 1 && (
@@ -91,6 +93,7 @@ export default function PaginationTable({
         {pageNumbers.map(page => (
           <PaginationItem key={page}>
             <PaginationLink
+              className={currentPage === page ? 'pointer-events-none' : ''}
               onClick={() => onChange({ limit, offset: (page - 1) * limit })}
               isActive={currentPage === page}
             >
@@ -121,17 +124,19 @@ export default function PaginationTable({
         )}
 
         {/* Botón Siguiente */}
-        <PaginationItem>
-          <PaginationNext
-            onClick={() =>
-              onChange({
-                limit,
-                offset: Math.min((totalPages - 1) * limit, offset + limit),
-              })
-            }
-            // disabled={currentPage === totalPages}
-          />
-        </PaginationItem>
+        {currentPage !== totalPages && (
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                onChange({
+                  limit,
+                  offset: Math.min((totalPages - 1) * limit, offset + limit),
+                })
+              }
+              // disabled={currentPage === totalPages}
+            />
+          </PaginationItem>
+        )}
       </PaginationContent>
     </Pagination>
   );

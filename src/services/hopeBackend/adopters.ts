@@ -1,7 +1,8 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance, isAxiosError } from 'axios';
 import { hopeBackendUrl } from './url';
+import toast from 'react-hot-toast';
 
-export async function findOneAdopter(axios: AxiosInstance, id: string) {
+export async function findOneAdopter(axios: AxiosInstance, id: number) {
   const res = await axios.get<Adopter>(hopeBackendUrl.adopters.findOne(id));
   return res.data;
 }
@@ -10,10 +11,27 @@ export async function findAllAdopters(
   axios: AxiosInstance,
   params?: FilterAdopterDto
 ) {
-  const res = await axios.get<PaginationResponse<Adopter>>(
-    hopeBackendUrl.adopters.find(params)
-  );
-  return res.data;
+  try {
+    const res = await axios.get<PaginationResponse<Adopter>>(
+      hopeBackendUrl.adopters.find(params)
+    );
+    return res.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const status = error.response?.status;
+      const message = error.response?.data?.message;
+
+      if (status === 409) {
+        if (message === 'Adopter deleted') {
+          toast.error('El adoptante esta eliminado.');
+        } else if (message == 'Adopter not have evaluations') {
+          toast.error('El adoptante debe tener evaluaciones.');
+        } else {
+          toast.error('Ya existe un adopter con ese nombre.');
+        }
+      }
+    }
+  }
 }
 
 export async function createAdopters(
@@ -24,9 +42,9 @@ export async function createAdopters(
   return res.data;
 }
 
-export async function updateAdopters(
+export async function updateAdopter(
   axios: AxiosInstance,
-  id: string,
+  id: number,
   body?: UpdateAdopterDto
 ) {
   const res = await axios.put<Adopter>(
@@ -36,7 +54,7 @@ export async function updateAdopters(
   return res.data;
 }
 
-export async function deleteAdopters(axios: AxiosInstance, id: string) {
+export async function deleteAdopter(axios: AxiosInstance, id: number) {
   const res = await axios.delete<Adopter>(hopeBackendUrl.adopters.delete(id));
   return res.data;
 }

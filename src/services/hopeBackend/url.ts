@@ -15,9 +15,9 @@ export const hopeBackendUrl = {
     create: `/adopters`,
     find: (params?: FilterAdopterDto) =>
       generateUrlWithParms<FilterAdopterDto>(`/adopters`, params),
-    findOne: (id: string) => `/adopters/${id}`,
-    update: (id: string) => `/adopters/${id}`,
-    delete: (id: string) => `/adopters/${id}`,
+    findOne: (id: number) => `/adopters/${id}`,
+    update: (id: number) => `/adopters/${id}`,
+    delete: (id: number) => `/adopters/${id}`,
   },
   animals: {
     create: `/animals`,

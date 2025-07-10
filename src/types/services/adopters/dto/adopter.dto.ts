@@ -1,4 +1,4 @@
-interface CreateAdopterDto{
+interface CreateAdopterDto {
   firstName: string;
   lastName: string;
   documentNumber: string;
@@ -9,10 +9,7 @@ interface CreateAdopterDto{
   nationality: string;
 }
 
-interface UpdateAdopterDto extends Partial<CreateAdopterDto> {
-  id?: string
-}
+interface UpdateAdopterDto
+  extends Partial<Omit<CreateAdopterDto, 'documentNumber'>> {}
 
-interface FilterAdopterDto{
-
-}
+interface FilterAdopterDto {}

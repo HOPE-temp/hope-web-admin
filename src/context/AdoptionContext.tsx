@@ -41,6 +41,7 @@ export function AdoptionProvider({ children }: { children: ReactNode }) {
       setLimit(res.limit);
       setOffset(res.offset);
       setTotal(res.total);
+      setTotal(res.total);
     }
     setLoading(false);
   };

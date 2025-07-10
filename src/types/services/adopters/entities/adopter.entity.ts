@@ -6,9 +6,10 @@ interface Adopter {
   lastName: string;
   documentNumber: string;
   phone: string;
+  email: string;
   district: string;
-  address: string
-  nationality: string
+  address: string;
+  nationality: string;
   isBanned: boolean;
   createdAt: Date;
   updatedAt: Date;
