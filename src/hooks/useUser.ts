@@ -1,23 +1,28 @@
-import { useEffect, useState, useCallback } from "react"
-
+import { useAuth } from '@/context/AuthContext';
+import {
+  findAllUsers,
+  createUser,
+  updatePrivateUser,
+  deleteUser,
+} from '@/services/hopeBackend/users';
+import { useEffect, useState, useCallback } from 'react';
 
 export interface UserTableRow {
-  id: number
-  lastName: string
-  firstName: string
-  email: string
-  phone: string
-  address: string | null
-  documentNumber: string
-  rol: string
-  username: string
+  id: number;
+  lastName: string;
+  firstName: string;
+  email: string;
+  phone: string;
+  address: string | null;
+  documentNumber: string;
+  rol: string;
+  username: string;
 }
 
-
 export type CreateUserInput = {
-  username: string;  
+  username: string;
   firstName: string;
-  location : string;
+  location: string;
   lastName: string;
   password: string;
   email: string;
@@ -37,24 +42,17 @@ export type UpdateUserInput = {
 };
 
 export function useUsers() {
-  const [users, setUsers] = useState<UserTableRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  
+  const [users, setUsers] = useState<UserTableRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { axios } = useAuth();
   const fetchUsers = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const token = localStorage.getItem("accessToken")
-      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/users", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
-      if (!res.ok) throw new Error("Error al obtener usuarios")
-      const data = await res.json()
+      const res = await findAllUsers(axios);
+      const data = res.items;
+      console.log({ res });
       const mapped: UserTableRow[] = data.map((u: any) => ({
         id: u.id,
         lastName: u.info.lastName,
@@ -65,84 +63,48 @@ export function useUsers() {
         documentNumber: u.info.documentNumber,
         rol: u.info.rol,
         username: u.info.username,
-      }))
-      setUsers(mapped)
+      }));
+      setUsers(mapped);
     } catch (err: any) {
-      setError(err.message || "Error desconocido")
+      setError(err.message || 'Error desconocido');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
+    fetchUsers();
+  }, [fetchUsers]);
 
- 
-  const createUser = async (input: CreateUserInput) => {
+  const creatorUser = async (input: CreateUserDto) => {
     try {
-      const token = localStorage.getItem("accessToken")
-      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/users", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(input)
-      })
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}))
-        throw new Error(errorData.message || "Error al crear usuario")
-      }
-      await fetchUsers() 
-      return await res.json()
-    } catch (err: any) {
-      throw new Error(err.message || "Error desconocido")
-    }
-  }
+      await createUser(axios, input);
 
-  
-  const updateUser = async (id: number, input: UpdateUserInput) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/users/${id}/private`, {
-        method: "PATCH",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(input)
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al editar usuario");
-      }
       await fetchUsers();
-      return await res.json();
     } catch (err: any) {
-      throw new Error(err.message || "Error desconocido");
+      throw new Error(err.message || 'Error desconocido');
     }
-  }
+  };
 
-
-  const deleteUser = async (id: number) => {
+  const updatorUser = async (id: number, input: UpdatePrivateUserDto) => {
     try {
-      const token = localStorage.getItem("accessToken")
-      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/users/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}))
-        throw new Error(errorData.message || "Error al eliminar usuario")
-      }
-      await fetchUsers() 
+      const res = await updatePrivateUser(axios, id, input);
+
+      await fetchUsers();
+      return res;
     } catch (err: any) {
-      throw new Error(err.message || "Error desconocido")
+      throw new Error(err.message || 'Error desconocido');
     }
-  }
-  return { users, loading, error, createUser, updateUser, deleteUser }
+  };
+
+  const deleterUser = async (id: number) => {
+    try {
+      await deleteUser(axios, id);
+
+      await fetchUsers();
+    } catch (err: any) {
+      throw new Error(err.message || 'Error desconocido');
+    }
+  };
+  return { users, loading, error, creatorUser, updatorUser, deleterUser };
 }

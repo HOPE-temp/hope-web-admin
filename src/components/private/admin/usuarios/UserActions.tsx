@@ -1,11 +1,11 @@
-import React from "react";
-import { UserEditDialog } from "./UserEditDialog";
-import { UserDeleteDialog } from "./UserDeleteDialog";
-import { UserTableRow, UpdateUserInput } from "@/hooks/useUser";
+import React from 'react';
+import { UserEditDialog } from './UserEditDialog';
+import { UserDeleteDialog } from './UserDeleteDialog';
+import { UserTableRow, UpdateUserInput } from '@/hooks/useUser';
 
 interface Props {
   user: UserTableRow;
-  updateUser: (id: number, input: UpdateUserInput) => Promise<any>;
+  updateUser: (id: number, input: UpdatePrivateUserDto) => Promise<any>;
   deleteUser: (id: number) => Promise<any>;
 }
 

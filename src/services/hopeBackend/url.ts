@@ -1,6 +1,16 @@
 import { generateUrlWithParms } from '@/lib/generateUrlParma';
 
 export const hopeBackendUrl = {
+  activities: {
+    create: `/activities`,
+    find: (params?: FilterActivityDto) =>
+      generateUrlWithParms<FilterActivityDto>(`/activities`, params),
+    findOne: (id: number) => `/activities/${id}`,
+    update: (id: number) => `/activities/${id}`,
+    finish: (id: number) => `/activities/${id}/finish`,
+    uploadImage: (id: number) => `/activities/${id}/upload_image`,
+    delete: (id: number) => `/activities/${id}`,
+  },
   adoptions: {
     create: `/adoptions`,
     find: (params?: FilterAdoptionDto) =>

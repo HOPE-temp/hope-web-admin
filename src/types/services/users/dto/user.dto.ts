@@ -1,6 +1,6 @@
 interface CreatePublicUserDto {
   readonly username: string;
-  readonly avatar: string;
+  // readonly avatar: string;
   readonly location: string;
 }
 

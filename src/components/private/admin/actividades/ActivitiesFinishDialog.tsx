@@ -12,19 +12,21 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import type { Activity } from './ActivitiesTable';
+import { finishActivity } from '@/services/hopeBackend/activities';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = {
   activity: Activity;
-  finishActivity: (id: number) => Promise<any>;
+  onFinish: () => void;
   children: React.ReactNode;
 };
 
 export function ActivitiesFinishDialog({
   activity,
-  finishActivity,
+  onFinish,
   children,
 }: Props) {
+  const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [finishing, setFinishing] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -33,7 +35,8 @@ export function ActivitiesFinishDialog({
     setFinishing(true);
     setError(null);
     try {
-      await finishActivity(activity.id);
+      await finishActivity(axios, activity.id);
+      onFinish && onFinish();
       setOpen(false);
     } catch (err: any) {
       setError(err.message || 'Error desconocido al finalizar la actividad');

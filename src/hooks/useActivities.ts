@@ -1,4 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useAuth } from '@/context/AuthContext';
+import {
+  createActivity,
+  deleteActivity,
+  findAllActivities,
+  updateActivity,
+} from '@/services/hopeBackend/activities';
+import { useEffect, useState, useCallback } from 'react';
 export interface ActivityTableRow {
   id: number;
   title: string;
@@ -17,15 +24,8 @@ export type CreateActivityInput = {
   title: string;
 };
 
-export type UpdateActivityInput = {
-  title: string;
-  resourceUrl: string;
-  scheduleStartAt: string;
-  scheduleEndAt: string;
-  admin: boolean;
-};
-
 export function useActivities() {
+  const { axios } = useAuth();
   const [activities, setActivities] = useState<ActivityTableRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,15 +34,9 @@ export function useActivities() {
     setLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/activities", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      if (!res.ok) throw new Error("Error al obtener actividades");
-      const data = await res.json();
+      const res = await findAllActivities(axios);
+
+      const data = res.items;
       const mapped: ActivityTableRow[] = data.map((a: any) => ({
         id: a.id,
         title: a.title,
@@ -58,7 +52,7 @@ export function useActivities() {
       }));
       setActivities(mapped);
     } catch (err: any) {
-      setError(err.message || "Error desconocido");
+      setError(err.message || 'Error desconocido');
     } finally {
       setLoading(false);
     }
@@ -68,123 +62,95 @@ export function useActivities() {
     fetchActivities();
   }, [fetchActivities]);
 
-  const createActivity = async (input: CreateActivityInput) => {
+  const creatorActivity = async (input: CreateActivityInput) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(process.env.HOPE_BACKEND_HOSTNAME + "/activities", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(input)
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al crear actividad");
-      }
+      const res = createActivity(axios, input);
       await fetchActivities();
-      return await res.json();
+      return res;
     } catch (err: any) {
-      throw new Error(err.message || "Error desconocido");
+      throw new Error(err.message || 'Error desconocido');
     }
   };
 
-  const updateActivity = async (id: number, input: UpdateActivityInput) => {
+  const updatorActivity = async (id: number, input: UpdateActivityDto) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(input)
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al editar actividad");
-      }
+      const res = await updateActivity(axios, id, input);
+
       await fetchActivities();
-      return await res.json();
+      return res;
     } catch (err: any) {
-      throw new Error(err.message || "Error desconocido");
+      throw new Error(err.message || 'Error desconocido');
     }
   };
 
-  const deleteActivity = async (id: number) => {
+  const deleterActivity = async (id: number) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+      await deleteActivity(axios, id);
+      await fetchActivities();
+    } catch (err: any) {
+      throw new Error(err.message || 'Error desconocido');
+    }
+  };
+
+  const finisherActivity = async (id: number) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(
+        `${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}/finish`,
+        {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al eliminar actividad");
-      }
-      await fetchActivities(); 
-    } catch (err: any) {
-      throw new Error(err.message || "Error desconocido");
-    }
-  };
-
-  const finishActivity = async (id: number) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}/finish`, {
-        method: "PATCH",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al finalizar actividad");
+        throw new Error(errorData.message || 'Error al finalizar actividad');
       }
       await fetchActivities();
       return await res.json();
     } catch (err: any) {
-      throw new Error(err.message || "Error desconocido");
+      throw new Error(err.message || 'Error desconocido');
     }
   };
 
-  const updaloadImageActivity = async (id: number, file: File) => {
+  const updaloaderImageActivity = async (id: number, file: File) => {
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', file);
 
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch(`${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}/upload_image`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Authorization": `Bearer ${token}`,
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(
+        `${process.env.HOPE_BACKEND_HOSTNAME}/activities/${id}/upload_image`,
+        {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al finalizar actividad");
+        throw new Error(errorData.message || 'Error al finalizar actividad');
       }
       await fetchActivities();
       return await res.json();
     } catch (err: any) {
-      throw new Error(err.message || "Error desconocido");
+      throw new Error(err.message || 'Error desconocido');
     }
   };
 
-  return { 
+  return {
     activities,
     loading,
     error,
-    createActivity,
-    updateActivity,
-    deleteActivity,
-    finishActivity,
-    updaloadImageActivity
+    creatorActivity,
+    updatorActivity,
+    deleterActivity,
+    finisherActivity,
+    updaloaderImageActivity,
   };
 }

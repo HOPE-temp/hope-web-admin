@@ -27,6 +27,12 @@ import {
   FormDescription,
 } from '@/components/ui/form';
 import { useActivities } from '@/hooks/useActivities';
+import { useActivity } from '@/context/ActivityContext';
+import {
+  createActivity,
+  uploadImageActivity,
+} from '@/services/hopeBackend/activities';
+import { useAuth } from '@/context/AuthContext';
 
 const imageSchema = z
   .custom<FileList>(v => v instanceof FileList && v.length > 0, {
@@ -81,15 +87,11 @@ export interface CreateActivityInput {
   admin: boolean;
 }
 
-type Props = {
-  createActivity: (input: CreateActivityInput) => Promise<any>;
-  updaloadImageActivity: (id: number, file: File) => Promise<any>;
-};
+type Props = {};
 
-export function ActivitiesCreateDialog({
-  createActivity,
-  updaloadImageActivity,
-}: Props) {
+export function ActivitiesCreateDialog({}: Props) {
+  const { axios } = useAuth();
+  const { updateActivities } = useActivity();
   const [open, setOpen] = React.useState(false);
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
@@ -117,14 +119,15 @@ export function ActivitiesCreateDialog({
         admin: data.admin,
       };
 
-      const { id } = await createActivity(payload);
+      const { id } = await createActivity(axios, payload);
       if (data?.imageUrl) {
         const file = data?.imageUrl?.item(0);
         if (file) {
-          await updaloadImageActivity(id, file);
+          await uploadImageActivity(axios, id, file);
         }
       }
       setFormSuccess('Actividad creada correctamente');
+      updateActivities && updateActivities();
       form.reset();
       setTimeout(() => {
         setOpen(false);

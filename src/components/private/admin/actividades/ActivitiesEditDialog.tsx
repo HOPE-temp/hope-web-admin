@@ -27,7 +27,11 @@ import {
   FormDescription,
 } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
-import type { Activity } from './ActivitiesTable';
+import {
+  updateActivity,
+  uploadImageActivity,
+} from '@/services/hopeBackend/activities';
+import { useAuth } from '@/context/AuthContext';
 
 const imageSchema = z
   .custom<FileList>(v => v instanceof FileList && v.length > 0, {
@@ -46,7 +50,7 @@ const schema = z
       .string()
       .min(3, 'El título debe tener al menos 3 caracteres')
       .max(100, 'El título no puede exceder 100 caracteres'),
-    imageUrl: imageSchema,
+    imageUrl: imageSchema.optional(),
     imagePublicId: z.string().optional().or(z.literal('')),
     resourceUrl: z
       .string()
@@ -84,15 +88,11 @@ export interface UpdateActivityInput {
 
 type Props = {
   activity: Activity;
-  updateActivity: (id: number, input: UpdateActivityInput) => Promise<any>;
-  updaloadImageActivity: (id: number, file: File) => Promise<any>;
+  onEdit: () => void;
 };
 
-export function ActivitiesEditDialog({
-  activity,
-  updateActivity,
-  updaloadImageActivity,
-}: Props) {
+export function ActivitiesEditDialog({ activity, onEdit }: Props) {
+  const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
@@ -105,10 +105,10 @@ export function ActivitiesEditDialog({
       resourceUrl: activity.resourceUrl || '',
       scheduleStartAt: activity.scheduleStartAt
         ? new Date(activity.scheduleStartAt).toISOString().slice(0, 16)
-        : '',
+        : undefined,
       scheduleEndAt: activity.scheduleEndAt
         ? new Date(activity.scheduleEndAt).toISOString().slice(0, 16)
-        : '',
+        : undefined,
       admin: activity.admin,
     },
   });
@@ -122,10 +122,10 @@ export function ActivitiesEditDialog({
         resourceUrl: activity.resourceUrl || '',
         scheduleStartAt: activity.scheduleStartAt
           ? new Date(activity.scheduleStartAt).toISOString().slice(0, 16)
-          : '',
+          : undefined,
         scheduleEndAt: activity.scheduleEndAt
           ? new Date(activity.scheduleEndAt).toISOString().slice(0, 16)
-          : '',
+          : undefined,
         admin: activity.admin,
       });
       setFormSuccess(null);
@@ -136,19 +136,20 @@ export function ActivitiesEditDialog({
     try {
       const payload = {
         title: data.title,
-        resourceUrl: data.resourceUrl || '',
-        scheduleStartAt: data.scheduleStartAt || '',
-        scheduleEndAt: data.scheduleEndAt || '',
+        resourceUrl: data.resourceUrl,
+        scheduleStartAt: data.scheduleStartAt,
+        scheduleEndAt: data.scheduleEndAt,
         admin: data.admin,
       };
 
-      const { id } = await updateActivity(activity.id, payload);
+      const { id } = await updateActivity(axios, activity.id, payload);
       if (data?.imageUrl) {
         const file = data?.imageUrl?.item(0);
         if (file) {
-          await updaloadImageActivity(id, file);
+          await uploadImageActivity(axios, id, file);
         }
       }
+      onEdit && onEdit();
       setFormSuccess('Actividad actualizada correctamente');
       setTimeout(() => {
         setOpen(false);

@@ -25,7 +25,7 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form';
-import { UpdateUserInput, UserTableRow } from '@/hooks/useUser';
+import { UserTableRow } from '@/hooks/useUser';
 
 const schema = z.object({
   firstName: z.string().min(6, 'El nombre debe tener al menos 6 caracteres'),
@@ -42,7 +42,7 @@ type FormValues = z.infer<typeof schema>;
 
 type Props = {
   user: UserTableRow;
-  updateUser: (id: number, input: UpdateUserInput) => Promise<any>;
+  updateUser: (id: number, input: UpdatePrivateUserDto) => Promise<any>;
 };
 
 export function UserEditDialog({ user, updateUser }: Props) {

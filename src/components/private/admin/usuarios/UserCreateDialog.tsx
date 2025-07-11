@@ -30,8 +30,8 @@ import { CreateUserInput } from '@/hooks/useUser';
 const schema = z.object({
   username: z.string().min(6, 'El usuario debe tener al menos 6 caracteres'),
   location: z.string().min(1, 'La ubicación no debe estar vacía'),
-  firstName: z.string().min(6, 'El nombre debe tener al menos 6 caracteres'),
-  lastName: z.string().min(6, 'El apellido debe tener al menos 6 caracteres'),
+  firstName: z.string().min(3, 'El nombre debe tener al menos 6 caracteres'),
+  lastName: z.string().min(3, 'El apellido debe tener al menos 6 caracteres'),
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
@@ -55,7 +55,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 type Props = {
-  createUser: (input: CreateUserInput) => Promise<any>;
+  createUser: (input: CreateUserDto) => Promise<any>;
 };
 
 export function UserCreateDialog({ createUser }: Props) {

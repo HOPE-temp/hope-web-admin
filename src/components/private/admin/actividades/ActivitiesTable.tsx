@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import * as React from "react"
+import * as React from 'react';
 import {
   flexRender,
   getCoreRowModel,
@@ -14,10 +14,10 @@ import {
   type ColumnDef,
   useReactTable,
   type FilterFn,
-} from "@tanstack/react-table"
-import { ChevronDown, Search, Filter } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from '@tanstack/react-table';
+import { ChevronDown, Search, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,49 +25,51 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+} from '@/components/ui/dropdown-menu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { useActivity } from '@/context/ActivityContext';
+import { createActivitiesColumns } from './ActivitiesColumns';
 
-export interface Activity {
-  id: number
-  title: string
-  imageUrl: string | null
-  imagePublicId: string | null
-  resourceUrl: string | null
-  scheduleStartAt: string | null
-  scheduleEndAt: string | null
-  finished: boolean
-  admin: boolean
-  createdAt: string
-  updatedAt: string
-}
-
-interface ActivitiesTableProps<TData extends RowData> {
-  data: TData[]
-  columns: ColumnDef<TData, any>[]
-}
-
+interface ActivitiesTableProps<TData extends RowData> {}
 
 const globalActivityFilter: FilterFn<any> = (row, columnId, filterValue) => {
-  if (!filterValue) return true
-  const value = filterValue.toLowerCase()
+  if (!filterValue) return true;
+  const value = filterValue.toLowerCase();
   return (
     (row.original.title?.toLowerCase().includes(value) ?? false) ||
     (row.original.resourceUrl?.toLowerCase().includes(value) ?? false)
-  )
-}
+  );
+};
 
-export function ActivitiesTable<TData extends RowData>({ data, columns }: ActivitiesTableProps<TData>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [globalFilter, setGlobalFilter] = React.useState("")
-  const [statusFilter, setStatusFilter] = React.useState<string>("all")
-  const [adminFilter, setAdminFilter] = React.useState<string>("all")
+export function ActivitiesTable<
+  TData extends RowData
+>({}: ActivitiesTableProps<TData>) {
+  const { activities, updateActivities } = useActivity();
 
-  const table = useReactTable({
-    data,
+  const columns = createActivitiesColumns({
+    updateActivities,
+  });
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [statusFilter, setStatusFilter] = React.useState<string>('all');
+  const [adminFilter, setAdminFilter] = React.useState<string>('all');
+
+  const table = useReactTable<Activity>({
+    data: activities,
     columns,
     filterFns: {
       globalActivityFilter,
@@ -89,37 +91,39 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
       rowSelection,
       globalFilter,
     },
-  })
+  });
 
   // Filtrar por estado
   React.useEffect(() => {
-    if (statusFilter === "all") {
-      table.getColumn("finished")?.setFilterValue(undefined)
+    if (statusFilter === 'all') {
+      table.getColumn('finished')?.setFilterValue(undefined);
     } else {
-      table.getColumn("finished")?.setFilterValue(statusFilter === "finished")
+      table.getColumn('finished')?.setFilterValue(statusFilter === 'finished');
     }
-  }, [statusFilter, table])
+  }, [statusFilter, table]);
 
   // Filtrar por tipo admin
   React.useEffect(() => {
-    if (adminFilter === "all") {
-      table.getColumn("admin")?.setFilterValue(undefined)
+    if (adminFilter === 'all') {
+      table.getColumn('admin')?.setFilterValue(undefined);
     } else {
-      table.getColumn("admin")?.setFilterValue(adminFilter === "admin")
+      table.getColumn('admin')?.setFilterValue(adminFilter === 'admin');
     }
-  }, [adminFilter, table])
+  }, [adminFilter, table]);
 
   const getFilteredStats = () => {
-    const filteredData = table.getFilteredRowModel().rows.map((row) => row.original)
+    const filteredData = table
+      .getFilteredRowModel()
+      .rows.map(row => row.original);
     return {
       total: filteredData.length,
       finished: filteredData.filter((item: any) => item.finished).length,
       pending: filteredData.filter((item: any) => !item.finished).length,
       admin: filteredData.filter((item: any) => item.admin).length,
-    }
-  }
+    };
+  };
 
-  const stats = getFilteredStats()
+  const stats = getFilteredStats();
 
   return (
     <div className="w-full space-y-4">
@@ -130,11 +134,15 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
           <div className="text-sm text-muted-foreground">Total</div>
         </div>
         <div className="bg-card p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-green-600">{stats.finished}</div>
+          <div className="text-2xl font-bold text-green-600">
+            {stats.finished}
+          </div>
           <div className="text-sm text-muted-foreground">Finalizadas</div>
         </div>
         <div className="bg-card p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-orange-600">{stats.pending}</div>
+          <div className="text-2xl font-bold text-orange-600">
+            {stats.pending}
+          </div>
           <div className="text-sm text-muted-foreground">Pendientes</div>
         </div>
       </div>
@@ -146,7 +154,7 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
           <Input
             placeholder="Buscar por título o recurso..."
             value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            onChange={e => setGlobalFilter(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -155,23 +163,31 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                Estado: {statusFilter === "all" ? "Todos" : statusFilter === "finished" ? "Finalizadas" : "Pendientes"}
+                Estado:{' '}
+                {statusFilter === 'all'
+                  ? 'Todos'
+                  : statusFilter === 'finished'
+                  ? 'Finalizadas'
+                  : 'Pendientes'}
                 <ChevronDown className="h-4 w-4 ml-2" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuCheckboxItem checked={statusFilter === "all"} onCheckedChange={() => setStatusFilter("all")}>
+              <DropdownMenuCheckboxItem
+                checked={statusFilter === 'all'}
+                onCheckedChange={() => setStatusFilter('all')}
+              >
                 Todos
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={statusFilter === "finished"}
-                onCheckedChange={() => setStatusFilter("finished")}
+                checked={statusFilter === 'finished'}
+                onCheckedChange={() => setStatusFilter('finished')}
               >
                 Finalizadas
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={statusFilter === "pending"}
-                onCheckedChange={() => setStatusFilter("pending")}
+                checked={statusFilter === 'pending'}
+                onCheckedChange={() => setStatusFilter('pending')}
               >
                 Pendientes
               </DropdownMenuCheckboxItem>
@@ -181,23 +197,31 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                Tipo: {adminFilter === "all" ? "Todos" : adminFilter === "admin" ? "Solo Admin" : "Regulares"}
+                Tipo:{' '}
+                {adminFilter === 'all'
+                  ? 'Todos'
+                  : adminFilter === 'admin'
+                  ? 'Solo Admin'
+                  : 'Regulares'}
                 <ChevronDown className="h-4 w-4 ml-2" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuCheckboxItem checked={adminFilter === "all"} onCheckedChange={() => setAdminFilter("all")}>
+              <DropdownMenuCheckboxItem
+                checked={adminFilter === 'all'}
+                onCheckedChange={() => setAdminFilter('all')}
+              >
                 Todos
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={adminFilter === "admin"}
-                onCheckedChange={() => setAdminFilter("admin")}
+                checked={adminFilter === 'admin'}
+                onCheckedChange={() => setAdminFilter('admin')}
               >
                 Solo Admin
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={adminFilter === "regular"}
-                onCheckedChange={() => setAdminFilter("regular")}
+                checked={adminFilter === 'regular'}
+                onCheckedChange={() => setAdminFilter('regular')}
               >
                 Regulares
               </DropdownMenuCheckboxItem>
@@ -217,27 +241,27 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
               <DropdownMenuSeparator />
               {table
                 .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => (
+                .filter(column => column.getCanHide())
+                .map(column => (
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    onCheckedChange={value => column.toggleVisibility(!!value)}
                   >
-                    {column.id === "imageUrl"
-                      ? "Imagen"
-                      : column.id === "resourceUrl"
-                        ? "Recurso"
-                        : column.id === "scheduleStartAt"
-                          ? "Inicio"
-                          : column.id === "scheduleEndAt"
-                            ? "Fin"
-                            : column.id === "finished"
-                              ? "Estado"
-                              : column.id === "admin"
-                                ? "Tipo"
-                                : column.id}
+                    {column.id === 'imageUrl'
+                      ? 'Imagen'
+                      : column.id === 'resourceUrl'
+                      ? 'Recurso'
+                      : column.id === 'scheduleStartAt'
+                      ? 'Inicio'
+                      : column.id === 'scheduleEndAt'
+                      ? 'Fin'
+                      : column.id === 'finished'
+                      ? 'Estado'
+                      : column.id === 'admin'
+                      ? 'Tipo'
+                      : column.id}
                   </DropdownMenuCheckboxItem>
                 ))}
             </DropdownMenuContent>
@@ -249,11 +273,16 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+                {headerGroup.headers.map(header => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -261,19 +290,35 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="hover:bg-muted/50">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+              table.getRowModel().rows.map(row => (
+                <TableRow
+                  key={row.id}
+                  activities-state={row.getIsSelected() && 'selected'}
+                  className="hover:bg-muted/50"
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={Array.isArray(columns) ? columns.length : 1} className="h-24 text-center">
+                <TableCell
+                  colSpan={Array.isArray(columns) ? columns.length : 1}
+                  className="h-24 text-center"
+                >
                   <div className="flex flex-col items-center justify-center space-y-2">
-                    <div className="text-muted-foreground">No se encontraron actividades</div>
-                    <div className="text-sm text-muted-foreground">Intenta ajustar los filtros de búsqueda</div>
+                    <div className="text-muted-foreground">
+                      No se encontraron actividades
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Intenta ajustar los filtros de búsqueda
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>
@@ -285,12 +330,13 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
       {/* Paginación */}
       <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
         <div className="text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de {table.getFilteredRowModel().rows.length} actividad(es)
-          seleccionadas
+          {table.getFilteredSelectedRowModel().rows.length} de{' '}
+          {table.getFilteredRowModel().rows.length} actividad(es) seleccionadas
         </div>
         <div className="flex items-center space-x-2">
           <div className="text-sm text-muted-foreground">
-            Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+            Página {table.getState().pagination.pageIndex + 1} de{' '}
+            {table.getPageCount()}
           </div>
           <div className="space-x-2">
             <Button
@@ -301,12 +347,17 @@ export function ActivitiesTable<TData extends RowData>({ data, columns }: Activi
             >
               Anterior
             </Button>
-            <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
               Siguiente
             </Button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -36,7 +36,7 @@ export async function updatePublicUser(
 export async function updatePrivateUser(
   axios: AxiosInstance,
   id: number,
-  body: UpdatePublicUserDto
+  body: UpdatePrivateUserDto
 ) {
   const res = await axios.patch<User>(
     hopeBackendUrl.users.updatePrivate(id),
