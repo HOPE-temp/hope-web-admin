@@ -1,43 +1,64 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { env } from '@/config/env';
-import toast from 'react-hot-toast';
+import { dictError, dictErrorWith401 } from './axios/errorsHandlers';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
-const axiosInstance = axios.create({
-  baseURL: env.backend.hostname,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-axiosInstance.interceptors.response.use(
-  res => res,
-  err => {
-    const status = err.response?.status;
-    // Si ya se manejó localmente, no hagas nada
+class Axios {
+  axiosInstance: AxiosInstance;
 
-    if (typeof window !== 'undefined') {
-      switch (status) {
-        case 400:
-          toast.error('Solicitud incorrecta: Revisa los campos enviados');
-          break;
-        // case 401:
-        //   toast.error('No autorizado: Debes iniciar sesión.');
-        //   break;
-        case 200:
-          toast.success('¡Todo bien!: Operación completada con éxito.');
-          break;
-        case 500:
-          toast.error('Error desconocido: Algo salió mal.');
-          break;
-        default:
-          console.error('Error: sin gestion');
-      }
-    }
-
-    return Promise.reject(err);
+  constructor() {
+    this.axiosInstance = axios.create({
+      baseURL: env.backend.hostname,
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    this.initialize();
   }
-);
 
-export const isAxiosError = axios.isAxiosError;
+  initialize() {
+    this.axiosInstance.interceptors.response.use(
+      res => res,
+      err => {
+        const status = err.response?.status;
+        if (typeof window !== 'undefined' && status) {
+          if (dictError[status]) {
+            dictError[status]();
+          }
+        }
+        return Promise.reject(err);
+      }
+    );
+  }
 
-export { axiosInstance as axios };
+  set404(router: AppRouterInstance) {
+    console.log('router');
+    this.axiosInstance.interceptors.response.use(
+      res => res,
+      err => {
+        const status = err.response?.status;
+        // Si ya se manejó localmente, no hagas nada
+
+        if (typeof window !== 'undefined') {
+          if (status) {
+            dictErrorWith401(router)[status]();
+          }
+        }
+
+        return Promise.reject(err);
+      }
+    );
+  }
+
+  setAuthorization(token: string) {
+    this.axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+
+  deleteAuthorization(router: AppRouterInstance) {
+    router.push('/login');
+    delete this.axiosInstance.defaults.headers.common.Authorization;
+  }
+}
+
+export default Axios;

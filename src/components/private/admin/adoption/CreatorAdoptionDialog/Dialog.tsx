@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,8 +26,6 @@ import { useAuth } from '@/context/AuthContext';
 
 //schema
 import { FormValues, schema } from './schema';
-import { today } from '../common/schema';
-import { useAdoption } from '@/context/AdoptionContext';
 
 type CreatorAdoptionDialogProps = {
   onCreated?: () => void;

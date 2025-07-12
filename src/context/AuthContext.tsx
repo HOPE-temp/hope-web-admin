@@ -1,20 +1,28 @@
 'use client';
-import { createContext, useContext, ReactNode, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import { useLocalStorage } from '../hooks/useLocalStogare';
-import { axios } from '@/lib/axiosInstance';
-import toast from 'react-hot-toast';
+import Axios from '@/lib/axiosInstance';
 import { AxiosInstance } from 'axios';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { LoadingPerritos } from '@/components/layout/Loading/Loading';
 
 type UserAuth = {
   newToken: string;
   newRole: RoleUser;
   newUser: PrivateUser;
+  newExpirate: number;
 };
 type AuthContextType = {
   token: string | null;
   role: RoleUser | null;
   user: PrivateUser | null;
+  expirate: number | null;
   saveAuth: (auth: UserAuth) => void;
   loaded: boolean;
   axios: AxiosInstance;
@@ -23,35 +31,51 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [axios, setAxios] = useState<Axios>(new Axios());
   const [token, setToken, loaded] = useLocalStorage<string>(
     'accessToken',
     null
   );
   const [role, setRole] = useLocalStorage<RoleUser>('rol', null);
   const [user, setUser] = useLocalStorage<PrivateUser>('user', null);
+  const [expirate, setExpirate] = useLocalStorage<number>('expirate', null);
   const router = useRouter();
 
-  const saveAuth = ({ newToken, newRole, newUser }: UserAuth) => {
+  const saveAuth = ({ newToken, newRole, newUser, newExpirate }: UserAuth) => {
     setToken(newToken);
     setRole(newRole);
     setUser(newUser);
+    setExpirate(newExpirate);
   };
 
   useEffect(() => {
+    if (loaded) {
+      axios.set404(router);
+    }
+  }, [loaded]);
+
+  useEffect(() => {
     if (token && loaded) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      axios.setAuthorization(token);
     }
     if (!token && loaded) {
-      router.push('/login');
-      delete axios.defaults.headers.common.Authorization;
+      axios.deleteAuthorization(router);
     }
   }, [token]);
 
   return (
     <AuthContext.Provider
-      value={{ token, role, user, saveAuth, loaded, axios }}
+      value={{
+        token,
+        role,
+        user,
+        expirate,
+        saveAuth,
+        loaded,
+        axios: axios.axiosInstance,
+      }}
     >
-      {children}
+      {!loaded ? <LoadingPerritos /> : children}
     </AuthContext.Provider>
   );
 }

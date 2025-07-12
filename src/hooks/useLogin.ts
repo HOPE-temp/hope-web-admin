@@ -17,10 +17,12 @@ export function useLogin() {
       });
       if (!res.ok) throw new Error('Credenciales incorrectas');
       const data = await res.json();
+      console.log;
       saveAuth({
         newRole: data.user.rol,
         newToken: data.accessToken,
         newUser: data.user,
+        newExpirate: new Date().getTime() + 1000 * 60 * 60 * 24,
       });
       localStorage.setItem('fullName', data.user.fullName);
       return data.user.rol;
