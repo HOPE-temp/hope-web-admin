@@ -39,6 +39,17 @@ export const hopeBackendUrl = {
     uploadImage: (id: number) => `/animals/${id}/upload_image`,
     delete: (id: number) => `/animals/${id}`,
   },
+
+  medical_checkups: {
+    create: `/medical-checkups`,
+    find: (params?: FilterAdopterDto) =>
+      generateUrlWithParms<FilterAdopterDto>(`/medical-checkups`, params),
+    findOne: (id: number) => `/medical-checkups/${id}`,
+    update: (id: number) => `/medical-checkups/${id}`,
+    start_checkup: (id: number) => `/medical-checkups/${id}/start_checkup`,
+    end_checkup: (id: number) => `/medical-checkups/${id}/end_checkup`,
+    delete: (id: number) => `/medical-checkups/${id}`,
+  },
   users: {
     create: `/users`,
     find: (params?: FilterAnimalDto) =>

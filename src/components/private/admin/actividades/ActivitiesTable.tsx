@@ -36,8 +36,19 @@ import {
 } from '@/components/ui/table';
 import { useActivity } from '@/context/ActivityContext';
 import { createActivitiesColumns } from './ActivitiesColumns';
+import VisibilityColums from '@/components/shared/Table/VisibilityColums';
 
 interface ActivitiesTableProps<TData extends RowData> {}
+
+const dictHeaderActivities = {
+  imageUrl: 'Imagen',
+  resourceUrl: 'Recurso',
+  scheduleStartAt: 'Inicio',
+  scheduleEndAt: 'Fin',
+  finished: 'Estado',
+  admin: 'Tipo',
+  actions: 'Actiones',
+};
 
 const globalActivityFilter: FilterFn<any> = (row, columnId, filterValue) => {
   if (!filterValue) return true;
@@ -227,45 +238,7 @@ export function ActivitiesTable<
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                Columnas
-                <ChevronDown className="h-4 w-4 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px]">
-              <DropdownMenuLabel>Mostrar columnas</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {table
-                .getAllColumns()
-                .filter(column => column.getCanHide())
-                .map(column => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={value => column.toggleVisibility(!!value)}
-                  >
-                    {column.id === 'imageUrl'
-                      ? 'Imagen'
-                      : column.id === 'resourceUrl'
-                      ? 'Recurso'
-                      : column.id === 'scheduleStartAt'
-                      ? 'Inicio'
-                      : column.id === 'scheduleEndAt'
-                      ? 'Fin'
-                      : column.id === 'finished'
-                      ? 'Estado'
-                      : column.id === 'admin'
-                      ? 'Tipo'
-                      : column.id}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <VisibilityColums dictHeader={dictHeaderActivities} table={table} />
         </div>
       </div>
 

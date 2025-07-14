@@ -1,10 +1,11 @@
-enum StatusMedicalCheckup {
+enum EnumStatusMedicalCheckup {
   REGISTERED = 'registered',
   IN_ATTENTION = 'in_attention',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
 }
 
+type StatusMedicalCheckup = `${EnumStatusMedicalCheckup}`;
 
 interface MedicalCheckup {
   id: number;
