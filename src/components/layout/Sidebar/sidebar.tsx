@@ -100,10 +100,10 @@ export default function Sidebar({ className }: SidebarProps) {
       active: (path) => path.startsWith("/tareas/mis-tareas"),
     },
     {
-      href: "/perfil",
+      href: "/admin/profile",
       label: "Mi Perfil",
       icon: <User className="h-4 w-4" />,      
-      active: (path) => path.startsWith("/perfil"),
+      active: (path) => path.startsWith("/admin/profile"),
     },
   ]
 

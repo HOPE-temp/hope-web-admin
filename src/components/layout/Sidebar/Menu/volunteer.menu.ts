@@ -60,9 +60,9 @@ export const itemsNavVolunteer: NavItem[] = [
     active: (path) => path.startsWith("/tareas/mis-tareas"),
   },
   {
-    href: "/perfil",
+    href: "/admin/profile",
     label: "Mi Perfil",
     icon: User,
-    active: (path) => path.startsWith("/perfil"),
+    active: (path) => path.startsWith("/admin/profile"),
   },
 ]

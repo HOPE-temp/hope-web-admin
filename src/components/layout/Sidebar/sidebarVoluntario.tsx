@@ -91,7 +91,7 @@ export default function Sidebar({ className }: SidebarProps) {
       href: "/perfil",
       label: "Mi Perfil",
       icon: <User className="h-4 w-4" />,      
-      active: (path) => path.startsWith("/perfil"),
+      active: (path) => path.startsWith("/admin/profile"),
     },
   ]
 
