@@ -1,4 +1,5 @@
 interface CreateMedicalCheckupDto {
+  title: string;
   animalId: number;
   scheduleStartAt: string;
   scheduleEndAt: string;

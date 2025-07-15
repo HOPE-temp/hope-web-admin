@@ -12,16 +12,17 @@ interface MedicalCheckup {
   animal: Animal;
   veterinarian: User;
   status: StatusMedicalCheckup;
-  scheduleStartAt: Date;
-  scheduleEndAt: Date;
-  checkupAt: Date;
+  title: string;
+  scheduleStartAt: string;
+  scheduleEndAt: string;
+  checkupAt: string;
   weightKg: number;
   temperatureC: number;
   observations: string;
   diagnosis: string;
   treatment: string;
   checkupImageUrl: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
 }

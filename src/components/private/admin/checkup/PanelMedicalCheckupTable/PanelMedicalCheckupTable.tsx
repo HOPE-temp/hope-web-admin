@@ -25,6 +25,9 @@ import PaginationTable from '@/components/shared/PaginationTable';
 import { useMedicalCheckup } from '@/context/MedicalCheckupContext';
 import { FilterInputMedicalCheckup } from '../FilterMedicalCheckup';
 import VisibilityColums from '@/components/shared/Table/VisibilityColums';
+import MedicalCheckupCalendar from '../MedicalCheckupCalendar';
+import { Calendar, CalendarEvent } from '@/components/ui/full-calendar';
+import { useRouter } from 'next/navigation';
 
 interface MedicalCheckupTableProps<TData extends RowData> {}
 
@@ -43,6 +46,8 @@ export function PanelMedicalCheckupsTable<
     total,
   } = useMedicalCheckup();
 
+  const router = useRouter();
+
   const columns = React.useMemo(
     () => createMedicalCheckupsColumns({ updateMedicalCheckups }),
     []
@@ -56,6 +61,20 @@ export function PanelMedicalCheckupsTable<
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  const events: CalendarEvent[] = React.useMemo((): CalendarEvent[] => {
+    return medicalCheckups
+      .filter(checkup => checkup.scheduleStartAt)
+      .map(checkup => {
+        return {
+          id: checkup.id.toFixed(0),
+          start: new Date(checkup.scheduleStartAt),
+          end: new Date(checkup.scheduleEndAt),
+          title: checkup.title,
+          color: 'blue',
+        };
+      });
+  }, [medicalCheckups]);
 
   return (
     <div className="w-full">
@@ -137,6 +156,9 @@ export function PanelMedicalCheckupsTable<
           onChange={({ limit, offset }) => updateParams({ limit, offset })}
         />
         <br />
+        <Calendar onEventClick={ev => router.push(`/admin/checkup/${ev.id}`)}>
+          <MedicalCheckupCalendar events={events} />
+        </Calendar>
       </div>
     </div>
   );

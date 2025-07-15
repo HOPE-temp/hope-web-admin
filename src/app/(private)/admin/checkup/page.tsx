@@ -1,11 +1,4 @@
 'use client';
-////TO DO, HOOK DE ADOPTER y validaciones//
-import { useState } from 'react';
-import { DialogCheckup } from '@/components/private/admin/checkup/Dialog';
-import { DialogRed } from '@/components/private/admin/checkup/DialogRed';
-import TableCheckups from '@/components/private/admin/checkup/TableCheckups';
-import SelectFilter from '@/components/private/admin/checkup/SelectFilter';
-import { Toaster } from '@/components/private/admin/checkup/Sonner';
 import { MedicalCheckupProvider } from '@/context/MedicalCheckupContext';
 import { PanelMedicalCheckupsTable } from '@/components/private/admin/checkup/PanelMedicalCheckupTable';
 import { CreatorMedicalCheckupDialog } from '@/components/private/admin/checkup/CreatorMedicalCheckupDialog';
