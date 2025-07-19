@@ -9,16 +9,10 @@ import {
 import { Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { uploadImageAnimal } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
 import { DialogClose, DialogTrigger } from '@radix-ui/react-dialog';
-import { Form } from '@/components/ui/form';
-import { FormFileInputCustom } from '@/components/shared/Input';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-
-//schema
-import { FormValues, schema } from './schema';
 import { isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
@@ -33,46 +27,90 @@ export function UploaderAnimalImageDialog({
 }: UploaderAnimalImageDialogProps) {
   const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  const [uploading, setUploading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      image: undefined,
-    },
-  });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validaciones
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selected = e.target.files?.[0];
-  //   if (selected) setFile(selected);
-  // };
-
-  const handleUpload = async ({ image }: FormValues) => {
-    try {
-      if (image && animal.id) {
-        const file = image?.item(0);
-        if (file) {
-          await uploadImageAnimal(axios, animal.id, file);
-          toast.success(`Imagen de la mascota #${animal.id} guardada`);
-        }
+      if (file.size > maxSize) {
+        setError('El archivo es muy grande. Máximo 5MB.');
+        setSelectedFile(null);
+        return;
       }
+
+      if (!allowedTypes.includes(file.type)) {
+        setError('Formato no válido. Solo JPG, PNG y WEBP.');
+        setSelectedFile(null);
+        return;
+      }
+
+      setError(null);
+      setSelectedFile(file);
+      console.log('File selected:', file.name, file.size);
+    } else {
+      setSelectedFile(null);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !animal.id) {
+      setError('Por favor selecciona una imagen');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setError(null);
+
+      await uploadImageAnimal(axios, animal.id, selectedFile);
+      toast.success(`Imagen de la mascota #${animal.id} guardada`);
       onUpload && onUpload();
-      form.reset();
+
+      // Reset y cerrar
+      setSelectedFile(null);
       setTimeout(() => {
         setOpen(false);
       }, 1200);
     } catch (error) {
+      console.error('Error uploading image:', error);
+
       if (isAxiosError(error)) {
         const status = error.response?.status;
+        const message = error.response?.data?.message;
 
         if (status === 409) {
-          toast.error('Ya existe un animal con ese nombre.');
+          setError('Ya existe un animal con ese nombre.');
+        } else if (status === 413) {
+          setError('La imagen es muy grande.');
+        } else if (message) {
+          setError(Array.isArray(message) ? message.join(', ') : message);
+        } else {
+          setError('Error al subir la imagen.');
         }
+      } else {
+        setError('Error al subir la imagen.');
       }
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDialogChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      setSelectedFile(null);
+      setError(null);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
           <ImageIcon className="w-5 h-5" />
@@ -80,37 +118,38 @@ export function UploaderAnimalImageDialog({
       </DialogTrigger>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle>Subir Imagen</DialogTitle>
+          <DialogTitle>Subir Imagen - {animal.nickname}</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleUpload)}
-            className="space-y-4"
+
+        <div className="grid w-full max-w-sm items-center gap-3">
+          <Label htmlFor="image">Imagen</Label>
+          <Input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+          {selectedFile && (
+            <p className="text-sm text-green-600">
+              ✓ {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+            </p>
+          )}
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button
+            onClick={handleUpload}
+            disabled={!selectedFile || uploading}
           >
-            <div className="grid grid-cols-1  gap-4">
-              <FormFileInputCustom
-                control={form.control}
-                label="Imagen"
-                name="image"
-              />
-            </div>
-            {form.formState.errors.root && (
-              <div className="text-red-500 text-sm">
-                {form.formState.errors.root.message}
-              </div>
-            )}
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancelar
-                </Button>
-              </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Registrando...' : 'Registrar'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+            {uploading ? 'Subiendo...' : 'Subir Imagen'}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

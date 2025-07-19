@@ -8,7 +8,6 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   RowData,
-  Table as ReactTable,
   useReactTable,
 } from '@tanstack/react-table';
 import {
@@ -19,49 +18,44 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FilterInputAnimal } from '../FilterAnimal';
-import { createAnimalsColumns } from './Colums';
 import { Loader } from 'lucide-react';
-import { useAnimal } from '@/context/AnimalContext';
+import { createUserColumns } from './columns';
+import { useUser } from '@/context/UserContext'; 
 import PaginationTable from '../../../../shared/PaginationTable';
 
-interface AnimalTableProps<TData extends RowData> {}
 
-export function PanelAnimalsTable<
-  TData extends RowData
->({}: AnimalTableProps<TData>) {
+interface UserTableProps<TData extends RowData> {}
+
+export function PanelUsersTable<TData extends RowData>({}: UserTableProps<TData>) {
   const {
-    animals,
+    users,
     loading,
     updateParams,
-    updateAnimals,
+    updateUsers,
     limit,
     offset,
     total,
-  } = useAnimal();
+  } = useUser();
 
   const columns = React.useMemo(
-    () => createAnimalsColumns({ updateAnimals }),
+    () => createUserColumns({ updateUsers }),
     []
   );
 
   const table = useReactTable({
-    data: animals,
+    data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-console.log(animals)
+console.log('users: ', users);
   return (
     <div className="w-full">
       <div className="py-4">
-        <FilterInputAnimal
-          onGetData={params =>
-            updateParams({ ...params, limit: 10, offset: 0 })
-          }
-        />
+        {/* Si tienes un filtro para usuarios, descomenta la siguiente línea */}
+        {/* <FilterInputUser onGetData={params => updateParams({ ...params, limit: 10, offset: 0 })} /> */}
       </div>
       <hr />
       <div className="rounded-md border">

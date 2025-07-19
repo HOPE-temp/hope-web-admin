@@ -34,6 +34,7 @@ export function AnimalProvider({ children }: { children: ReactNode }) {
   const getAnimals = async (param?: FilterAnimalDto) => {
     setLoading(true);
     const res = await findAllAnimals(axios, param);
+    console.log({res});
     setAnimals(res.items);
     setLimit(res.limit);
     setOffset(res.offset);

@@ -49,11 +49,36 @@ export async function updateActivity(
   id: number,
   body: UpdateActivityDto
 ) {
-  const res = await axios.patch<Activity>(
-    hopeBackendUrl.activities.update(id),
-    body
-  );
-  return res.data;
+  try {
+    const res = await axios.patch<Activity>(
+      hopeBackendUrl.activities.update(id),
+      body
+    );
+    return res.data;
+  } catch (error: any) {
+    console.error('Error in updateActivity service:', error);
+
+    // Capturar el error del interceptor y crear un error limpio
+    let cleanError: {
+      response: null | { data: any; status: any; statusText: any };
+      message: string;
+    } = {
+      response: null,
+      message: 'Error al actualizar actividad',
+    };
+
+    // Si hay respuesta del servidor, usarla
+    if (error.response) {
+      cleanError.response = {
+        data: error.response.data,
+        status: error.response.status,
+        statusText: error.response.statusText,
+      };
+    }
+
+    // Lanzar error limpio sin referencias al interceptor problemático
+    throw cleanError;
+  }
 }
 
 export async function uploadImageActivity(

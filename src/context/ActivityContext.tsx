@@ -36,6 +36,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const getActivity = async (param?: FilterActivityDto) => {
     setLoading(true);
     const res = await findAllActivities(axios, param);
+    console.log({res});
     if (res) {
       setActivities(res.items);
       setLimit(res.limit);

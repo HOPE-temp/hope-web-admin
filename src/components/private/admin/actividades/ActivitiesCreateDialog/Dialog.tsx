@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Plus, Upload, Link, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,70 +25,17 @@ import {
   FormMessage,
   FormDescription,
 } from '@/components/ui/form';
-import { useActivities } from '@/hooks/useActivities';
 import { useActivity } from '@/context/ActivityContext';
 import {
   createActivity,
-  uploadImageActivity,
 } from '@/services/hopeBackend/activities';
 import { useAuth } from '@/context/AuthContext';
 
-const imageSchema = z
-  .custom<FileList>(v => v instanceof FileList && v.length > 0, {
-    message: 'Se requiere una imagen',
-  })
-  .refine(fileList => fileList[0].type.startsWith('image/'), {
-    message: 'El archivo debe ser una imagen',
-  })
-  .refine(fileList => fileList[0].size <= 5 * 1024 * 1024, {
-    message: 'La imagen no debe superar los 5MB',
-  });
-
-const schema = z
-  .object({
-    title: z
-      .string()
-      .min(3, 'El título debe tener al menos 3 caracteres')
-      .max(100, 'El título no puede exceder 100 caracteres'),
-    imageUrl: imageSchema,
-    imagePublicId: z.string().optional().or(z.literal('')),
-    resourceUrl: z
-      .string()
-      .url('Debe ser una URL válida')
-      .optional()
-      .or(z.literal('')),
-    scheduleStartAt: z.string().optional().or(z.literal('')),
-    scheduleEndAt: z.string().optional().or(z.literal('')),
-    admin: z.boolean(),
-  })
-  .refine(
-    data => {
-      if (data.scheduleStartAt && data.scheduleEndAt) {
-        return new Date(data.scheduleStartAt) < new Date(data.scheduleEndAt);
-      }
-      return true;
-    },
-    {
-      message: 'La fecha de fin debe ser posterior a la fecha de inicio',
-      path: ['scheduleEndAt'],
-    }
-  );
-
-type FormValues = z.infer<typeof schema>;
-
-export interface CreateActivityInput {
-  title: string;
-  imageUrl?: string | null;
-  imagePublicId?: string | null;
-  resourceUrl?: string | null;
-  scheduleStartAt?: string | null;
-  scheduleEndAt?: string | null;
-  admin: boolean;
-}
+import { schema, FormValues } from './schema';
 
 type Props = {};
 
-export function ActivitiesCreateDialog({}: Props) {
+export function ActivitiesCreateDialog({ }: Props) {
   const { axios } = useAuth();
   const { updateActivities } = useActivity();
   const [open, setOpen] = React.useState(false);
@@ -99,8 +45,6 @@ export function ActivitiesCreateDialog({}: Props) {
     resolver: zodResolver(schema),
     defaultValues: {
       title: '',
-      imageUrl: undefined,
-      imagePublicId: '',
       resourceUrl: '',
       scheduleStartAt: '',
       scheduleEndAt: '',
@@ -111,21 +55,15 @@ export function ActivitiesCreateDialog({}: Props) {
   const onSubmit = async (data: FormValues) => {
     try {
       const payload = {
-        title: data.title,
-        resourceUrl: data.resourceUrl,
-        scheduleStartAt: data.scheduleStartAt,
-        scheduleEndAt: data.scheduleEndAt,
-        imagePublicId: data.imagePublicId || undefined,
+        title: data.title.trim(),
+        resourceUrl: data.resourceUrl?.trim() || undefined,
+        scheduleStartAt: data.scheduleStartAt || undefined,
+        scheduleEndAt: data.scheduleEndAt || undefined,
         admin: data.admin,
       };
 
-      const { id } = await createActivity(axios, payload);
-      if (data?.imageUrl) {
-        const file = data?.imageUrl?.item(0);
-        if (file) {
-          await uploadImageActivity(axios, id, file);
-        }
-      }
+      await createActivity(axios, payload);
+
       setFormSuccess('Actividad creada correctamente');
       updateActivities && updateActivities();
       form.reset();
@@ -134,7 +72,8 @@ export function ActivitiesCreateDialog({}: Props) {
         setFormSuccess(null);
       }, 1500);
     } catch (err: any) {
-      form.setError('root', { message: err.message || 'Error desconocido' });
+      const errorMessage = err.response?.data?.message || err.message || 'Error desconocido';
+      form.setError('root', { message: errorMessage });
     }
   };
 
@@ -183,8 +122,19 @@ export function ActivitiesCreateDialog({}: Props) {
                         <Input
                           {...field}
                           placeholder="Nombre de la actividad"
+                          maxLength={100}
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                            // Limpiar errores cuando el usuario empiece a escribir
+                            if (form.formState.errors.title) {
+                              form.clearErrors('title');
+                            }
+                          }}
                         />
                       </FormControl>
+                      <FormDescription>
+                        {field.value?.length || 0}/100 caracteres
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -216,7 +166,6 @@ export function ActivitiesCreateDialog({}: Props) {
               </div>
             </div>
 
-            {/* Recursos multimedia */}
             <div className="border rounded-lg p-6 space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
@@ -238,45 +187,6 @@ export function ActivitiesCreateDialog({}: Props) {
                             type="url"
                             placeholder="https://..."
                             className="pl-10"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormDescription>
-                        Enlace a redes sociales, páginas web, seguimientos, etc.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="border rounded-lg p-6 space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Upload className="w-4 h-4" />
-                  <h3 className="text-lg font-medium">Image File</h3>
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="imageUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>URL de Recurso</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={e => {
-                              const fileList = e.target.files;
-                              if (fileList && fileList.length > 0) {
-                                field.onChange(fileList); // pasamos el FileList al estado del form
-                              }
-                            }}
                           />
                         </div>
                       </FormControl>

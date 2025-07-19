@@ -15,7 +15,27 @@ interface CreatePrivateUserDto {
   readonly rol: RoleUser;
 }
 
-interface CreateUserDto extends CreatePublicUserDto, CreatePrivateUserDto {}
+interface UpdatePrivateUserDto {
+  readonly firstName: string;
+  readonly lastName: string;  
+  readonly email: string;
+  readonly phone: string;
+  readonly address: string;  
+  readonly rol: RoleUser;
+}
+
+interface CreateUserDto{
+  readonly username: string;
+  readonly firstName: string;
+  readonly lastName: string;  
+  readonly password: string;
+  readonly phone: string;
+  readonly email: string;
+  readonly documentNumber: string;
+  readonly rol: RoleUser;
+  readonly location: string;
+  readonly address: string;
+}
 
 interface UpdateUserDto
   extends Partial<
@@ -23,9 +43,6 @@ interface UpdateUserDto
   > {}
 
 interface UpdatePublicUserDto extends Partial<CreatePublicUserDto> {}
-
-interface UpdatePrivateUserDto
-  extends Partial<Omit<CreatePrivateUserDto, 'password' | 'documentNumber'>> {}
 
 interface UpdatePasswordUserDto
   extends Pick<CreatePrivateUserDto, 'password'> {}
@@ -38,4 +55,8 @@ interface UpdateResetPasswordUserDto
   token: string;
 }
 
-interface FilterUserDto extends PaginationDto {}
+interface FilterUserDto extends PaginationDto {
+  username?: string;
+  email?: string;
+  rol?: string;  
+}

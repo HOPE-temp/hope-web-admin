@@ -45,33 +45,32 @@ export async function updatePrivateUser(
   return res.data;
 }
 
-// export async function uploadImageUser(
-//   axios: AxiosInstance,
-//   id: number,
-//   file: File
-// ): Promise<User> {
-//   const formData = new FormData();
-//   formData.append('file', file);
-
-//   console.log(formData);
-//   const res = await axios.post<User>(
-//     hopeBackendUrl.users.uploadImage(id),
-//     formData,
-//     {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     }
-//   );
-
-//   if (res.status !== 200) {
-//     throw new Error('Error al subir imagen');
-//   }
-
-//   return res.data;
-// }
-
 export async function deleteUser(axios: AxiosInstance, id: number) {
-  const res = await axios.delete<Adopter>(hopeBackendUrl.users.delete(id));
-  return res.data;
+  try {
+    const res = await axios.delete<User>(hopeBackendUrl.users.delete(id));
+    return res.data;
+  } catch (error: any) {
+    console.error('Error in deleteUser service:', error);
+
+    // Capturar el error del interceptor y crear un error limpio
+    let cleanError: {
+      response: null | { data: any; status: any; statusText: any };
+      message: string;
+    } = {
+      response: null,
+      message: 'Error al eliminar usuario'
+    };
+
+    // Si hay respuesta del servidor, usarla
+    if (error.response) {
+      cleanError.response = {
+        data: error.response.data,
+        status: error.response.status,
+        statusText: error.response.statusText
+      };
+    }
+
+    // Lanzar error limpio sin referencias al interceptor problemático
+    throw cleanError;
+  }
 }

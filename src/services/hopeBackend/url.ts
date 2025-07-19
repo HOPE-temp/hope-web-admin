@@ -52,8 +52,8 @@ export const hopeBackendUrl = {
   },
   users: {
     create: `/users`,
-    find: (params?: FilterAnimalDto) =>
-      generateUrlWithParms<FilterAnimalDto>(`/users`, params),
+    find: (params?: FilterUserDto) =>
+      generateUrlWithParms<FilterUserDto>(`/users`, params),
     findOne: (id: number) => `/users/${id}`,
     updatePublic: (id: number) => `/users/${id}`,
     updatePrivate: (id: number) => `/users/${id}/private`,

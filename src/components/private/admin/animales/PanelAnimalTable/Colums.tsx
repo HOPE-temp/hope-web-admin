@@ -5,7 +5,6 @@ import { EditorAnimalsDialog } from '../EditorAnimalDialog';
 import { AnimalsDeleteDialog } from '../AnimalsDeleteDialog';
 import { UploaderAnimalImageDialog } from '../UploaderAnimalImageDialog';
 import { AnimalsEditStatusDialog } from '../AnimalsUpdateStatusDialog';
-import { useAnimal } from '@/context/AnimalContext';
 
 interface AnimalsColumnsProps {
   updateAnimals: () => void;

@@ -52,18 +52,13 @@ export async function uploadImageAnimal(
   const formData = new FormData();
   formData.append('file', file);
 
-  console.log(formData);
-  const res = await axios.post<Animal>(
+  const res = await axios.post(
     hopeBackendUrl.animals.uploadImage(id),
     formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
+    { headers: { 'Content-Type': 'multipart/form-data' } }
   );
 
-  if (res.status !== 200) {
+  if (res.status !== 200 && res.status !== 201) {
     throw new Error('Error al subir imagen');
   }
 

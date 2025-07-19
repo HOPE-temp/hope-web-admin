@@ -1,15 +1,7 @@
 interface User {
   id: number;
-  publicInfo: PublicUser;
-  privateInfo: PrivateUser;
-  activities: Activity[];
-  medicalCheckups: MedicalCheckup[];
-  adopitons: Adoption[];
-  adoptedAnimals: AdoptedAnimal[];
-  createdAt: Date;
-  deletedAt?: Date;
-  // info
-
+  createdAt: string;
+  info: UserInfo;
 }
 
 interface PrivateUser {
@@ -25,14 +17,25 @@ interface PrivateUser {
   rol: RoleUser;
   updatedAt?: Date;
 }
-
-
-
 interface PublicUser {
   id: number;
   user: User;
-  username: string;
+  //  username: string;
   avatar: string;
   location: string;
   updatedAt?: Date;
+}
+
+interface UserInfo {
+  lastName: string;
+  firstName: string;
+  email: string;
+  phone: string;
+  address: string | null;
+  documentNumber: string;
+  rol: string;
+  updatedAt?: string;
+  username: string;
+  avatar: string | null;
+  location: string | null;
 }

@@ -8,7 +8,6 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   RowData,
-  Table as ReactTable,
   useReactTable,
 } from '@tanstack/react-table';
 import {
@@ -19,49 +18,42 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FilterInputAnimal } from '../FilterAnimal';
-import { createAnimalsColumns } from './Colums';
 import { Loader } from 'lucide-react';
-import { useAnimal } from '@/context/AnimalContext';
+import { createActivityColumns } from './columns';
+import { useActivity } from '@/context/ActivityContext';
 import PaginationTable from '../../../../shared/PaginationTable';
 
-interface AnimalTableProps<TData extends RowData> {}
+interface ActivityTableProps<TData extends RowData> {}
 
-export function PanelAnimalsTable<
-  TData extends RowData
->({}: AnimalTableProps<TData>) {
+export function PanelActivitiesTable<TData extends RowData>({}: ActivityTableProps<TData>) {
   const {
-    animals,
+    activities,
     loading,
     updateParams,
-    updateAnimals,
+    updateActivities,
     limit,
     offset,
     total,
-  } = useAnimal();
+  } = useActivity();
 
   const columns = React.useMemo(
-    () => createAnimalsColumns({ updateAnimals }),
+    () => createActivityColumns({ updateActivities }),
     []
   );
 
   const table = useReactTable({
-    data: animals,
+    data: activities,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-console.log(animals)
+
   return (
     <div className="w-full">
       <div className="py-4">
-        <FilterInputAnimal
-          onGetData={params =>
-            updateParams({ ...params, limit: 10, offset: 0 })
-          }
-        />
+        {/* Si tienes un filtro para actividades, agrégalo aquí */}
       </div>
       <hr />
       <div className="rounded-md border">

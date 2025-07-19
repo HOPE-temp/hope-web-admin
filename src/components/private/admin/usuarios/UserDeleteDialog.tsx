@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import * as React from "react";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogTrigger,
@@ -11,27 +11,45 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { useUsers, UserTableRow } from '@/hooks/useUser';
+} from "@/components/ui/dialog";
+import { deleteUser } from '@/services/hopeBackend/users';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = {
-  user: UserTableRow;
-  deleteUser: (id: number) => Promise<any>;
+  user: User;
+  onDelete: () => void;
 };
 
-export function UserDeleteDialog({ user, deleteUser }: Props) {
+export function UserDeleteDialog({ user, onDelete }: Props) {
+  const { axios } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleDelete = async () => {
-    setDeleting(true);
-    setError(null);
     try {
-      await deleteUser(user.id);
+      setDeleting(true);
+      setError(null);
+      await deleteUser(axios, user.id);
       setOpen(false);
+      onDelete && onDelete();
     } catch (err: any) {
-      setError(err.message || 'Error desconocido al eliminar el usuario');
+      let errorMessage = 'Algo salió mal';
+      
+      // Manejo más simple y seguro
+      try {
+        if (err.response?.data?.message) {
+          const backendMessage = err.response.data.message;
+          errorMessage = Array.isArray(backendMessage) 
+            ? backendMessage.join(', ')
+            : backendMessage;
+        }
+      } catch (parseError) {
+        // Si hay error al parsear, mantener el mensaje por defecto
+        errorMessage = 'Algo salió mal';
+      }
+      
+      setError(errorMessage);
     } finally {
       setDeleting(false);
     }
@@ -40,37 +58,26 @@ export function UserDeleteDialog({ user, deleteUser }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-red-600 hover:text-red-700"
-        >
+        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
           <Trash2 className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Eliminar Usuario</DialogTitle>
           <DialogDescription>
-            ¿Estás seguro de que deseas eliminar al usuario{' '}
-            <strong>{user.username}</strong>? Esta acción no se puede deshacer.
+            ¿Estás seguro de que deseas eliminar al usuario <strong>{user.info.username}</strong>? Esta acción no se puede deshacer.
           </DialogDescription>
         </DialogHeader>
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <p className="text-sm text-red-500">{error}</p>
+        )}
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={deleting}
-          >
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={deleting}>
             Cancelar
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? 'Eliminando...' : 'Eliminar'}
+          <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+            {deleting ? "Eliminando..." : "Eliminar"}
           </Button>
         </DialogFooter>
       </DialogContent>
