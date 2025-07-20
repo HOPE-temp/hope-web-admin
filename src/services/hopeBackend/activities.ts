@@ -57,8 +57,6 @@ export async function updateActivity(
     return res.data;
   } catch (error: any) {
     console.error('Error in updateActivity service:', error);
-
-    // Capturar el error del interceptor y crear un error limpio
     let cleanError: {
       response: null | { data: any; status: any; statusText: any };
       message: string;
@@ -67,7 +65,6 @@ export async function updateActivity(
       message: 'Error al actualizar actividad',
     };
 
-    // Si hay respuesta del servidor, usarla
     if (error.response) {
       cleanError.response = {
         data: error.response.data,
@@ -76,7 +73,6 @@ export async function updateActivity(
       };
     }
 
-    // Lanzar error limpio sin referencias al interceptor problemático
     throw cleanError;
   }
 }

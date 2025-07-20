@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-// Schema para el objeto UserInfo
 export const userInfoSchema = z.object({
   lastName: z.string(),
   firstName: z.string(),
@@ -15,14 +14,12 @@ export const userInfoSchema = z.object({
   location: z.string().nullable(),
 })
 
-// Schema para el objeto User principal
 export const userSchema = z.object({
   id: z.number(),
   createdAt: z.string(),
   info: userInfoSchema,
 })
 
-// Schema para filtros de usuarios
 export const filterUserSchema = z.object({
   limit: z.number().optional(),
   offset: z.number().optional(),
@@ -30,7 +27,6 @@ export const filterUserSchema = z.object({
   rol: z.string().optional(),
 })
 
-// Schema para paginación
 export const paginationResponseSchema = z.object({
   items: z.array(userSchema),
   total: z.number(),
@@ -38,7 +34,6 @@ export const paginationResponseSchema = z.object({
   offset: z.number(),
 })
 
-// Tipos derivados de los schemas
 export type User = z.infer<typeof userSchema>
 export type UserInfo = z.infer<typeof userInfoSchema>
 export type FilterUserDto = z.infer<typeof filterUserSchema>
@@ -49,7 +44,6 @@ export type PaginationResponse<T> = {
   offset: number
 }
 
-// Tipos básicos para usuarios (basado en tu estructura existente)
 export interface IUser {
   id: number
   createdAt: string

@@ -27,10 +27,7 @@ import {
 
 import { useAuth } from '@/context/AuthContext';
 import { useUser } from '@/context/UserContext';
-
-// Servicio para editar usuario privado
 import { updatePrivateUser } from '@/services/hopeBackend/users';
-
 import { FormValues, schema } from './schema';
 
 type EditorUserDialogProps = {

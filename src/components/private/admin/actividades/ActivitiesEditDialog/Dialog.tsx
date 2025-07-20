@@ -36,14 +36,12 @@ type Props = {
   onEdit: () => void;
 };
 
-// Función helper para convertir fecha a formato datetime-local
 const formatDateForInput = (dateString: string | Date | null): string => {
   if (!dateString) return '';
 
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return '';
 
-  // Ajustar a la zona horaria local
   const offset = date.getTimezoneOffset();
   const localDate = new Date(date.getTime() - offset * 60 * 1000);
   return localDate.toISOString().slice(0, 16);
@@ -98,7 +96,6 @@ export function ActivitiesEditDialog({ activity, onEdit }: Props) {
     } catch (err: any) {
       console.error('Error updating activity:', err);
 
-      // Manejo mejorado de errores
       let errorMessage = 'Error al actualizar actividad';
 
       try {
@@ -113,7 +110,6 @@ export function ActivitiesEditDialog({ activity, onEdit }: Props) {
           errorMessage = err.response.data.error;
         }
       } catch (parseError) {
-        // Si hay error al parsear, mantener el mensaje por defecto
         console.error('Error parsing backend message:', parseError);
       }
 
@@ -301,7 +297,6 @@ export function ActivitiesEditDialog({ activity, onEdit }: Props) {
               </CardContent>
             </Card>
 
-            {/* Mensajes de error y éxito */}
             {form.formState.errors.root && (
               <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
                 {form.formState.errors.root.message}

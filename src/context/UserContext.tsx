@@ -38,10 +38,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     const res = await findAllUsers(axios, param);
     console.log({ res });
-    // Si la respuesta es un array directamente:
     setUsers(res.items);
-    // Si quieres paginación, deberías modificar el backend para retornar { items, total, ... }
-    setLimit(10); // O el valor que uses por defecto
+    setLimit(10); 
     setOffset(0);
     setTotal(Array.isArray(res) ? res.length : 0);
     setLoading(false);

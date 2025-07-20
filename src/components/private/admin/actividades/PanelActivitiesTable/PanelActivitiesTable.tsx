@@ -53,7 +53,6 @@ export function PanelActivitiesTable<TData extends RowData>({}: ActivityTablePro
   return (
     <div className="w-full">
       <div className="py-4">
-        {/* Si tienes un filtro para actividades, agrégalo aquí */}
       </div>
       <hr />
       <div className="rounded-md border">

@@ -54,8 +54,6 @@ console.log('users: ', users);
   return (
     <div className="w-full">
       <div className="py-4">
-        {/* Si tienes un filtro para usuarios, descomenta la siguiente línea */}
-        {/* <FilterInputUser onGetData={params => updateParams({ ...params, limit: 10, offset: 0 })} /> */}
       </div>
       <hr />
       <div className="rounded-md border">

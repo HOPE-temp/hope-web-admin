@@ -107,7 +107,6 @@ export function ActivitiesCreateDialog({ }: Props) {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Información básica */}
             <div className="border rounded-lg p-6 space-y-4">
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Información Básica</h3>
@@ -125,7 +124,6 @@ export function ActivitiesCreateDialog({ }: Props) {
                           maxLength={100}
                           onChange={(e) => {
                             field.onChange(e.target.value);
-                            // Limpiar errores cuando el usuario empiece a escribir
                             if (form.formState.errors.title) {
                               form.clearErrors('title');
                             }
@@ -245,7 +243,6 @@ export function ActivitiesCreateDialog({ }: Props) {
               </div>
             </div>
 
-            {/* Mensajes de error y éxito */}
             {form.formState.errors.root && (
               <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
                 {form.formState.errors.root.message}

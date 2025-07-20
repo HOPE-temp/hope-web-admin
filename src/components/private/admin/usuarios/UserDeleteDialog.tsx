@@ -35,8 +35,7 @@ export function UserDeleteDialog({ user, onDelete }: Props) {
       onDelete && onDelete();
     } catch (err: any) {
       let errorMessage = 'Algo salió mal';
-      
-      // Manejo más simple y seguro
+
       try {
         if (err.response?.data?.message) {
           const backendMessage = err.response.data.message;
@@ -45,7 +44,6 @@ export function UserDeleteDialog({ user, onDelete }: Props) {
             : backendMessage;
         }
       } catch (parseError) {
-        // Si hay error al parsear, mantener el mensaje por defecto
         errorMessage = 'Algo salió mal';
       }
       

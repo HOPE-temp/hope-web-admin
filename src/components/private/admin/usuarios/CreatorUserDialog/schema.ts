@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Validaciones individuales
 export const username = z.string().min(3, 'El usuario es requerido');
 export const firstName = z.string().min(2, 'El nombre es requerido');
 export const lastName = z.string().min(2, 'El apellido es requerido');

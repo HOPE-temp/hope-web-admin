@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Validaciones individuales para edición (sin username, password, documentNumber, location)
 export const firstName = z.string().min(2, 'El nombre es requerido');
 export const lastName = z.string().min(2, 'El apellido es requerido');
 export const email = z.string().email('Correo inválido');

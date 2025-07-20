@@ -8,13 +8,11 @@ interface ActivityColumnsProps {
   updateActivities: () => void
 }
 
-// Diccionario para admin
 const adminDict = {
   true: { name: "Sí", color: "bg-green-100 text-green-800" },
   false: { name: "No", color: "bg-gray-100 text-gray-800" },
 }
 
-// Diccionario para estado
 const finishedDict = {
   true: { name: "Finalizada", color: "bg-green-100 text-green-800" },
   false: { name: "Pendiente", color: "bg-yellow-100 text-yellow-800" },

@@ -52,7 +52,6 @@ export async function deleteUser(axios: AxiosInstance, id: number) {
   } catch (error: any) {
     console.error('Error in deleteUser service:', error);
 
-    // Capturar el error del interceptor y crear un error limpio
     let cleanError: {
       response: null | { data: any; status: any; statusText: any };
       message: string;
@@ -61,7 +60,6 @@ export async function deleteUser(axios: AxiosInstance, id: number) {
       message: 'Error al eliminar usuario'
     };
 
-    // Si hay respuesta del servidor, usarla
     if (error.response) {
       cleanError.response = {
         data: error.response.data,
@@ -70,7 +68,6 @@ export async function deleteUser(axios: AxiosInstance, id: number) {
       };
     }
 
-    // Lanzar error limpio sin referencias al interceptor problemático
     throw cleanError;
   }
 }

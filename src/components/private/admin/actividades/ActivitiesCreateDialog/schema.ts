@@ -68,7 +68,6 @@ export const schema = z
   )
   .refine(
     (data) => {
-      // Si se proporciona fecha de fin, debe proporcionarse fecha de inicio
       if (data.scheduleEndAt && !data.scheduleStartAt) {
         return false;
       }
