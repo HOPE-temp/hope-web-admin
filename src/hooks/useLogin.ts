@@ -10,14 +10,14 @@ export function useLogin() {
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/auth/login', {
+      const backendUrl = process.env.NEXT_PUBLIC_HOPE_BACKEND_HOSTNAME || "https://hope-nest-backend.onrender.com";
+      const res = await fetch(`${backendUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) throw new Error('Credenciales incorrectas');
       const data = await res.json();
-      console.log;
       saveAuth({
         newRole: data.user.rol,
         newToken: data.accessToken,
