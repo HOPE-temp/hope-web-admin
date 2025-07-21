@@ -1,9 +1,13 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const filterUserSchema = z.object({
-  globalFilter: z.string().optional(),
-  rol: z.enum(["admin", "volunteer", "veterinarian"]).optional(),
-  location: z.string().optional(),
-})
+  search: z
+    .string()
+    .optional()
+    .transform(val => val === "" ? undefined : val),
+  rol: z
+    .enum(["admin", "volunteer", "veterinarian"])
+    .optional(),
+});
 
-export type FilterUserValues = z.infer<typeof filterUserSchema>
+export type FilterUserValues = z.infer<typeof filterUserSchema>;

@@ -37,12 +37,13 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
   const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     console.log(ev.key);
     if (ev.key === 'Enter') {
-      form.handleSubmit(onSubmit);
+      form.handleSubmit(onSubmit)();
     }
   };
 
   const handleClickReset = () => {
     form.reset();
+    onGetData(defaultValues);
   };
 
   return (
@@ -53,6 +54,7 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             control={form.control}
             label="Nombre"
             name="nickname"
+            onKeyUp={handleKeyUpEnter}
           />
 
           <FormSelectCustom
@@ -71,12 +73,14 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             control={form.control}
             label="DNI de adoptante"
             name="adopterDNI"
+            onKeyUp={handleKeyUpEnter}
           />
 
           <FormInputCustom
             control={form.control}
             label="Nombre del adoptante"
             name="adopterName"
+            onKeyUp={handleKeyUpEnter}
           />
 
           <FormInputCustom
@@ -84,12 +88,13 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             label="Id del animal"
             name="animalId"
             type="number"
+            onKeyUp={handleKeyUpEnter}
           />
           <div className="grid justify-center content-end">
             <Button type="submit">Buscar</Button>
           </div>
           <div className="grid justify-center content-end">
-            <Button type="submit" onClick={handleClickReset}>
+            <Button type="button" onClick={handleClickReset}>
               Resetear
             </Button>
           </div>

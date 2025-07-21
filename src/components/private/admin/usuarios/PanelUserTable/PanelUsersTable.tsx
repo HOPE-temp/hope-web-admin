@@ -22,6 +22,7 @@ import { Loader } from 'lucide-react';
 import { createUserColumns } from './columns';
 import { useUser } from '@/context/UserContext'; 
 import PaginationTable from '../../../../shared/PaginationTable';
+import { FilterInputUser } from '../FilterUser';
 
 
 interface UserTableProps<TData extends RowData> {}
@@ -54,6 +55,9 @@ console.log('users: ', users);
   return (
     <div className="w-full">
       <div className="py-4">
+        <FilterInputUser
+          onGetData={params => updateParams(params)}
+        />
       </div>
       <hr />
       <div className="rounded-md border">
