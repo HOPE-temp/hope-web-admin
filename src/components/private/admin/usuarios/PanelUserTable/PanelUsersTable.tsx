@@ -54,12 +54,10 @@ export function PanelUsersTable<TData extends RowData>({}: UserTableProps<TData>
 console.log('users: ', users);
   return (
     <div className="w-full">
-      <div className="py-4">
-        <FilterInputUser
-          onGetData={params => updateParams(params)}
-        />
+      <div className="flex items-center py-4">
+        <FilterInputUser onGetData={updateParams} table={table} />
       </div>
-      <hr />
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -116,16 +114,15 @@ console.log('users: ', users);
             )}
           </TableBody>
         </Table>
-        <br />
-        <hr />
-        <br />
+      </div>
+
+      <div className="flex items-center justify-end space-x-2 py-4">
         <PaginationTable
           limit={limit}
           offset={offset}
           total={total}
           onChange={({ limit, offset }) => updateParams({ limit, offset })}
         />
-        <br />
       </div>
     </div>
   );

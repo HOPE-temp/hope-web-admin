@@ -15,10 +15,12 @@ export function createUserColumns({
     {
       accessorKey: "id",
       header: "ID",
+      enableHiding: true,
     },
     {
-      accessorKey: "info.avatar",
+      accessorKey: "Avatar",
       header: "Avatar",
+      enableHiding: true,
       cell: ({ row }) => {
         const avatar = row.original.info?.avatar
         const username = row.original.info?.username
@@ -46,18 +48,21 @@ export function createUserColumns({
       },
     },
     {
-      accessorKey: "info.firstName",
+      accessorKey: "Nombre",
       header: "Nombre",
+      enableHiding: true,
       cell: ({ row }) => row.original.info?.firstName,
     },
     {
-      accessorKey: "info.lastName",
+      accessorKey: "Apellido",
       header: "Apellido",
+      enableHiding: true,
       cell: ({ row }) => row.original.info?.lastName,
     },
     {
-      accessorKey: "info.email",
+      accessorKey: "Email",
       header: "Email",
+      enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
           <Mail className="w-4 h-4" />
@@ -66,8 +71,9 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "info.phone",
+      accessorKey: "Teléfono",
       header: "Teléfono",
+      enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
           <Phone className="w-4 h-4" />
@@ -76,8 +82,9 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "info.username",
+      accessorKey: "Usuario",
       header: "Usuario",
+      enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
           <User2 className="w-4 h-4" />
@@ -86,8 +93,9 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "info.documentNumber",
-      header: "Documento",
+      accessorKey: "DNI",
+      header: "DNI",
+      enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
           <BadgeInfo className="w-4 h-4" />
@@ -96,8 +104,9 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "info.rol",
+      accessorKey: "Rol",
       header: "Rol",
+      enableHiding: true,
       cell: ({ row }) => {
         const rol = row.original.info?.rol as keyof typeof rolDict | undefined
         const rolDict = {
@@ -113,8 +122,9 @@ export function createUserColumns({
       },
     },
     {
-      accessorKey: "info.address",
+      accessorKey: "Dirección",
       header: "Dirección",
+      enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
           <MapPin className="w-4 h-4" />
@@ -123,13 +133,15 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "info.location",
+      accessorKey: "Ubicación",
       header: "Ubicación",
+      enableHiding: true,
       cell: ({ row }) => row.original.info?.location || "-",
     },
     {
-      accessorKey: "createdAt",
+      accessorKey: "Creado",
       header: "Creado",
+      enableHiding: true,
       cell: ({ row }) => {
         const date = row.original.createdAt
         return date ? new Date(date).toLocaleDateString() : "-"
@@ -138,6 +150,7 @@ export function createUserColumns({
     {
       id: "acciones",
       header: "Acciones",
+      enableHiding: false,
       cell: ({ row }) => (
         <div className="flex gap-2">
           <div className="flex gap-2">
@@ -150,7 +163,6 @@ export function createUserColumns({
 
       ),
       enableSorting: false,
-      enableHiding: false,
     },
   ]
 }
