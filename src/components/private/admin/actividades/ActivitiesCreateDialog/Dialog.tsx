@@ -37,7 +37,7 @@ type Props = {};
 
 export function ActivitiesCreateDialog({ }: Props) {
   const { axios } = useAuth();
-  const { updateActivities } = useActivity();
+  const { refreshActivities } = useActivity(); 
   const [open, setOpen] = React.useState(false);
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
@@ -63,9 +63,9 @@ export function ActivitiesCreateDialog({ }: Props) {
       };
 
       await createActivity(axios, payload);
+      await refreshActivities();
 
       setFormSuccess('Actividad creada correctamente');
-      updateActivities && updateActivities();
       form.reset();
       setTimeout(() => {
         setOpen(false);

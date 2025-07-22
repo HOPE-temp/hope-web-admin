@@ -22,6 +22,7 @@ import { Loader } from 'lucide-react';
 import { createActivityColumns } from './columns';
 import { useActivity } from '@/context/ActivityContext';
 import PaginationTable from '../../../../shared/PaginationTable';
+import { FilterInputActivity } from '../FilterActivity';
 
 interface ActivityTableProps<TData extends RowData> {}
 
@@ -53,6 +54,9 @@ export function PanelActivitiesTable<TData extends RowData>({}: ActivityTablePro
   return (
     <div className="w-full">
       <div className="py-4">
+        <FilterInputActivity
+          onGetData={params => updateParams(params)}
+        />
       </div>
       <hr />
       <div className="rounded-md border">

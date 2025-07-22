@@ -32,8 +32,6 @@ import {
 } from '@/services/hopeBackend/animals';
 
 import { useAuth } from '@/context/AuthContext';
-
-//schema
 import { FormValues, schema } from './schema';
 import { today } from '../common/schema';
 import { useAnimal } from '@/context/AnimalContext';

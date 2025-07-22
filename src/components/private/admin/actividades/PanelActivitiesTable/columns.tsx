@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { ActivitiesEditDialog } from "../ActivitiesEditDialog"
 import { ActivitiesDeleteDialog } from "../ActivitiesDeleteDialog"
+import { ActivitiesFinishDialog } from "../ActivitiesFinishDialog"
 
 interface ActivityColumnsProps {
   updateActivities: () => void
@@ -126,6 +127,10 @@ export function createActivityColumns({
       cell: ({ row }) => (
         <div className="flex gap-2">
           <div className="flex gap-2">
+            <ActivitiesFinishDialog
+              activity={row.original}
+              onFinish={updateActivities}
+            />
             <ActivitiesEditDialog
               activity={row.original} onEdit={updateActivities}
             />

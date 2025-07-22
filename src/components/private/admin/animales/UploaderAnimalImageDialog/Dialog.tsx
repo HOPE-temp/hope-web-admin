@@ -34,8 +34,7 @@ export function UploaderAnimalImageDialog({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validaciones
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024;
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
       if (file.size > maxSize) {
@@ -71,8 +70,6 @@ export function UploaderAnimalImageDialog({
       await uploadImageAnimal(axios, animal.id, selectedFile);
       toast.success(`Imagen de la mascota #${animal.id} guardada`);
       onUpload && onUpload();
-
-      // Reset y cerrar
       setSelectedFile(null);
       setTimeout(() => {
         setOpen(false);

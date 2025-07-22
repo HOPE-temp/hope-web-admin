@@ -1,0 +1,1 @@
+export { ActivitiesFinishDialog } from './dialog';

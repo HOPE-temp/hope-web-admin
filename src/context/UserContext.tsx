@@ -11,6 +11,7 @@ import {
   findAllUsers
 } from '@/services/hopeBackend/users';
 
+
 type FilterUserDto = {
   search?: string;
   rol?: string;
@@ -42,7 +43,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
- 
   const filterUsers = (filters: FilterUserDto) => {
     console.log('Aplicando filtros:', filters);
     let filtered = [...allUsers];
@@ -58,7 +58,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-  
     if (filters.search && filters.search.trim() !== '') {
       const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(user => 
@@ -70,7 +69,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       );
     }
 
-  
     if (filters.rol && filters.rol !== '') {
       filtered = filtered.filter(user => user.info.rol === filters.rol);
     }

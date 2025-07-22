@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useAuth } from '@/context/AuthContext';
+import { useActivity } from '@/context/ActivityContext';
 import { deleteActivity } from '@/services/hopeBackend/activities';
 
 type Props = {
@@ -20,8 +21,9 @@ type Props = {
   onDelete: () => void;
 };
 
-export function ActivitiesDeleteDialog({ activity }: Props) {
+export function ActivitiesDeleteDialog({ activity, onDelete }: Props) {
   const { axios } = useAuth();
+  const { refreshActivities } = useActivity();
   const [open, setOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -31,6 +33,9 @@ export function ActivitiesDeleteDialog({ activity }: Props) {
       setDeleting(true);
       setError(null);
       await deleteActivity(axios, activity.id);
+      await refreshActivities();
+
+      onDelete && onDelete();
       setOpen(false);
     } catch (err: any) {
       setError(err.message || 'Error desconocido al eliminar la actividad');

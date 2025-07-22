@@ -28,6 +28,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { updateActivity } from '@/services/hopeBackend/activities';
 import { useAuth } from '@/context/AuthContext';
+import { useActivity } from '@/context/ActivityContext';
 
 import { schema, FormValues } from './schema';
 
@@ -49,6 +50,7 @@ const formatDateForInput = (dateString: string | Date | null): string => {
 
 export function ActivitiesEditDialog({ activity, onEdit }: Props) {
   const { axios } = useAuth();
+  const { refreshActivities } = useActivity();
   const [open, setOpen] = React.useState(false);
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
@@ -87,6 +89,8 @@ export function ActivitiesEditDialog({ activity, onEdit }: Props) {
       };
 
       await updateActivity(axios, activity.id, payload);
+      await refreshActivities();
+
       onEdit && onEdit();
       setFormSuccess('Actividad actualizada correctamente');
       setTimeout(() => {
