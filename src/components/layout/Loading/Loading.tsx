@@ -11,7 +11,7 @@ interface LoadingPerritosProps extends React.HTMLAttributes<HTMLDivElement> {
 const LoadingPerritos = React.forwardRef<HTMLDivElement, LoadingPerritosProps>(
   ({ className, ...props }, ref) => {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div
           ref={ref}
           className={cn(
