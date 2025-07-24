@@ -140,14 +140,8 @@ export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
               <FormCheckboxCustom
                 control={form.control}
                 name="hasSterilizationCommitment"
-                label="Tiempo y paciencia"
+                label="Esterilizacion"
                 description="¿Se compromete a la esterilizacion del animal?"
-              />
-              <FormTextareaCustom
-                control={form.control}
-                rows={3}
-                label="¿Se compromete a la esterilizacion del animal?, escribalo"
-                name="hasSterilizationCommitment"
               />
               <FormTextareaCustom
                 control={form.control}

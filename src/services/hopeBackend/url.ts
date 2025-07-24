@@ -40,7 +40,7 @@ export const hopeBackendUrl = {
     delete: (id: number) => `/adopters/${id}`,
   },
   evaluations: {
-    create: (adopterId: number) => `/adopters/${adopterId}}/evaluations`,
+    create: (adopterId: number) => `/adopters/${adopterId}/evaluations`,
     findByAdopter: (adopterId: number) => `/adopters/${adopterId}}/evaluations`,
     findOne: (id: string) => `/evaluations/${id}}`,
   },
