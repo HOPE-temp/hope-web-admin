@@ -32,6 +32,7 @@ import {
 } from '@/components/shared/Input/DynamicCheckboxList';
 import AnimalCheckbox from '@/components/shared/AnimalCheckbox/AnimalCheckbox';
 import { isAxiosError } from 'axios';
+import { useAdoption } from '@/context/AdoptionContext';
 
 type CreatorAdoptionDialogProps = {
   onCreated?: () => void;
@@ -41,6 +42,7 @@ export function CreatorAdoptionDialog({
   onCreated,
 }: CreatorAdoptionDialogProps) {
   const { axios } = useAuth();
+  const { updateAdoptions } = useAdoption();
 
   const [open, setOpen] = React.useState(false);
   const [checkOptions, setCheckOptions] = React.useState<CheckboxItem[]>([]);
@@ -63,6 +65,7 @@ export function CreatorAdoptionDialog({
         toast.success(`Mascota #${adoption.id} guardada`);
 
         form.reset();
+        updateAdoptions();
         onCreated && onCreated();
         setTimeout(() => {
           setOpen(false);
