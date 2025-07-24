@@ -5,7 +5,6 @@ import { FormValues, schema } from './schema';
 import { FormInputCustom } from '../Input';
 import { findAllAnimals } from '@/services/hopeBackend/animals';
 import { useAuth } from '@/context/AuthContext';
-import { CheckboxItem } from '../Input/DynamicCheckboxList';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';

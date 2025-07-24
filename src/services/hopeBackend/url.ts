@@ -34,6 +34,7 @@ export const hopeBackendUrl = {
     find: (params?: FilterAnimalDto) =>
       generateUrlWithParms<FilterAnimalDto>(`/animals`, params),
     findOne: (id: number) => `/animals/${id}`,
+    findManyIds: `/animals/getManyIds`,
     update: (id: number) => `/animals/${id}`,
     updateStatus: (id: number) => `/animals/${id}/status`,
     uploadImage: (id: number) => `/animals/${id}/upload_image`,

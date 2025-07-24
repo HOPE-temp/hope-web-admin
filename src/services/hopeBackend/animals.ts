@@ -23,6 +23,23 @@ export async function findAllAnimals(
   return data;
 }
 
+export async function findManyIdsAnimals(
+  axios: AxiosInstance,
+  body?: GetByIdsAnimalDto
+) {
+  const { data } = await axios.post<Animal[]>(
+    hopeBackendUrl.animals.findManyIds,
+    body
+  );
+  const items = data.map(item => {
+    if (item.images.length == 0) {
+      item.images.push('/images/avatar-dog.png');
+    }
+    return item;
+  });
+  return items;
+}
+
 export async function createAnimal(
   axios: AxiosInstance,
   body?: CreateAnimalDto

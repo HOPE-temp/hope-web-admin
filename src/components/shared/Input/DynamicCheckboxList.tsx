@@ -84,7 +84,6 @@ export function DynamicCheckboxList<T extends FieldValues>({
 
   const [selectedItems, setSelectedItems] = useState<CheckboxItem[]>([]);
   const [noSelectedItems, setNoSelectedItems] = useState<CheckboxItem[]>([]);
-
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="mb-6">
@@ -112,6 +111,7 @@ export function DynamicCheckboxList<T extends FieldValues>({
             }
           };
           useEffect(() => {
+            console.log({ items, value });
             setNoSelectedItems(items.filter(({ id }) => !value.includes(id)));
           }, [items, value]);
 

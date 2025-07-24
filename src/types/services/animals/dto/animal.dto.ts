@@ -20,3 +20,7 @@ interface FilterAnimalDto extends PaginationDto {
   adopterName?: string;
   adopterDNI?: string;
 }
+
+interface GetByIdsAnimalDto {
+  ids: number[];
+}

@@ -23,7 +23,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormValues, schema } from './schema';
 import toast from 'react-hot-toast';
-import { isAxiosError } from '@/lib/axiosInstance';
+import { isAxiosError } from 'axios';
 
 interface Props {
   adoption: Adoption;
@@ -94,7 +94,7 @@ export function CompleteAdoptionDialog({ adoption, onUpdated }: Props) {
               <FormTextareaCustom
                 control={form.control}
                 rows={5}
-                label="Notas de Solicitud"
+                label="Descripcion y/ó historia de la adopcion"
                 name="adoptionHistory"
               />
               <FormCheckboxCustom

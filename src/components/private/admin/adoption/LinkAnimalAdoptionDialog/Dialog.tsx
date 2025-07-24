@@ -10,7 +10,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paperclip, Pencil } from 'lucide-react';
 import { linkAnimalAdoption } from '@/services/hopeBackend/adoptions';
 import { useAuth } from '@/context/AuthContext';
@@ -25,25 +25,27 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormValues, schema } from './schema';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
+import {
+  CheckboxItem,
+  DynamicCheckboxList,
+} from '@/components/shared/Input/DynamicCheckboxList';
+import AnimalCheckbox from '@/components/shared/AnimalCheckbox/AnimalCheckbox';
+import { findManyIdsAnimals } from '@/services/hopeBackend/animals';
 
 interface Props {
   adoption: Adoption;
   onUpdated?: () => void;
 }
 
-const defaultValues = {
-  statusResult: undefined,
-  reviewRequestNotes: undefined,
-};
-
 export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
   const { axios } = useAuth();
   const [open, setOpen] = useState(false);
+  const [checkOptions, setCheckOptions] = React.useState<CheckboxItem[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      animalsIds: adoption.animalsTemp[0],
+      animalsIds: [],
       reviewRequestNotes: adoption.reviewRequestNotes ?? '',
     },
   });
@@ -51,16 +53,17 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
   useEffect(() => {
     if (open) {
       form.reset({
-        animalsIds: adoption.animalsTemp[0],
+        animalsIds: [],
         reviewRequestNotes: adoption.reviewRequestNotes ?? '',
       });
+      getIdAnimals();
     }
   }, [open, adoption]);
 
   const onSubmit = async ({ animalsIds, reviewRequestNotes }: FormValues) => {
     try {
       await linkAnimalAdoption(axios, adoption.id, {
-        animalsIds: [animalsIds],
+        animalsIds: animalsIds,
         reviewRequestNotes,
       });
       toast.success(`Evaluacion de la solicitud ${adoption.id}`);
@@ -77,6 +80,40 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
       }
     }
   };
+  const handleSearch = (data: PaginationResponse<Animal>) => {
+    const { items } = data;
+    let ckecks: CheckboxItem[] = [];
+    if (items.length > 0) {
+      ckecks = items.map(animal => {
+        return {
+          id: animal.id,
+          image: animal.images[0],
+          name: animal.nickname,
+          description: animal.descriptionHistory,
+        };
+      });
+    }
+    setCheckOptions(ckecks);
+  };
+
+  const getIdAnimals = async () => {
+    const items = await findManyIdsAnimals(axios, {
+      ids: adoption.animalsTemp,
+    });
+
+    let ckecks: CheckboxItem[] = [];
+    if (items.length > 0) {
+      ckecks = items.map(animal => {
+        return {
+          id: animal.id,
+          image: animal.images[0],
+          name: animal.nickname,
+          description: animal.descriptionHistory,
+        };
+      });
+    }
+    setCheckOptions(ckecks);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -86,44 +123,48 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
         </button>
       </DialogTrigger>
 
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent aria-describedby={undefined} className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="text-center w-full">
             Vincular Animal con Adopción
           </DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-              <FormInputCustom
-                control={form.control}
-                type="number"
-                label="IdsAnimals"
-                name="animalsIds"
-              />
-              <FormTextareaCustom
-                control={form.control}
-                rows={5}
-                label="Notas de Solicitud"
-                name="reviewRequestNotes"
-              />
-            </div>
+        <div className="max-h-[80vh] overflow-scroll">
+          <AnimalCheckbox onSearch={handleSearch} />
 
-            <DialogFooter className="mt-6">
-              <DialogClose asChild>
-                <button className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-                  Cancelar
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-1  gap-4 mt-2">
+                <DynamicCheckboxList
+                  control={form.control}
+                  title="Animal"
+                  name="animalsIds"
+                  items={checkOptions}
+                />
+                <FormTextareaCustom
+                  control={form.control}
+                  rows={5}
+                  label="Notas de Solicitud"
+                  name="reviewRequestNotes"
+                />
+              </div>
+
+              <DialogFooter className="mt-6">
+                <DialogClose asChild>
+                  <button className="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
+                    Cancelar
+                  </button>
+                </DialogClose>
+                <button
+                  type="submit"
+                  className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                >
+                  Aceptar
                 </button>
-              </DialogClose>
-              <button
-                type="submit"
-                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-              >
-                Aceptar
-              </button>
-            </DialogFooter>
-          </form>
-        </Form>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );
