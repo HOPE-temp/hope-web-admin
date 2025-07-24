@@ -2,6 +2,9 @@ interface User {
   id: number;
   createdAt: string;
   info: UserInfo;
+  publicInfo: {
+    username: string;
+  };
 }
 
 interface PrivateUser {

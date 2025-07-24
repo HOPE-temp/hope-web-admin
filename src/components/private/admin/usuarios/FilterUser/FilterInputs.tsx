@@ -10,8 +10,8 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 import { FilterUserValues, filterUserSchema } from './schema';
 import {
@@ -25,7 +25,7 @@ type FilterInputUserProps = {
 };
 
 const defaultValues: FilterUserValues = {
-  search: "",
+  search: '',
   rol: undefined,
 };
 
@@ -37,9 +37,9 @@ export function FilterInputs({ onGetData, table }: FilterInputUserProps) {
 
   const applyFiltersRealTime = (currentValues: FilterUserValues) => {
     const filteredData = Object.entries(currentValues)
-      .filter(([_, value]) => value !== undefined && value !== "")
+      .filter(([_, value]) => value !== undefined && value !== '')
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-    
+
     console.log('Filtros aplicados en tiempo real:', filteredData);
     onGetData(filteredData as FilterUserValues);
   };
@@ -47,7 +47,8 @@ export function FilterInputs({ onGetData, table }: FilterInputUserProps) {
   const searchValue = form.watch('search');
   const rolValue = form.watch('rol');
 
-  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState(searchValue);
+  const [debouncedSearchValue, setDebouncedSearchValue] =
+    React.useState(searchValue);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -64,9 +65,9 @@ export function FilterInputs({ onGetData, table }: FilterInputUserProps) {
   const onSubmit = async (data: FilterUserValues) => {
     console.log('Datos del filtro enviados:', data);
     const filteredData = Object.entries(data)
-      .filter(([_, value]) => value !== undefined && value !== "")
+      .filter(([_, value]) => value !== undefined && value !== '')
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-    
+
     console.log('Datos filtrados enviados:', filteredData);
     onGetData(filteredData as FilterUserValues);
   };
@@ -74,7 +75,7 @@ export function FilterInputs({ onGetData, table }: FilterInputUserProps) {
   const handleClickReset = () => {
     form.reset(defaultValues);
     console.log('Filtros reseteados');
-    onGetData(defaultValues); 
+    onGetData(defaultValues);
   };
 
   return (
@@ -117,21 +118,21 @@ export function FilterInputs({ onGetData, table }: FilterInputUserProps) {
                 <DropdownMenuContent align="end">
                   {table
                     .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
+                    .filter((column: any) => column.getCanHide())
+                    .map((column: any) => {
                       const columnLabels: Record<string, string> = {
-                        'id': 'ID',
-                        'Avatar': 'Avatar',
-                        'Nombre': 'Nombre',
-                        'Apellido': 'Apellido',
-                        'Email': 'Email',
-                        'Telefono': 'Teléfono',
-                        'Usuario': 'Usuario',
-                        'DNI': 'DNI',
-                        'Rol': 'Rol',
-                        'Dirección': 'Dirección',
-                        'Ubicación': 'Ubicación',
-                        'Creado': 'Creado'
+                        id: 'ID',
+                        Avatar: 'Avatar',
+                        Nombre: 'Nombre',
+                        Apellido: 'Apellido',
+                        Email: 'Email',
+                        Telefono: 'Teléfono',
+                        Usuario: 'Usuario',
+                        DNI: 'DNI',
+                        Rol: 'Rol',
+                        Dirección: 'Dirección',
+                        Ubicación: 'Ubicación',
+                        Creado: 'Creado',
                       };
 
                       return (
@@ -139,13 +140,13 @@ export function FilterInputs({ onGetData, table }: FilterInputUserProps) {
                           key={column.id}
                           className="capitalize"
                           checked={column.getIsVisible()}
-                          onCheckedChange={(value) =>
+                          onCheckedChange={value =>
                             column.toggleVisibility(!!value)
                           }
                         >
                           {columnLabels[column.id] || column.id}
                         </DropdownMenuCheckboxItem>
-                      )
+                      );
                     })}
                 </DropdownMenuContent>
               </DropdownMenu>
