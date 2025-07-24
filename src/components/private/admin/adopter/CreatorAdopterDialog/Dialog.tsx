@@ -27,6 +27,7 @@ import { useAuth } from '@/context/AuthContext';
 
 //schema
 import { FormValues, schema } from './schema';
+import { useAdopter } from '@/context/AdopterContext';
 
 type CreatorAdopterDialogProps = {
   onCreated?: () => void;
@@ -42,6 +43,7 @@ const defaultValues = {
 };
 export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
   const { axios } = useAuth();
+  const { updateAdopters } = useAdopter();
 
   const [open, setOpen] = React.useState(false);
 
@@ -58,6 +60,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
 
       form.reset();
       onCreated && onCreated();
+      updateAdopters();
       setTimeout(() => {
         setOpen(false);
       }, 1200);
@@ -107,6 +110,11 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
                 control={form.control}
                 label="Celular"
                 name="phone"
+              />
+              <FormInputCustom
+                control={form.control}
+                label="Distrito"
+                name="district"
               />
               <FormInputCustom
                 control={form.control}
