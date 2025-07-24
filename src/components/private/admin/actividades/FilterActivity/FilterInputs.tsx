@@ -8,6 +8,7 @@ import { Form } from '@/components/ui/form';
 
 import { FilterActivityValues, filterActivitySchema } from './schema';
 import {
+  FormCheckboxCustom,
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
@@ -17,9 +18,9 @@ type FilterInputActivityProps = {
 };
 
 const defaultValues: FilterActivityValues = {
-  search: "",
-  finished: undefined,
-  admin: undefined,
+  search: '',
+  finished: false,
+  admin: false,
 };
 
 export function FilterInputs({ onGetData }: FilterInputActivityProps) {
@@ -31,22 +32,26 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
   const applyFiltersRealTime = (currentValues: FilterActivityValues) => {
     const processedValues = {
       ...currentValues,
-      finished: currentValues.finished === 'true' ? true : currentValues.finished === 'false' ? false : undefined,
-      admin: currentValues.admin === 'true' ? true : currentValues.admin === 'false' ? false : undefined,
+      finished: currentValues.finished,
+      admin: currentValues.admin,
     };
 
     const filteredData = Object.entries(processedValues)
-      .filter(([_, value]) => value !== undefined && value !== "")
+      .filter(([_, value]) => value !== undefined && value !== '')
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-    
-    console.log('Filtros de actividades aplicados en tiempo real:', filteredData);
+
+    console.log(
+      'Filtros de actividades aplicados en tiempo real:',
+      filteredData
+    );
     onGetData(filteredData as FilterActivityValues);
   };
 
   const searchValue = form.watch('search');
   const finishedValue = form.watch('finished');
   const adminValue = form.watch('admin');
-  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState(searchValue);
+  const [debouncedSearchValue, setDebouncedSearchValue] =
+    React.useState(searchValue);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,10 +62,10 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
   }, [searchValue]);
 
   React.useEffect(() => {
-    applyFiltersRealTime({ 
-      search: debouncedSearchValue, 
+    applyFiltersRealTime({
+      search: debouncedSearchValue,
       finished: finishedValue,
-      admin: adminValue 
+      admin: adminValue,
     });
   }, [debouncedSearchValue, finishedValue, adminValue]);
 
@@ -68,14 +73,14 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
     console.log('Datos del filtro de actividades enviados:', data);
     const processedData = {
       ...data,
-      finished: data.finished === 'true' ? true : data.finished === 'false' ? false : undefined,
-      admin: data.admin === 'true' ? true : data.admin === 'false' ? false : undefined,
+      finished: data.finished,
+      admin: data.admin,
     };
 
     const filteredData = Object.entries(processedData)
-      .filter(([_, value]) => value !== undefined && value !== "")
+      .filter(([_, value]) => value !== undefined && value !== '')
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-    
+
     console.log('Datos filtrados enviados (actividades):', filteredData);
     onGetData(filteredData as FilterActivityValues);
   };
@@ -90,7 +95,7 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
   const handleClickReset = () => {
     form.reset(defaultValues);
     console.log('Filtros de actividades reseteados');
-    onGetData(defaultValues); 
+    onGetData(defaultValues);
   };
 
   return (
@@ -104,25 +109,17 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
             placeholder="Escribe para filtrar actividades..."
             onKeyUp={handleKeyUpEnter}
           />
-
-          <FormSelectCustom
+          <FormCheckboxCustom
             control={form.control}
             name="finished"
-            label="Estado"
-            options={[
-              { label: 'Finalizada', value: 'true' },
-              { label: 'Pendiente', value: 'false' },
-            ]}
+            label="¿Esta finalizado?"
+            description="Ya finalizó."
           />
-
-          <FormSelectCustom
+          <FormCheckboxCustom
             control={form.control}
             name="admin"
-            label="Tipo"
-            options={[
-              { label: 'Administrador', value: 'true' },
-              { label: 'Voluntario', value: 'false' },
-            ]}
+            label="Es para administrador"
+            description="Solo el administrador podra finarlizarlo."
           />
 
           <div className="grid justify-center content-end">

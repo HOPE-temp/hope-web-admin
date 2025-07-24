@@ -29,6 +29,11 @@ export const hopeBackendUrl = {
     update: (id: number) => `/adopters/${id}`,
     delete: (id: number) => `/adopters/${id}`,
   },
+  evaluations: {
+    create: (adopterId: number) => `/adopters/${adopterId}}/evaluations`,
+    findByAdopter: (adopterId: number) => `/adopters/${adopterId}}/evaluations`,
+    findOne: (id: string) => `/evaluations/${id}}`,
+  },
   animals: {
     create: `/animals`,
     find: (params?: FilterAnimalDto) =>

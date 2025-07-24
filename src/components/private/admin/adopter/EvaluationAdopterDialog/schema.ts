@@ -1,7 +1,13 @@
 import { z } from 'zod';
-import { reviewRequestNotes, statusResult } from '../common/schema';
 export const schema = z.object({
-  statusResult,
-  reviewRequestNotes: reviewRequestNotes.nonempty('La historia es requerida'),
+  profession: z.string().nonempty(),
+  professionDescription: z.string().nonempty(),
+  hasKids: z.boolean(),
+  responsabilityKids: z.string().nonempty(),
+  descriptionPets: z.string().nonempty(),
+  contextPets: z.string().nonempty(),
+  hasPatienceAndTime: z.boolean(),
+  hasSterilizationCommitment: z.boolean(),
+  descriptionSpaceForNewPet: z.string().nonempty(),
 });
 export type FormValues = z.infer<typeof schema>;

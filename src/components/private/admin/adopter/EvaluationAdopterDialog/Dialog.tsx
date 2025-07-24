@@ -12,11 +12,10 @@ import {
 
 import { useEffect, useState } from 'react';
 import { Pencil } from 'lucide-react';
-import { updateAdopters } from '@/services/hopeBackend/adopters';
 import { useAuth } from '@/context/AuthContext';
 import {
+  FormCheckboxCustom,
   FormInputCustom,
-  FormSelectCustom,
   FormTextareaCustom,
 } from '@/components/shared/Input';
 import { Form } from '@/components/ui/form';
@@ -25,42 +24,45 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormValues, schema } from './schema';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
+import { createEvaluation } from '@/services/hopeBackend/evaluations';
 
 interface Props {
-  adoption: Adopter;
+  adopter: Adopter;
   onUpdated?: () => void;
 }
 
 const defaultValues = {
-  statusResult: undefined,
-  reviewRequestNotes: undefined,
+  idAnimal: undefined,
+  profession: undefined,
+  professionDescription: undefined,
+  hasKids: undefined,
+  responsabilityKids: undefined,
+  descriptionPets: undefined,
+  contextPets: undefined,
+  hasPatienceAndTime: undefined,
+  hasSterilizationCommitment: undefined,
+  descriptionSpaceForNewPet: undefined,
 };
 
-export function EvaluationAdopterDialog({ adoption, onUpdated }: Props) {
+export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
   const { axios } = useAuth();
   const [open, setOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      statusResult: adoption.statusResult,
-      reviewRequestNotes: adoption.reviewRequestNotes ?? '',
-    },
+    defaultValues,
   });
 
   useEffect(() => {
     if (open) {
-      form.reset({
-        statusResult: adoption.statusResult,
-        reviewRequestNotes: adoption.reviewRequestNotes ?? '',
-      });
+      form.reset(defaultValues);
     }
-  }, [open, adoption]);
+  }, [open, adopter]);
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (evaluation: FormValues) => {
     try {
-      await evaluationAdopter(axios, adoption.id, data);
-      toast.success(`Evaluacion de la solicitud ${adoption.id}`);
+      await createEvaluation(axios, adopter.id, evaluation);
+      toast.success(`Evaluacion de la solicitud ${adopter.id}`);
       onUpdated && onUpdated();
       setTimeout(() => {
         setOpen(false);
@@ -91,23 +93,67 @@ export function EvaluationAdopterDialog({ adoption, onUpdated }: Props) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-              <FormSelectCustom
+            <div className="grid grid-cols-1 gap-4 mt-2 max-h-80 overflow-scroll">
+              <span></span>
+              <FormTextareaCustom
                 control={form.control}
-                label="Resultado"
-                name="statusResult"
-                options={[
-                  { label: 'No evaluado', value: 'not_evaluated' },
-                  { label: 'Aprobado', value: 'approved' },
-                  { label: 'Rechazado', value: 'rejected' },
-                  { label: 'Banneado', value: 'banned' },
-                ]}
+                rows={3}
+                label="¿A que se dedica?"
+                name="profession"
               />
               <FormTextareaCustom
                 control={form.control}
-                rows={5}
-                label="Notas de Solicitud"
-                name="reviewRequestNotes"
+                rows={3}
+                label="Necesitamos asegurarnos que tenga una esabilida economica para cualquier eventialidad con su nuevo compañero"
+                name="professionDescription"
+              />
+              <FormCheckboxCustom
+                control={form.control}
+                name="hasKids"
+                label="Tienes niños"
+                description="¿Tines niños a tu cuidado?."
+              />
+              <FormTextareaCustom
+                control={form.control}
+                rows={3}
+                label="Es fundamental la responsabilida, paciencia y supervicion, si cumple con estas caracteriticas, describalo detalladamente"
+                name="responsabilityKids"
+              />
+              <FormTextareaCustom
+                control={form.control}
+                rows={3}
+                label="¿Qué otras mascotas tiene en casa?"
+                name="descriptionPets"
+              />
+              <FormTextareaCustom
+                control={form.control}
+                rows={3}
+                label="¿Describa la condicion en la que viven esas mascotas?"
+                name="contextPets"
+              />
+              <FormCheckboxCustom
+                control={form.control}
+                name="hasPatienceAndTime"
+                label="Tiempo y paciencia"
+                description="¿Tines tiempo y paciencia para cuidar a un nuevo integrante en tu casa?."
+              />
+              <FormCheckboxCustom
+                control={form.control}
+                name="hasSterilizationCommitment"
+                label="Tiempo y paciencia"
+                description="¿Se compromete a la esterilizacion del animal?"
+              />
+              <FormTextareaCustom
+                control={form.control}
+                rows={3}
+                label="¿Se compromete a la esterilizacion del animal?, escribalo"
+                name="hasSterilizationCommitment"
+              />
+              <FormTextareaCustom
+                control={form.control}
+                rows={3}
+                label="Desriba el espacio de la nueva mascota"
+                name="descriptionSpaceForNewPet"
               />
             </div>
 

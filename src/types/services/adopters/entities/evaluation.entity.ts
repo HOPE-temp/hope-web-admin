@@ -1,4 +1,3 @@
-
 interface Evaluation {
   id: string;
   adopter: Adopter;
@@ -9,7 +8,7 @@ interface Evaluation {
   descriptionPets: string;
   contextPets: number;
   hasPatienceAndTime: boolean;
-  hasSterilizationCommitment: string;
+  hasSterilizationCommitment: boolean;
   descriptionSpaceForNewPet: string;
   createdAt: Date;
   updatedAt: Date;

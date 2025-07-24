@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/format/formatDate';
 import { EditorAdoptersDialog } from '../EditorAdopterDialog';
 import { AdoptersDeleteDialog } from '../AdopterDeleteDialog';
+import { EvaluationAdopterDialog } from '../EvaluationAdopterDialog';
 
 interface AdoptersColumnsProps {
   updateAdopters: () => void;
@@ -56,6 +57,10 @@ export function createAdoptersColumns({
           <AdoptersDeleteDialog
             adopter={row.original}
             onDelete={updateAdopters}
+          />
+          <EvaluationAdopterDialog
+            adopter={row.original}
+            onUpdated={updateAdopters}
           />
           {/* <EditorAdoptersDialog
               animal={row.original}
