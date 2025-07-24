@@ -26,6 +26,11 @@ import { useAuth } from '@/context/AuthContext';
 
 //schema
 import { FormValues, schema } from './schema';
+import {
+  CheckboxItem,
+  DynamicCheckboxList,
+} from '@/components/shared/Input/DynamicCheckboxList';
+import AnimalCheckbox from '@/components/shared/AnimalCheckbox/AnimalCheckbox';
 
 type CreatorAdoptionDialogProps = {
   onCreated?: () => void;
@@ -37,6 +42,7 @@ export function CreatorAdoptionDialog({
   const { axios } = useAuth();
 
   const [open, setOpen] = React.useState(false);
+  const [checkOptions, setCheckOptions] = React.useState<CheckboxItem[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -49,7 +55,7 @@ export function CreatorAdoptionDialog({
   const onSubmit = async ({ adopterId, animalsIds }: FormValues) => {
     const adoption = await createAdoption(axios, {
       adopterId,
-      animalsIds: [animalsIds],
+      animalsIds,
     });
 
     if (adoption) {
@@ -63,6 +69,22 @@ export function CreatorAdoptionDialog({
     }
   };
 
+  const handleSearch = (data: PaginationResponse<Animal>) => {
+    const { items } = data;
+    let ckecks: CheckboxItem[] = [];
+    if (items.length > 0) {
+      ckecks = items.map(animal => {
+        return {
+          id: animal.id,
+          image: animal.images[0],
+          name: animal.nickname,
+          description: animal.descriptionHistory,
+        };
+      });
+    }
+    setCheckOptions(ckecks);
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -71,46 +93,49 @@ export function CreatorAdoptionDialog({
           Registrar Adoption
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent aria-describedby={undefined} className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Registrar Adoption</DialogTitle>
           <DialogDescription>
             Completa los campos para crear un nuevo animal.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInputCustom
-                control={form.control}
-                label="Adoptante"
-                type="number"
-                name="adopterId"
-              />
-              <FormInputCustom
-                control={form.control}
-                label="Animal"
-                type="number"
-                name="animalsIds"
-              />
-            </div>
-            {form.formState.errors.root && (
-              <div className="text-red-500 text-sm">
-                {form.formState.errors.root.message}
+        <div className="max-h-[80vh] overflow-scroll">
+          <AnimalCheckbox onSearch={handleSearch} />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
+                <DynamicCheckboxList
+                  control={form.control}
+                  title="Animal"
+                  name="animalsIds"
+                  items={checkOptions}
+                />
+                <FormInputCustom
+                  control={form.control}
+                  label="Adoptante"
+                  type="number"
+                  name="adopterId"
+                />
               </div>
-            )}
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancelar
+              {form.formState.errors.root && (
+                <div className="text-red-500 text-sm">
+                  {form.formState.errors.root.message}
+                </div>
+              )}
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    Cancelar
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? 'Registrando...' : 'Registrar'}
                 </Button>
-              </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Registrando...' : 'Registrar'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );

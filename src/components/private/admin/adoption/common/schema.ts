@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const today = new Date().toISOString().split('T')[0];
 export const idAdopter = z.number().min(1, 'Id minimo 1');
 
-export const animalsIds = z.number().min(1, 'Id minimo 1');
+export const animalsIds = z.array(z.number().min(1, 'Id minimo 1'));
 
 export const statusResult = z.enum(
   ['not_evaluated', 'approved', 'rejected', 'banned'],

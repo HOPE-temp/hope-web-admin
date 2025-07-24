@@ -9,10 +9,18 @@ export async function findAllAnimals(
   axios: AxiosInstance,
   params?: FilterAnimalDto
 ) {
-  const res = await axios.get<PaginationResponse<Animal>>(
+  const { data } = await axios.get<PaginationResponse<Animal>>(
     hopeBackendUrl.animals.find(params)
   );
-  return res.data;
+  const items = data.items.map(item => {
+    if (item.images.length == 0) {
+      item.images.push('/images/avatar-dog.png');
+    }
+    return item;
+  });
+
+  data.items = items;
+  return data;
 }
 
 export async function createAnimal(

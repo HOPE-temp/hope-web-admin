@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AppSidebar } from '@/components/layout/Sidebar/sidebarAlter';
+import { AppSidebar } from '@/components/layout/Sidebar/sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { ButtonTrigger } from '@/components/layout/Sidebar/ButtonTrigger';
 import { Header } from '@/components/layout/Header';
