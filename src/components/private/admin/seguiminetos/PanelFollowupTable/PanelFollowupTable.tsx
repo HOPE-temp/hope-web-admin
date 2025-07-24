@@ -19,44 +19,45 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FilterInputAnimal } from '../FilterAnimal';
-import { createAnimalsColumns } from './Colums';
+import { createFollowupsColumns } from './Colums';
 import { Loader } from 'lucide-react';
-import { useAnimal } from '@/context/AnimalContext';
-import PaginationTable from '../../../../shared/PaginationTable';
+import PaginationTable from '@/components/shared/PaginationTable';
+import { useFollowup } from '@/context/FollowupContext';
+import { FilterInputFollowup } from '../FilterFollowup';
 
-interface AnimalTableProps<TData extends RowData> {}
+interface FollowupTableProps<TData extends RowData> {}
 
-export function PanelAnimalsTable<
+export function PanelFollowupsTable<
   TData extends RowData
->({}: AnimalTableProps<TData>) {
+>({}: FollowupTableProps<TData>) {
   const {
-    animals,
+    followups,
     loading,
     updateParams,
-    updateAnimals,
+    updateFollowups,
     limit,
     offset,
     total,
-  } = useAnimal();
+  } = useFollowup();
 
   const columns = React.useMemo(
-    () => createAnimalsColumns({ updateAnimals }),
+    () => createFollowupsColumns({ updateFollowups }),
     []
   );
 
-  const table = useReactTable({
-    data: animals,
+  const table = useReactTable<AdoptedAnimal>({
+    data: followups,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
   return (
     <div className="w-full">
       <div className="py-4">
-        <FilterInputAnimal
+        <FilterInputFollowup
           onGetData={params =>
             updateParams({ ...params, limit: 10, offset: 0 })
           }

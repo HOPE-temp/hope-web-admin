@@ -2,18 +2,20 @@ import { AxiosInstance, isAxiosError } from 'axios';
 import { hopeBackendUrl } from './url';
 import toast from 'react-hot-toast';
 
-export async function findOneAdoption(axios: AxiosInstance, id: string) {
-  const res = await axios.get<Adoption>(hopeBackendUrl.adoptions.findOne(id));
+export async function findOneFollowup(axios: AxiosInstance, id: string) {
+  const res = await axios.get<AdoptedAnimal>(
+    hopeBackendUrl.followups.findOne(id)
+  );
   return res.data;
 }
 
-export async function findAllAdoptions(
+export async function findAllFollowups(
   axios: AxiosInstance,
-  params?: FilterAdoptionDto
+  params?: FilterFollowupDto
 ) {
   try {
-    const res = await axios.get<PaginationResponse<Adoption>>(
-      hopeBackendUrl.adoptions.find(params)
+    const res = await axios.get<PaginationResponse<AdoptedAnimal>>(
+      hopeBackendUrl.followups.find(params)
     );
     return res.data;
   } catch (error) {
@@ -34,13 +36,13 @@ export async function findAllAdoptions(
   }
 }
 
-export async function createAdoption(
+export async function createFollowup(
   axios: AxiosInstance,
-  body?: CreateAdoptionDto
+  body?: CreateFollowupDto
 ) {
   try {
-    const res = await axios.post<Adoption>(
-      hopeBackendUrl.adoptions.create,
+    const res = await axios.post<AdoptedAnimal>(
+      hopeBackendUrl.followups.create,
       body
     );
     return res.data;
@@ -58,42 +60,53 @@ export async function createAdoption(
           toast.error('Ya existe un adopter con ese nombre.');
         }
       }
-      toast.error(error.message);
     }
   }
 }
 
-export async function evaluationAdoption(
+export async function rescheduleFollowup(
   axios: AxiosInstance,
   id: string,
-  body?: UpdateAdoptionEvaluateDto
+  body?: UpdateRescheduleFollowup
 ) {
-  const res = await axios.patch<Adoption>(
-    hopeBackendUrl.adoptions.evaluate(id),
+  const res = await axios.patch<AdoptedAnimal>(
+    hopeBackendUrl.followups.rescheduleFollowup(id),
     body
   );
   return res.data;
 }
 
-export async function linkAnimalAdoption(
+export async function checkupScheduleFollowup(
   axios: AxiosInstance,
   id: string,
-  body?: UpdateLinkAnimalWithAdoption
+  body?: UpdateCheckupFollowup
 ) {
-  const res = await axios.patch<Adoption>(
-    hopeBackendUrl.adoptions.linkAnimal(id),
+  const res = await axios.patch<AdoptedAnimal>(
+    hopeBackendUrl.followups.checkupSchedule(id),
     body
   );
   return res.data;
 }
 
-export async function completeAdoption(
+export async function completeFollowup(
   axios: AxiosInstance,
   id: string,
-  body?: UpdateCompleteRequestAdoption
+  body?: UpdateCompleteRequestFollowup
 ) {
-  const res = await axios.patch<Adoption>(
-    hopeBackendUrl.adoptions.completeAdoption(id),
+  const res = await axios.patch<AdoptedAnimal>(
+    hopeBackendUrl.followups.completeFollowup(id),
+    body
+  );
+  return res.data;
+}
+
+export async function cancelFollowup(
+  axios: AxiosInstance,
+  id: string,
+  body?: UpdateCompleteRequestFollowup
+) {
+  const res = await axios.patch<AdoptedAnimal>(
+    hopeBackendUrl.followups.cancelFollowup(id),
     body
   );
   return res.data;

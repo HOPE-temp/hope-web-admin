@@ -35,7 +35,12 @@ export function UploaderAnimalImageDialog({
     const file = e.target.files?.[0];
     if (file) {
       const maxSize = 5 * 1024 * 1024;
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      const allowedTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+      ];
 
       if (file.size > maxSize) {
         setError('El archivo es muy grande. Máximo 5MB.');
@@ -51,7 +56,6 @@ export function UploaderAnimalImageDialog({
 
       setError(null);
       setSelectedFile(file);
-      console.log('File selected:', file.name, file.size);
     } else {
       setSelectedFile(null);
     }
@@ -128,7 +132,8 @@ export function UploaderAnimalImageDialog({
           />
           {selectedFile && (
             <p className="text-sm text-green-600">
-              ✓ {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+              ✓ {selectedFile.name} (
+              {(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
             </p>
           )}
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -140,10 +145,7 @@ export function UploaderAnimalImageDialog({
               Cancelar
             </Button>
           </DialogClose>
-          <Button
-            onClick={handleUpload}
-            disabled={!selectedFile || uploading}
-          >
+          <Button onClick={handleUpload} disabled={!selectedFile || uploading}>
             {uploading ? 'Subiendo...' : 'Subir Imagen'}
           </Button>
         </DialogFooter>

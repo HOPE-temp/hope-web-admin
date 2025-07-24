@@ -35,7 +35,6 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
   };
 
   const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(ev.key);
     if (ev.key === 'Enter') {
       form.handleSubmit(onSubmit)();
     }

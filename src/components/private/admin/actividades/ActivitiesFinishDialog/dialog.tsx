@@ -16,7 +16,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 
@@ -35,7 +41,7 @@ export function ActivitiesFinishDialog({
   onFinish,
 }: ActivitiesFinishDialogProps) {
   const { axios } = useAuth();
-  const { refreshActivities } = useActivity(); 
+  const { refreshActivities } = useActivity();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -54,17 +60,16 @@ export function ActivitiesFinishDialog({
 
     setLoading(true);
     try {
-      console.log('Finalizando actividad:', activity.id);
       await finishActivity(axios, activity.id);
       await refreshActivities();
-      
+
       toast.success('Actividad finalizada exitosamente');
       onFinish();
       setOpen(false);
       form.reset();
     } catch (error: any) {
       console.error('Error al finalizar actividad:', error);
-      
+
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
@@ -104,13 +109,16 @@ export function ActivitiesFinishDialog({
             Finalizar Actividad
           </DialogTitle>
           <DialogDescription>
-            ¿Estás seguro de que deseas finalizar esta actividad? Esta acción no se puede deshacer.
+            ¿Estás seguro de que deseas finalizar esta actividad? Esta acción no
+            se puede deshacer.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="rounded-lg border p-4 bg-gray-50">
-            <h4 className="font-semibold text-sm mb-2">Información de la actividad:</h4>
+            <h4 className="font-semibold text-sm mb-2">
+              Información de la actividad:
+            </h4>
             <div className="space-y-2 text-sm">
               <div>
                 <span className="font-medium">Título:</span> {activity.title}
@@ -118,7 +126,7 @@ export function ActivitiesFinishDialog({
               {activity.scheduleStartAt && (
                 <div className="flex items-center gap-1">
                   <CalendarCheck className="h-4 w-4" />
-                  <span className="font-medium">Programada para:</span> 
+                  <span className="font-medium">Programada para:</span>
                   {new Date(activity.scheduleStartAt).toLocaleString()}
                 </div>
               )}
@@ -130,7 +138,13 @@ export function ActivitiesFinishDialog({
               </div>
               <div>
                 <span className="font-medium">Tipo:</span>{' '}
-                <Badge className={activity.admin ? "bg-green-100 text-green-800 ml-1" : "bg-gray-100 text-gray-800 ml-1"}>
+                <Badge
+                  className={
+                    activity.admin
+                      ? 'bg-green-100 text-green-800 ml-1'
+                      : 'bg-gray-100 text-gray-800 ml-1'
+                  }
+                >
                   {activity.admin ? 'Administrador' : 'Voluntario'}
                 </Badge>
               </div>
@@ -138,7 +152,10 @@ export function ActivitiesFinishDialog({
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleFinish)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(handleFinish)}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="confirm"
@@ -154,7 +171,8 @@ export function ActivitiesFinishDialog({
                         Confirmo que deseo finalizar esta actividad
                       </FormLabel>
                       <p className="text-xs text-muted-foreground">
-                        Al finalizar, la actividad se marcará como completada y no se podrá modificar.
+                        Al finalizar, la actividad se marcará como completada y
+                        no se podrá modificar.
                       </p>
                       <FormMessage />
                     </div>

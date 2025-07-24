@@ -31,6 +31,7 @@ import {
   DynamicCheckboxList,
 } from '@/components/shared/Input/DynamicCheckboxList';
 import AnimalCheckbox from '@/components/shared/AnimalCheckbox/AnimalCheckbox';
+import { isAxiosError } from 'axios';
 
 type CreatorAdoptionDialogProps = {
   onCreated?: () => void;
@@ -53,19 +54,30 @@ export function CreatorAdoptionDialog({
   });
 
   const onSubmit = async ({ adopterId, animalsIds }: FormValues) => {
-    const adoption = await createAdoption(axios, {
-      adopterId,
-      animalsIds,
-    });
+    try {
+      const adoption = await createAdoption(axios, {
+        adopterId,
+        animalsIds,
+      });
+      if (adoption) {
+        toast.success(`Mascota #${adoption.id} guardada`);
 
-    if (adoption) {
-      toast.success(`Mascota #${adoption.id} guardada`);
+        form.reset();
+        onCreated && onCreated();
+        setTimeout(() => {
+          setOpen(false);
+        }, 1200);
+      }
+    } catch (error) {
+      toast.error('error.message');
 
-      form.reset();
-      onCreated && onCreated();
-      setTimeout(() => {
-        setOpen(false);
-      }, 1200);
+      if (isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 409) {
+          toast.error('Ya existe un adoption con ese nombre.');
+        }
+        toast.error(error.message);
+      }
     }
   };
 

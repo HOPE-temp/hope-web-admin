@@ -40,10 +40,6 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
       .filter(([_, value]) => value !== undefined && value !== '')
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-    console.log(
-      'Filtros de actividades aplicados en tiempo real:',
-      filteredData
-    );
     onGetData(filteredData as FilterActivityValues);
   };
 

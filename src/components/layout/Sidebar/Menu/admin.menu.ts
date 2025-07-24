@@ -35,6 +35,12 @@ export const itemsNavAdmin: NavItem[] = [
     active: path => path.startsWith('/admin/adoption'),
   },
   {
+    href: '/admin/seguiminetos',
+    label: 'Seguimiento',
+    icon: Heart,
+    active: path => path.startsWith('/admin/seguiminetos'),
+  },
+  {
     href: '/admin/checkup',
     label: 'Historial Médico',
     icon: Stethoscope,

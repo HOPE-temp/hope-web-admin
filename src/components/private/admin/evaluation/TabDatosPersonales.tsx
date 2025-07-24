@@ -1,36 +1,44 @@
-"use client"
+'use client';
 
-import { useState } from "react"
+import { useState } from 'react';
 
 export default function TabDatosPersonales() {
   const [form, setForm] = useState({
-    nombres: "",
-    apellidos: "",
-    dni: "",
-    celular: "",
-    email: "",
-    distrito: "",
-  })
+    nombres: '',
+    apellidos: '',
+    dni: '',
+    celular: '',
+    email: '',
+    distrito: '',
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Formulario enviado:", form)
-  }
+    e.preventDefault();
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-8 border rounded shadow max-w-4xl mx-auto space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-8 border rounded shadow max-w-4xl mx-auto space-y-6"
+    >
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800">Datos Personales</h2>
-        <p className="text-gray-500 text-sm">Completa este formulario con tus datos personales.</p>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Datos Personales
+        </h2>
+        <p className="text-gray-500 text-sm">
+          Completa este formulario con tus datos personales.
+        </p>
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">Información Personal</h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+          Información Personal
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <input
             type="text"
@@ -90,7 +98,6 @@ export default function TabDatosPersonales() {
         <button
           type="button"
           className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded"
-          onClick={() => console.log("Volver")}
         >
           Atrás
         </button>
@@ -102,6 +109,5 @@ export default function TabDatosPersonales() {
         </button>
       </div>
     </form>
-  )
+  );
 }
-

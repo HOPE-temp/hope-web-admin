@@ -1,16 +1,17 @@
-enum StatusFollowupAdoptedAnimal {
+enum EnumStatusFollowupAdoptedAnimal {
   SCHEDULED_FOLLOUP = 'scheduled_followup',
   VERIFIED = 'verified',
-  IN_FOLLOWUP = 'in_followup',
   SCHEDULED_STERILIZATION = 'scheduled_sterilization',
   CANCELLED = 'cancelled',
 }
 
+type StatusFollowupAdoptedAnimal = `${EnumStatusFollowupAdoptedAnimal}`;
+
 interface AdoptedAnimal {
   id: string;
   activities: Activity[];
-  adoptions: Adoption;
-  animals: Animal;
+  adoption: Adoption;
+  animal: Animal;
   supervisor: User;
   statusFollowup: StatusFollowupAdoptedAnimal;
   isReturned: boolean;

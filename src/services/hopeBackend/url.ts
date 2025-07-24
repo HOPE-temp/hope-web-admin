@@ -21,6 +21,16 @@ export const hopeBackendUrl = {
     completeAdoption: (id: string) =>
       `/adoptions/${id}/complete_request_adoption`,
   },
+  followups: {
+    create: `/followups`,
+    find: (params?: FilterAdoptionDto) =>
+      generateUrlWithParms<FilterAdoptionDto>(`/followups`, params),
+    findOne: (id: string) => `/followups/${id}`,
+    rescheduleFollowup: (id: string) => `/followups/${id}/reschedule`,
+    checkupSchedule: (id: string) => `/followups/${id}/checkupSchedule`,
+    completeFollowup: (id: string) => `/followups/${id}/complete`,
+    cancelFollowup: (id: string) => `/followups/${id}/cancel`,
+  },
   adopters: {
     create: `/adopters`,
     find: (params?: FilterAdopterDto) =>
