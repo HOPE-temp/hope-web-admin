@@ -179,11 +179,11 @@ export function CreatorAnimalDialog({ onCreated }: CreatorAnimalDialogProps) {
                 label="¿Está esterilizado?"
                 description="Marca esta opción si el animal ya fue esterilizado."
               />
-              <FormFileInputCustom
+              {/* <FormFileInputCustom
                 control={form.control}
                 label="Imagen"
                 name="image"
-              />
+              /> */}
             </div>
             {form.formState.errors.root && (
               <div className="text-red-500 text-sm">
