@@ -54,6 +54,7 @@ export function CreatorMedicalCheckupDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
+      title: undefined,
       animalId: undefined,
       scheduleStartAt: undefined,
       durationSchedule: undefined,
@@ -61,6 +62,7 @@ export function CreatorMedicalCheckupDialog({
   });
 
   const onSubmit = async ({
+    title,
     animalId,
     durationSchedule,
     scheduleStartAt,
@@ -70,6 +72,7 @@ export function CreatorMedicalCheckupDialog({
       start + dictTimeMiliseconds[durationSchedule]
     );
     const adoption = await createMedicalCheckup(axios, {
+      title,
       animalId,
       scheduleStartAt,
       scheduleEndAt,
@@ -104,6 +107,11 @@ export function CreatorMedicalCheckupDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormInputCustom
+                control={form.control}
+                label="Titulo"
+                name="title"
+              />
               <FormInputCustom
                 control={form.control}
                 label="Animal"

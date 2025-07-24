@@ -1,7 +1,13 @@
 import { z } from 'zod';
-import { animalId, scheduleStartAt, durationSchedule } from '../common/schema';
+import {
+  title,
+  animalId,
+  scheduleStartAt,
+  durationSchedule,
+} from '../common/schema';
 
 export const schema = z.object({
+  title,
   animalId,
   scheduleStartAt,
   durationSchedule,

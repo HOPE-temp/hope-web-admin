@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const today = new Date().toISOString().split('T')[0];
 
 export const animalId = z.number().min(1, 'Id minimo 1');
+export const title = z.string().min(5, 'Id minimo 1');
 
 export const status = z.enum(
   ['registered', 'in_attention', 'completed', 'cancelled'],
