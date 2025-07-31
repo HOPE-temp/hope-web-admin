@@ -11,6 +11,7 @@ import {
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
+import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';
 
 type FilterInputAdoptionProps = {
   onGetData: (data: FormValues) => void;
@@ -47,7 +48,7 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-8 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6  gap-4">
           <FormInputCustom
             control={form.control}
             type="number"
@@ -85,11 +86,13 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
             label="DNI"
             name="documentNumber"
           />
-          <div className="grid justify-center content-end">
-            <Button type="submit">Buscar</Button>
-          </div>
-          <div className="grid justify-center content-end">
+          <div className="flex justify-around content-end mt-auto mb-0 ">
+            <Button type="submit">
+              <SearchCheckIcon />
+              Buscar
+            </Button>
             <Button type="submit" onClick={handleClickReset}>
+              <TimerResetIcon />
               Resetear
             </Button>
           </div>

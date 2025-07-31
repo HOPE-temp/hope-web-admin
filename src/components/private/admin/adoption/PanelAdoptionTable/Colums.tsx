@@ -77,6 +77,11 @@ export function createAdoptionsColumns({
       cell: ({ row }) => formatDate(row.original.selectedAnimalAt),
     },
     {
+      accessorKey: 'createdAt',
+      header: 'Fecha de creacion',
+      cell: ({ row }) => formatDate(row.original.createdAt),
+    },
+    {
       id: 'acciones',
       header: 'Acciones',
       cell: ({ row }) => (

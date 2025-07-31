@@ -93,60 +93,60 @@ export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 gap-4 mt-2 max-h-80 overflow-scroll">
+            <div className="grid grid-cols-1 gap-4 mt-2 p-2 max-h-80 overflow-scroll">
               <span></span>
               <FormTextareaCustom
                 control={form.control}
                 rows={3}
-                label="¿A que se dedica?"
+                label="¿A qué se dedica?"
                 name="profession"
               />
               <FormTextareaCustom
                 control={form.control}
                 rows={3}
-                label="Necesitamos asegurarnos que tenga una esabilida economica para cualquier eventialidad con su nuevo compañero"
+                label="Describa a qué se dedica para asegurarnos de la estabilidad económica para enfrentar cualquier eventualidad"
                 name="professionDescription"
               />
               <FormCheckboxCustom
                 control={form.control}
                 name="hasKids"
-                label="Tienes niños"
-                description="¿Tines niños a tu cuidado?."
+                label="Tienes menores."
+                description="¿Tiene niños menores de 5 años en casa?"
               />
               <FormTextareaCustom
                 control={form.control}
                 rows={3}
-                label="Es fundamental la responsabilida, paciencia y supervicion, si cumple con estas caracteriticas, describalo detalladamente"
+                label="Describa la responsabilidad que tiene con los niños en casa. Es fundamental la responsabilidad, la paciencia y la supervisión. Si cumple con estas características, descríbalas detalladamente."
                 name="responsabilityKids"
               />
               <FormTextareaCustom
                 control={form.control}
                 rows={3}
-                label="¿Qué otras mascotas tiene en casa?"
+                label="Describa a los animales que tiene en casa."
                 name="descriptionPets"
               />
               <FormTextareaCustom
                 control={form.control}
                 rows={3}
-                label="¿Describa la condicion en la que viven esas mascotas?"
+                label="¿Cómo mantiene a sus mascotas en casa? (alimentación, espacio, atención veterinaria)"
                 name="contextPets"
               />
               <FormCheckboxCustom
                 control={form.control}
                 name="hasPatienceAndTime"
                 label="Tiempo y paciencia"
-                description="¿Tines tiempo y paciencia para cuidar a un nuevo integrante en tu casa?."
+                description="¿Cuenta con el tiempo y la paciencia necesarios para cuidar a esta mascota?"
               />
               <FormCheckboxCustom
                 control={form.control}
                 name="hasSterilizationCommitment"
                 label="Esterilizacion"
-                description="¿Se compromete a la esterilizacion del animal?"
+                description="¿Se compromete a esterilizar al animal adoptado? (en caso de no estar esterilizado)"
               />
               <FormTextareaCustom
                 control={form.control}
                 rows={3}
-                label="Desriba el espacio de la nueva mascota"
+                label="Describa el lugar donde vivirá la mascota (casa, departamento, patio, etc.)"
                 name="descriptionSpaceForNewPet"
               />
             </div>

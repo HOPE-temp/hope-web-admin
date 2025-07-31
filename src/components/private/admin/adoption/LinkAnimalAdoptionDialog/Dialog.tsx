@@ -29,7 +29,7 @@ import {
   CheckboxItem,
   DynamicCheckboxList,
 } from '@/components/shared/Input/DynamicCheckboxList';
-import AnimalCheckbox from '@/components/shared/AnimalCheckbox/AnimalCheckbox';
+import { AnimalSearch } from '@/components/shared/AnimalSearch';
 import { findManyIdsAnimals } from '@/services/hopeBackend/animals';
 
 interface Props {
@@ -130,7 +130,7 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
           </DialogTitle>
         </DialogHeader>
         <div className="max-h-[80vh] overflow-scroll">
-          <AnimalCheckbox onSearch={handleSearch} />
+          <AnimalSearch onSearch={handleSearch} />
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>

@@ -1,4 +1,3 @@
-
 enum EnumStatusResultApotion {
   NOT_EVALUATED = 'not_evaluated',
   APPROVED = 'approved',
@@ -22,10 +21,9 @@ enum EnumStatusSterilisationApotion {
   cancelled_due_to_no_contact = 'cancelled_due_to_no_contact',
 }
 
-type StatusResultApotion = `${EnumStatusResultApotion}`
-type StatusRequestApotion = `${EnumStatusRequestApotion}`
-type StatusSterilisationApotion = `${EnumStatusSterilisationApotion}`
-
+type StatusResultApotion = `${EnumStatusResultApotion}`;
+type StatusRequestApotion = `${EnumStatusRequestApotion}`;
+type StatusSterilisationApotion = `${EnumStatusSterilisationApotion}`;
 
 interface Adoption {
   id: string;
@@ -41,7 +39,7 @@ interface Adoption {
   contractSigned: boolean;
   isWebVisible: boolean;
   adoptionHistory?: string;
-  createdAt: Date;
+  createdAt: string;
   updatedAt?: Date;
   deletedAt?: Date;
 }

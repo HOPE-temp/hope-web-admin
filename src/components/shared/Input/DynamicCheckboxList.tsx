@@ -10,7 +10,7 @@ import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 export interface CheckboxItem {
   id: number;
   name: string;
-  image: string;
+  image?: string;
   description?: string;
 }
 
@@ -42,15 +42,17 @@ export function CheckboxCard({ item, selected, onClick }: CheckboxCardProps) {
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-4 mb-2">
-              <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                <Image
-                  src={image || '/placeholder.svg'}
-                  alt={name}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              </div>
+              {image && (
+                <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                  <Image
+                    src={image || '/placeholder.svg'}
+                    alt={name}
+                    fill
+                    className="object-cover"
+                    sizes="80px"
+                  />
+                </div>
+              )}
 
               <div className="flex-1 ">
                 <h3 className="font-semibold text-sm truncate">{name}</h3>
@@ -84,6 +86,12 @@ export function DynamicCheckboxList<T extends FieldValues>({
 
   const [selectedItems, setSelectedItems] = useState<CheckboxItem[]>([]);
   const [noSelectedItems, setNoSelectedItems] = useState<CheckboxItem[]>([]);
+
+  useEffect(() => {
+    setSelectedItems(
+      items.filter(item => !selectedItems.some(({ id }) => id === item.id))
+    );
+  }, [items]);
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="mb-6">
@@ -109,11 +117,8 @@ export function DynamicCheckboxList<T extends FieldValues>({
                 setSelectedItems([...selectedItems, filterSearch]);
               }
             }
-          };
-          useEffect(() => {
-            console.log({ items, value });
             setNoSelectedItems(items.filter(({ id }) => !value.includes(id)));
-          }, [items, value]);
+          };
 
           return (
             <div>

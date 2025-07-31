@@ -23,7 +23,7 @@ import { createAdoptersColumns } from './Colums';
 import { Loader } from 'lucide-react';
 import PaginationTable from '@/components/shared/PaginationTable';
 import { useAdopter } from '@/context/AdopterContext';
-import { FilterInputAdopter } from '../FilterAdopter';
+import { FilterInputAdopter } from '@/components/shared/FilterAdopter';
 
 interface AdopterTableProps<TData extends RowData> {}
 

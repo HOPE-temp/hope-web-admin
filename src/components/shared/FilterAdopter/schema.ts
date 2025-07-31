@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { documentNumber } from '../common/schema';
 
 export const schema = z.object({
   documentNumber: z

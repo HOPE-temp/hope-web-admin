@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 export const today = new Date().toISOString().split('T')[0];
-export const idAdopter = z.number().min(1, 'Id minimo 1');
+export const idAdopter = z
+  .number({ message: 'El ID debe ser un numero' })
+  .positive('El Id debe ser positivo');
 
 export const animalsIds = z.array(z.number().min(1, 'Id minimo 1'));
 

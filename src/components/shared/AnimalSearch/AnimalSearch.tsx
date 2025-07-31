@@ -1,5 +1,7 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormValues, schema } from './schema';
 import { FormInputCustom } from '../Input';
@@ -9,10 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';
 
-interface AnimalCheckboxProps {
+interface AnimalSearchProps {
   onSearch: (animals: PaginationResponse<Animal>) => void;
 }
-export default function AnimalCheckbox({ onSearch }: AnimalCheckboxProps) {
+export function AnimalSearch({ onSearch }: AnimalSearchProps) {
   const { axios } = useAuth();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -35,11 +37,15 @@ export default function AnimalCheckbox({ onSearch }: AnimalCheckboxProps) {
     form.reset();
   };
 
+  useEffect(() => {
+    onSubmit({ nickname: undefined });
+  }, []);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex md:grid-cols-5 gap-4">
-          <div className="flex-grow p-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="p-2">
             <FormInputCustom
               control={form.control}
               label="Nombre"
@@ -47,16 +53,14 @@ export default function AnimalCheckbox({ onSearch }: AnimalCheckboxProps) {
               onKeyUp={handleKeyUpEnter}
             />
           </div>
-          <div className="p-8">
+          <div className="flex justify-around mt-auto mb-0">
             <Button type="submit">
-              Buscar
               <SearchCheckIcon />
+              Buscar
             </Button>
-          </div>
-          <div className="p-8">
             <Button onClick={handleClickReset}>
-              Reiniciar
               <TimerResetIcon />
+              Reiniciar
             </Button>
           </div>
         </div>
