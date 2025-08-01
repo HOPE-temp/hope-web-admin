@@ -58,9 +58,23 @@ export function PanelAdoptersTable<
     <div className="w-full">
       <div className="py-4">
         <FilterInputAdopter
-          onGetData={params =>
-            updateParams({ ...params, limit: 10, offset: 0 })
-          }
+          onGetData={params => {
+            if (params.documentNumber) {
+              updateParams({
+                ...params,
+                hasDeleted: true,
+                limit: 10,
+                offset: 0,
+              });
+            } else {
+              updateParams({
+                ...params,
+                hasDeleted: undefined,
+                limit: 10,
+                offset: 0,
+              });
+            }
+          }}
         />
       </div>
       <hr />

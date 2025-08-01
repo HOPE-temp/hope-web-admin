@@ -33,7 +33,6 @@ class Axios {
   }
 
   set404(router: AppRouterInstance) {
-    console.log('router');
     this.axiosInstance.interceptors.response.use(
       res => res,
       err => {
@@ -41,7 +40,7 @@ class Axios {
         // Si ya se manejó localmente, no hagas nada
 
         if (typeof window !== 'undefined') {
-          if (status) {
+          if (status === 401) {
             dictErrorWith401(router)[status]();
           }
         }

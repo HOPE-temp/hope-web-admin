@@ -5,9 +5,13 @@ import toast from 'react-hot-toast';
 type TypeErrorDict = Record<number | string, () => void>;
 
 export const dictError: TypeErrorDict = {
-  400: () => toast.error('Solicitud incorrecta: Revisa los campos enviados'),
+  400: () => {
+    toast.error('Solicitud incorrecta: Revisa los campos enviados');
+  },
   401: () => {},
-  500: () => toast.error('Error desconocido: Algo salió mal.'),
+  500: () => {
+    toast.error('Error desconocido: Algo salió mal.');
+  },
   0: () => console.error('Error: sin gestion'),
 };
 

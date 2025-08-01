@@ -2,6 +2,15 @@ import React from 'react';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 
 import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from '@/components/ui/command';
+
+import {
   FormControl,
   FormField,
   FormItem,
@@ -229,6 +238,95 @@ export function FormFileInputCustom<T extends FieldValues>({
           <FormMessage />
         </FormItem>
       )}
+    />
+  );
+}
+
+import { useState } from 'react';
+
+type FormSelectSearchableCustomProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
+  label: string;
+  description?: string;
+  options: string[]; // lista simple de opciones (puede adaptarse a tipo más complejo)
+};
+
+export function FormSelectSearchableCustom<T extends FieldValues>({
+  control,
+  name,
+  label,
+  description,
+  options,
+}: FormSelectSearchableCustomProps<T>) {
+  const [focusedInput, setFocusedInput] = useState<boolean>(false);
+  const [focusedNodo, setFocusedNodo] = useState<boolean>(false);
+  const isFocused = focusedInput || focusedNodo;
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => {
+        const [query, setQuery] = useState(field.value ?? '');
+
+        const filteredOptions = query
+          ? options.filter(option =>
+              option.toLowerCase().includes(query.toLowerCase())
+            )
+          : options;
+
+        const onSelect = (value: string) => {
+          setQuery(value);
+          field.onChange(value);
+        };
+
+        const onChangeInput = (value: string) => {
+          setQuery(value);
+          field.onChange(value);
+        };
+
+        return (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <FormControl className={`h-auto ${focusedInput ?? 'bg-black'}`}>
+              <Command>
+                <CommandInput
+                  placeholder={`Busca o escribe para seleccionar...`}
+                  value={query}
+                  onValueChange={onChangeInput}
+                  aria-label={label}
+                  onFocus={() => setFocusedInput(true)}
+                  onBlur={() => setFocusedInput(false)}
+                />
+                <CommandList
+                  className={`max-h-[8rem] ${isFocused ? '' : ' h-[0rem]'}`}
+                  tabIndex={0}
+                  onFocus={() => setFocusedNodo(true)}
+                  onBlur={() => setFocusedNodo(false)}
+                >
+                  {filteredOptions.length === 0 && (
+                    <CommandEmpty>No se encontró ninguna opción.</CommandEmpty>
+                  )}
+                  <CommandGroup>
+                    {filteredOptions.map(option => (
+                      <CommandItem
+                        key={option}
+                        onSelect={() => onSelect(option)}
+                      >
+                        {option}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </FormControl>
+            {description && (
+              <p className="text-muted-foreground text-sm">{description}</p>
+            )}
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 }

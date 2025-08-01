@@ -1,6 +1,7 @@
 import { AxiosInstance, isAxiosError } from 'axios';
 import { hopeBackendUrl } from './url';
 import toast from 'react-hot-toast';
+import { format } from 'date-fns';
 
 export async function findOneEvaluation(axios: AxiosInstance, id: string) {
   const res = await axios.get<Evaluation>(
@@ -20,13 +21,19 @@ export async function createEvaluation(
       body
     );
     return res.data;
-  } catch (error) {
-    if (isAxiosError(error)) {
-      const status = error.response?.status;
-      const message = error.response?.data?.message;
-
+  } catch (err) {
+    if (isAxiosError(err)) {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+      const error = err.response?.data?.error;
+      console.log({ err });
       if (status === 409) {
-        if (message === 'Adopter deleted') {
+        if (error === 'Recently made') {
+          toast.error(
+            'Ya registro un evaluacion, intentar el ' +
+              format(new Date(message), 'yyyy-MM-dd hh:mm')
+          );
+        } else if (message === 'Adopter deleted') {
           toast.error('El adoptante esta eliminado.');
         } else if (message == 'Adopter not have evaluations') {
           toast.error('El adoptante debe tener evaluaciones.');

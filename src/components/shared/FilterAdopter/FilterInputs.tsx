@@ -7,10 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
 import { FormValues, schema } from './schema';
-import {
-  FormInputCustom,
-  FormSelectCustom,
-} from '@/components/shared/Input/InputCustom';
+import { FormInputCustom } from '@/components/shared/Input/InputCustom';
 import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';
 
 export interface FormValuesFilterInputAdopter extends FormValues {}
@@ -20,10 +17,9 @@ type FilterInputAdopterProps = {
 };
 
 const defaultValues = {
-  idAdopter: undefined,
-  statusRequest: undefined,
-  statusResult: undefined,
   documentNumber: undefined,
+  firstName: undefined,
+  lastName: undefined,
 };
 
 export function FilterInputAdopter({ onGetData }: FilterInputAdopterProps) {
@@ -43,11 +39,21 @@ export function FilterInputAdopter({ onGetData }: FilterInputAdopterProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 3xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6 gap-4">
           <FormInputCustom
             control={form.control}
             label="DNI"
             name="documentNumber"
+          />
+          <FormInputCustom
+            control={form.control}
+            label="Nombre"
+            name="firstName"
+          />
+          <FormInputCustom
+            control={form.control}
+            label="Apellido"
+            name="lastName"
           />
           <div className="flex justify-around content-end mt-auto mb-0">
             <Button type="submit">

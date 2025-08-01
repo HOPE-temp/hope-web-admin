@@ -27,26 +27,37 @@ import { isAxiosError } from 'axios';
 import { createEvaluation } from '@/services/hopeBackend/evaluations';
 
 interface Props {
-  adopter: Adopter;
+  adopter: { id: number };
   onUpdated?: () => void;
+  openExternal?: boolean;
+  triggerVisibled?: boolean;
 }
 
 const defaultValues = {
   idAnimal: undefined,
   profession: undefined,
   professionDescription: undefined,
-  hasKids: undefined,
+  hasKids: false,
   responsabilityKids: undefined,
   descriptionPets: undefined,
   contextPets: undefined,
-  hasPatienceAndTime: undefined,
-  hasSterilizationCommitment: undefined,
+  hasPatienceAndTime: false,
+  hasSterilizationCommitment: false,
   descriptionSpaceForNewPet: undefined,
 };
 
-export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
+export function EvaluationAdopterDialog({
+  adopter,
+  onUpdated,
+  triggerVisibled = true,
+  openExternal = false,
+}: Props) {
   const { axios } = useAuth();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(openExternal);
+  }, [openExternal]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -59,31 +70,29 @@ export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
     }
   }, [open, adopter]);
 
+  const hasKids = form.watch('hasKids');
+
   const onSubmit = async (evaluation: FormValues) => {
-    try {
-      await createEvaluation(axios, adopter.id, evaluation);
-      toast.success(`Evaluacion de la solicitud ${adopter.id}`);
-      onUpdated && onUpdated();
-      setTimeout(() => {
-        setOpen(false);
-      }, 1200);
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const status = error.response?.status;
-        if (status === 409) {
-          toast.error('Ya existe un adoption con ese nombre.');
-        }
-      }
+    const res = await createEvaluation(axios, adopter.id, evaluation);
+    if (!res) {
+      return;
     }
+    toast.success(`Evaluacion de la solicitud ${adopter.id}`);
+    onUpdated && onUpdated();
+    setTimeout(() => {
+      setOpen(false);
+    }, 1200);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button title="Evaluar">
-          <Pencil className="h-5 w-5 text-black" />
-        </button>
-      </DialogTrigger>
+      {triggerVisibled && (
+        <DialogTrigger asChild>
+          <button title="Evaluar">
+            <Pencil className="h-5 w-5 text-black" />
+          </button>
+        </DialogTrigger>
+      )}
 
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
@@ -93,7 +102,7 @@ export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 gap-4 mt-2 p-2 max-h-80 overflow-scroll">
+            <div className="grid grid-cols-1 gap-4 mt-2 p-2 max-h-96 overflow-scroll">
               <span></span>
               <FormTextareaCustom
                 control={form.control}
@@ -113,12 +122,14 @@ export function EvaluationAdopterDialog({ adopter, onUpdated }: Props) {
                 label="Tienes menores."
                 description="¿Tiene niños menores de 5 años en casa?"
               />
-              <FormTextareaCustom
-                control={form.control}
-                rows={3}
-                label="Describa la responsabilidad que tiene con los niños en casa. Es fundamental la responsabilidad, la paciencia y la supervisión. Si cumple con estas características, descríbalas detalladamente."
-                name="responsabilityKids"
-              />
+              {hasKids && (
+                <FormTextareaCustom
+                  control={form.control}
+                  rows={3}
+                  label="Describa la responsabilidad que tiene con los niños en casa. Es fundamental la responsabilidad, la paciencia y la supervisión. Si cumple con estas características, descríbalas detalladamente."
+                  name="responsabilityKids"
+                />
+              )}
               <FormTextareaCustom
                 control={form.control}
                 rows={3}

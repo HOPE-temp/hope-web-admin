@@ -50,18 +50,25 @@ export function createAdoptersColumns({
       header: 'Acciones',
       cell: ({ row }) => (
         <div className="flex gap-2 whitespace-nowrap">
-          <EditorAdoptersDialog
-            adopter={row.original}
-            onEdit={updateAdopters}
-          />
-          <AdoptersDeleteDialog
-            adopter={row.original}
-            onDelete={updateAdopters}
-          />
-          <EvaluationAdopterDialog
-            adopter={row.original}
-            onUpdated={updateAdopters}
-          />
+          {row.original.deletedAt && 'Eliminado'}
+          {!row.original.deletedAt && (
+            <EditorAdoptersDialog
+              adopter={row.original}
+              onEdit={updateAdopters}
+            />
+          )}
+          {!row.original.deletedAt && (
+            <AdoptersDeleteDialog
+              adopter={row.original}
+              onDelete={updateAdopters}
+            />
+          )}
+          {!row.original.deletedAt && (
+            <EvaluationAdopterDialog
+              adopter={row.original}
+              onUpdated={updateAdopters}
+            />
+          )}
           {/* <EditorAdoptersDialog
               animal={row.original}
               onEdit={updateAdopters}

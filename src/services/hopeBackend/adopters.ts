@@ -38,8 +38,28 @@ export async function createAdopters(
   axios: AxiosInstance,
   body?: CreateAdopterDto
 ) {
-  const res = await axios.post<Adopter>(hopeBackendUrl.adopters.create, body);
-  return res.data;
+  try {
+    const res = await axios.post<Adopter>(hopeBackendUrl.adopters.create, body);
+    return res.data;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+      const error = err.response?.data?.error;
+      console.log({ err });
+      if (status === 409) {
+        if (error === 'Duplicate') {
+          toast.error('Ya registrate a este usaurio o lo eliminaste');
+        } else if (message === 'Adopter deleted') {
+          toast.error('El adoptante esta eliminado.');
+        } else if (message == 'Adopter not have evaluations') {
+          toast.error('El adoptante debe tener evaluaciones.');
+        } else {
+          toast.error('Ya existe un adopter con ese nombre.');
+        }
+      }
+    }
+  }
 }
 
 export async function updateAdopter(

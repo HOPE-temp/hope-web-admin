@@ -20,7 +20,10 @@ import {
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 
-import { FormInputCustom } from '@/components/shared/Input/InputCustom';
+import {
+  FormInputCustom,
+  FormSelectSearchableCustom,
+} from '@/components/shared/Input/InputCustom';
 import { createAdopters } from '@/services/hopeBackend/adopters';
 
 import { useAuth } from '@/context/AuthContext';
@@ -29,8 +32,12 @@ import { useAuth } from '@/context/AuthContext';
 import { FormValues, schema } from './schema';
 import { useAdopter } from '@/context/AdopterContext';
 
+//JSON
+import optionCountries from './DataCountry.json';
+import optionDistrict from './DataDistrict.json';
+
 type CreatorAdopterDialogProps = {
-  onCreated?: () => void;
+  onCreated?: (id: number) => void;
 };
 const defaultValues = {
   firstName: undefined,
@@ -54,12 +61,11 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
 
   const onSubmit = async (data: FormValues) => {
     const adoption = await createAdopters(axios, data);
-
     if (adoption) {
       toast.success(`Mascota #${adoption.id} guardada`);
 
       form.reset();
-      onCreated && onCreated();
+      onCreated && onCreated(adoption.id);
       updateAdopters();
       setTimeout(() => {
         setOpen(false);
@@ -75,7 +81,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
           Registrar Adopter
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent aria-describedby={undefined} className="p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>Registrar Adopter</DialogTitle>
           <DialogDescription>
@@ -84,7 +90,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 overflow-scroll sm:overflow-auto max-h-96 sm:max-h-max md:overflow-auto md:grid-cols-2 gap-4 p-1">
               <FormInputCustom
                 control={form.control}
                 label="Nombre"
@@ -95,9 +101,15 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
                 label="Apellido"
                 name="lastName"
               />
+              <FormSelectSearchableCustom
+                control={form.control}
+                label="Nacionalidad"
+                name="nationality"
+                options={optionCountries}
+              />
               <FormInputCustom
                 control={form.control}
-                label="DNI"
+                label="DNI o CE"
                 name="documentNumber"
               />
               <FormInputCustom
@@ -111,20 +123,16 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
                 label="Celular"
                 name="phone"
               />
-              <FormInputCustom
+              <FormSelectSearchableCustom
                 control={form.control}
                 label="Distrito"
                 name="district"
+                options={optionDistrict}
               />
               <FormInputCustom
                 control={form.control}
                 label="Dirección"
                 name="address"
-              />
-              <FormInputCustom
-                control={form.control}
-                label="Nacionalidad"
-                name="nationality"
               />
             </div>
             {form.formState.errors.root && (
@@ -138,7 +146,11 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button
+                type="submit"
+                disabled={form.formState.isSubmitting}
+                className="mt-2"
+              >
                 {form.formState.isSubmitting ? 'Registrando...' : 'Registrar'}
               </Button>
             </DialogFooter>

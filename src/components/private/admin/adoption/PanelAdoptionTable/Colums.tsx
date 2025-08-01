@@ -17,7 +17,7 @@ export function createAdoptionsColumns({
       accessorKey: 'adopter',
       header: 'Adopter',
       cell: ({ row }) => {
-        return row.original.adopter;
+        return row.original.adopter.documentNumber;
       },
     },
     {
@@ -85,7 +85,7 @@ export function createAdoptionsColumns({
       id: 'acciones',
       header: 'Acciones',
       cell: ({ row }) => (
-        <div className="flex gap-2 whitespace-nowrap">
+        <div className="flex justify-center gap-2 whitespace-nowrap">
           {row.original.statusResult === 'not_evaluated' && (
             <EvaluationAdoptionDialog
               adoption={row.original}
