@@ -34,7 +34,7 @@ export default function Home() {
               Mascotas en el albergue
             </p>
             <Button asChild className="w-full mt-4" size="sm">
-              <Link href="animales">Ver mascotas</Link>
+              <Link href="admin/animales">Ver mascotas</Link>
             </Button>
           </CardContent>
         </Card>
@@ -51,7 +51,7 @@ export default function Home() {
               Adoptantes registrados
             </p>
             <Button asChild className="w-full mt-4" size="sm">
-              <Link href="admin/adoptantes">Ver adoptantes</Link>
+              <Link href="admin/adopter">Ver adoptantes</Link>
             </Button>
           </CardContent>
         </Card>
@@ -68,7 +68,7 @@ export default function Home() {
               Adopciones realizadas
             </p>
             <Button asChild className="w-full mt-4" size="sm">
-              <Link href="/adopciones">Ver adopciones</Link>
+              <Link href="admin/adoption">Ver adopciones</Link>
             </Button>
           </CardContent>
         </Card>
