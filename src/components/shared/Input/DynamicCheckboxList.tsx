@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   Control,
   Controller,
@@ -13,12 +11,9 @@ import {
   useController,
 } from 'react-hook-form';
 
-export interface CheckboxItem {
-  id: number;
-  name: string;
-  image?: string;
-  description?: string;
-}
+import { Badge } from '@/components/ui/badge';
+
+import { CheckboxItem } from '.';
 
 export interface DynamicCheckboxListProps<T extends FieldValues> {
   control: Control<T>;

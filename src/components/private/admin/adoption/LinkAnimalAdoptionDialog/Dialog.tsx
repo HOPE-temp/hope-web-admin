@@ -1,5 +1,17 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Paperclip } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import toast from 'react-hot-toast';
+import { isAxiosError } from 'axios';
+
+import { useAuth } from '@/context/AuthContext';
+import { linkAnimalAdoption } from '@/services/hopeBackend/adoptions';
+import { findAllAnimals } from '@/services/hopeBackend/animals';
+import { FormValues, schema } from './schema';
+
 import {
   Dialog,
   DialogTrigger,
@@ -9,32 +21,14 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-
-import React, { useEffect, useState } from 'react';
-import { Paperclip, Pencil } from 'lucide-react';
-import { linkAnimalAdoption } from '@/services/hopeBackend/adoptions';
-import { useAuth } from '@/context/AuthContext';
-import {
-  FormInputCustom,
-  FormSelectCustom,
-  FormTextareaCustom,
-} from '@/components/shared/Input';
 import { Form } from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormValues, schema } from './schema';
-import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
+
 import {
   CheckboxItem,
+  FormTextareaCustom,
   DynamicCheckboxList,
-} from '@/components/shared/Input/DynamicCheckboxList';
+} from '@/components/shared/Input';
 import { AnimalSearch } from '@/components/shared/AnimalSearch';
-import {
-  findAllAnimals,
-  findManyIdsAnimals,
-} from '@/services/hopeBackend/animals';
-import { effect } from 'zod';
 
 interface Props {
   adoption: Adoption;

@@ -82,7 +82,7 @@ export function EditorAdoptersDialog({ adopter, onEdit }: Props) {
         const status = error.response?.status;
 
         if (status === 409) {
-          toast.error('Ya existe un adopter con ese nombre.');
+          toast.error('Ya existe un adopteante con ese nombre.');
         }
       }
     }
