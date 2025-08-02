@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="flex items-center justify-between rounded-xl bg-white/80 shadow px-6 py-4 mb-6 border">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 ml-4">
         <PawPrint className="w-8 h-8 text-[#5DBFA7]" />
         <span className="text-2xl font-bold text-gray-800">HOPE Admin</span>
       </div>
