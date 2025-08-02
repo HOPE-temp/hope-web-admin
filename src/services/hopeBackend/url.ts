@@ -41,7 +41,7 @@ export const hopeBackendUrl = {
   },
   evaluations: {
     create: (adopterId: number) => `/adopters/${adopterId}/evaluations`,
-    findByAdopter: (adopterId: number) => `/adopters/${adopterId}}/evaluations`,
+    findByAdopter: (adopterId: number) => `/adopters/${adopterId}/evaluations`,
     findOne: (id: string) => `/evaluations/${id}}`,
   },
   animals: {

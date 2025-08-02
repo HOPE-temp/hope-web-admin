@@ -10,6 +10,6 @@ interface Evaluation {
   hasPatienceAndTime: boolean;
   hasSterilizationCommitment: boolean;
   descriptionSpaceForNewPet: string;
-  createdAt: Date;
+  createdAt: string;
   updatedAt: Date;
 }

@@ -85,7 +85,7 @@ export function createAdoptionsColumns({
       id: 'acciones',
       header: 'Acciones',
       cell: ({ row }) => (
-        <div className="flex justify-center gap-2 whitespace-nowrap">
+        <div className="flex justify-start gap-2 ">
           {row.original.statusResult === 'not_evaluated' && (
             <EvaluationAdoptionDialog
               adoption={row.original}

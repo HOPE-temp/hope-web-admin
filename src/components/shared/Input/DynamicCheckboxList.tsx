@@ -5,7 +5,13 @@ import Image from 'next/image';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldPath,
+  FieldValues,
+  useController,
+} from 'react-hook-form';
 
 export interface CheckboxItem {
   id: number;
@@ -87,10 +93,48 @@ export function DynamicCheckboxList<T extends FieldValues>({
   const [selectedItems, setSelectedItems] = useState<CheckboxItem[]>([]);
   const [noSelectedItems, setNoSelectedItems] = useState<CheckboxItem[]>([]);
 
-  useEffect(() => {
-    setSelectedItems(
-      items.filter(item => !selectedItems.some(({ id }) => id === item.id))
+  const {
+    field: { value = [] as number[], onChange },
+  } = useController({ name, control });
+
+  const handleCheckboxChange = (checkedValue: number) => {
+    let filterSelected: CheckboxItem[];
+    if (value.includes(checkedValue)) {
+      const newList = value.filter((v: number) => v !== checkedValue);
+      onChange(newList);
+      filterSelected = selectedItems.filter(({ id }) => id != checkedValue);
+      setSelectedItems(filterSelected);
+    } else {
+      // Añadir valor al array
+      onChange([...value, checkedValue]);
+
+      const filterSearch = items.find(item => item.id == checkedValue);
+      if (filterSearch) {
+        filterSelected = [...selectedItems, filterSearch];
+        setSelectedItems(filterSelected);
+      }
+    }
+    const notSelected = items.filter(
+      ({ id }) => !filterSelected.some(filter => filter.id === id)
     );
+    setNoSelectedItems(notSelected);
+  };
+
+  useEffect(() => {
+    if (items.length > 0) {
+      if (value.length > 0) {
+        const selectedValue = selectedItems.map(({ id }) => id);
+        const selected = items.filter(
+          ({ id }) => value.includes(id) && !selectedValue.includes(id)
+        );
+        const notSelected = items.filter(({ id }) => !value.includes(id));
+
+        setSelectedItems([...selectedItems, ...selected]);
+        setNoSelectedItems(notSelected);
+      } else {
+        setNoSelectedItems(items);
+      }
+    }
   }, [items]);
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
@@ -100,26 +144,7 @@ export function DynamicCheckboxList<T extends FieldValues>({
       <Controller
         control={control}
         name={name}
-        render={({ field: { value = [] as number[], onChange } }) => {
-          const handleCheckboxChange = (checkedValue: number) => {
-            if (value.includes(checkedValue)) {
-              onChange(value.filter((v: number) => v !== checkedValue));
-              const filterSelected = selectedItems.filter(
-                ({ id }) => id != checkedValue
-              );
-              setSelectedItems(filterSelected);
-            } else {
-              // Añadir valor al array
-              onChange([...value, checkedValue]);
-
-              const filterSearch = items.find(item => item.id == checkedValue);
-              if (filterSearch) {
-                setSelectedItems([...selectedItems, filterSearch]);
-              }
-            }
-            setNoSelectedItems(items.filter(({ id }) => !value.includes(id)));
-          };
-
+        render={() => {
           return (
             <div>
               <div className={`grid gap-4 ${gridCols[columns]}`}>

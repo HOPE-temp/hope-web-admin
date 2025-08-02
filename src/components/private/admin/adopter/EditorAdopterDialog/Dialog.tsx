@@ -18,11 +18,19 @@ import {
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 import { FormValues, schema } from './schema';
-import { FormInputCustom } from '@/components/shared/Input';
+import {
+  FormComboboxCustom,
+  FormInputCustom,
+  FormSelectSearchableCustom,
+} from '@/components/shared/Input';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
 import { updateAdopter } from '@/services/hopeBackend/adopters';
 import { useAuth } from '@/context/AuthContext';
+
+//JSON
+import optionCountries from '../common/DataCountry.json';
+import optionDistrict from '../common/DataDistrict.json';
 
 type Props = {
   onEdit?: () => void;
@@ -96,7 +104,7 @@ export function EditorAdoptersDialog({ adopter, onEdit }: Props) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[65vh] overflow-y-scroll sm:overflow-auto">
               <FormInputCustom
                 control={form.control}
                 label="Nombre"
@@ -106,6 +114,12 @@ export function EditorAdoptersDialog({ adopter, onEdit }: Props) {
                 control={form.control}
                 label="Apellido"
                 name="lastName"
+              />
+              <FormComboboxCustom
+                control={form.control}
+                label="Nacionalidad"
+                name="nationality"
+                options={optionCountries}
               />
               <FormInputCustom
                 control={form.control}
@@ -124,21 +138,16 @@ export function EditorAdoptersDialog({ adopter, onEdit }: Props) {
                 label="Celular"
                 name="phone"
               />
+              <FormComboboxCustom
+                control={form.control}
+                label="Distrito"
+                name="district"
+                options={optionDistrict}
+              />
               <FormInputCustom
                 control={form.control}
                 label="Dirección"
                 name="address"
-              />
-              <FormInputCustom
-                control={form.control}
-                label="Distrito"
-                name="district"
-              />
-
-              <FormInputCustom
-                control={form.control}
-                label="Nacionalidad"
-                name="nationality"
               />
             </div>
             <DialogFooter>

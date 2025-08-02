@@ -75,7 +75,7 @@ export function FormAdopter(
   return (
     <>
       <div className="flex w-full pb-4">
-        <Button onClick={prevSlide} variant={'default'}>
+        <Button onClick={() => prevSlide()} variant={'default'}>
           <LucideArrowBigLeft />
           Atrás
         </Button>

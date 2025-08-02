@@ -12,10 +12,9 @@ import { Form } from '@/components/ui/form';
 import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';
 
 interface AnimalSearchProps {
-  onSearch: (animals: PaginationResponse<Animal>) => void;
+  onSearch: (animals: FormValues) => void;
 }
 export function AnimalSearch({ onSearch }: AnimalSearchProps) {
-  const { axios } = useAuth();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -23,9 +22,7 @@ export function AnimalSearch({ onSearch }: AnimalSearchProps) {
     },
   });
 
-  const onSubmit = async ({ nickname }: FormValues) => {
-    const limit = 5;
-    const data = await findAllAnimals(axios, { nickname, limit });
+  const onSubmit = async (data: FormValues) => {
     onSearch(data);
   };
   const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -36,10 +33,6 @@ export function AnimalSearch({ onSearch }: AnimalSearchProps) {
   const handleClickReset = () => {
     form.reset();
   };
-
-  useEffect(() => {
-    onSubmit({ nickname: undefined });
-  }, []);
 
   return (
     <Form {...form}>

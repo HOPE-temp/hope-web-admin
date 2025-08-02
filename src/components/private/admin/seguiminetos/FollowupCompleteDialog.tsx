@@ -54,13 +54,13 @@ export function FollowupCompleteDialog({ followup, onComplete }: Props) {
       </DialogTrigger>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle>Eliminar Adopter</DialogTitle>
+          <DialogTitle>Confirmar la esterilización</DialogTitle>
           <DialogDescription>
-            ¿Estás seguro de que deseas eliminar este followup? Esta acción no
-            se puede deshacer.
+            ¿Estás seguro de que deseas confirmar la esterilizacion? El animal
+            pasara registrarse como esterilizado.
           </DialogDescription>
         </DialogHeader>
-        {error && <p className="text-sm text-green-500">{error}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <DialogFooter>
           <Button
             variant="outline"
@@ -70,11 +70,12 @@ export function FollowupCompleteDialog({ followup, onComplete }: Props) {
             Cancelar
           </Button>
           <Button
-            variant="destructive"
+            variant="default"
+            className="bg-green-600"
             onClick={handleDelete}
             disabled={deleting}
           >
-            {deleting ? 'Eliminando...' : 'Eliminar'}
+            {deleting ? 'Confirmar...' : 'Confirmar'}
           </Button>
         </DialogFooter>
       </DialogContent>

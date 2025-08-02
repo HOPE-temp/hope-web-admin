@@ -10,6 +10,16 @@ export async function findOneEvaluation(axios: AxiosInstance, id: string) {
   return res.data;
 }
 
+export async function findEvaluationsByAdopter(
+  axios: AxiosInstance,
+  id: number
+) {
+  const res = await axios.get<Evaluation[]>(
+    hopeBackendUrl.evaluations.findByAdopter(id)
+  );
+  return res.data;
+}
+
 export async function createEvaluation(
   axios: AxiosInstance,
   id: number,

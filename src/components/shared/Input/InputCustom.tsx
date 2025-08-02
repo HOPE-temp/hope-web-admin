@@ -1,5 +1,10 @@
 import React from 'react';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  useController,
+} from 'react-hook-form';
 
 import {
   Command,
@@ -327,6 +332,101 @@ export function FormSelectSearchableCustom<T extends FieldValues>({
           </FormItem>
         );
       }}
+    />
+  );
+}
+
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+
+type FormComboboxCustomProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
+  label: string;
+  description?: string;
+  options: string[]; // Solo array de strings
+};
+
+export function FormComboboxCustom<T extends FieldValues>({
+  control,
+  name,
+  label,
+  description,
+  options,
+}: FormComboboxCustomProps<T>) {
+  const {
+    field: { value, onChange, ref },
+    fieldState: { error },
+  } = useController({ name, control });
+
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={() => (
+        <FormItem className="space-y-2">
+          <FormLabel htmlFor={name}>{label}</FormLabel>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <FormControl className="">
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between"
+                  ref={ref}
+                  id={name}
+                >
+                  {value ? value : 'Select...'}
+                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandInput placeholder="Search..." />
+                <CommandList>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup>
+                    {options.map(option => (
+                      <CommandItem
+                        key={option}
+                        value={option}
+                        onSelect={selected => {
+                          onChange(selected === value ? '' : selected);
+                          setOpen(false);
+                        }}
+                      >
+                        <CheckIcon
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            value === option ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        {option}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          {error && <FormMessage>{error.message}</FormMessage>}
+          {description && (
+            <p className="text-muted-foreground text-sm">{description}</p>
+          )}
+        </FormItem>
+      )}
     />
   );
 }

@@ -54,10 +54,10 @@ export function FollowupCancelDialog({ followup, onCancel }: Props) {
       </DialogTrigger>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle>Eliminar Adopter</DialogTitle>
+          <DialogTitle>Finalizar el seguimineto</DialogTitle>
           <DialogDescription>
-            ¿Estás seguro de que deseas eliminar este followup? Esta acción no
-            se puede deshacer.
+            ¿Estás seguro de que deseas cancelar este seguimineto? Ya no se
+            podra registrar la esterilizacion del animal.
           </DialogDescription>
         </DialogHeader>
         {error && <p className="text-sm text-red-500">{error}</p>}
@@ -74,7 +74,7 @@ export function FollowupCancelDialog({ followup, onCancel }: Props) {
             onClick={handleDelete}
             disabled={deleting}
           >
-            {deleting ? 'Eliminando...' : 'Eliminar'}
+            {deleting ? 'Finalizar...' : 'Finalizar'}
           </Button>
         </DialogFooter>
       </DialogContent>

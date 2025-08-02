@@ -11,11 +11,10 @@ import {
 } from '@/components/ui/dialog';
 
 import { useEffect, useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { PlusSquare } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import {
   FormCheckboxCustom,
-  FormInputCustom,
   FormTextareaCustom,
 } from '@/components/shared/Input';
 import { Form } from '@/components/ui/form';
@@ -25,6 +24,7 @@ import { FormValues, schema } from './schema';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
 import { createEvaluation } from '@/services/hopeBackend/evaluations';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   adopter: { id: number };
@@ -88,13 +88,19 @@ export function EvaluationAdopterDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {triggerVisibled && (
         <DialogTrigger asChild>
-          <button title="Evaluar">
-            <Pencil className="h-5 w-5 text-black" />
-          </button>
+          <Button
+            variant="ghost"
+            size="sm"
+            title="Evaluar"
+            className=" text-black"
+          >
+            <PlusSquare />
+            Eval
+          </Button>
         </DialogTrigger>
       )}
 
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent aria-describedby={undefined} className="min-w-[50vw]">
         <DialogHeader>
           <DialogTitle className="text-center w-full">
             Evaluación de Solicitud de Adopción
@@ -102,7 +108,7 @@ export function EvaluationAdopterDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 gap-4 mt-2 p-2 max-h-96 overflow-scroll">
+            <div className="grid grid-cols-1 gap-4 mt-2 p-2 max-h-[65vh] overflow-y-scroll sm:overflow-auto">
               <span></span>
               <FormTextareaCustom
                 control={form.control}

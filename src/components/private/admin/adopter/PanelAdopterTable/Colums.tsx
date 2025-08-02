@@ -43,27 +43,28 @@ export function createAdoptersColumns({
     },
     {
       accessorKey: 'nationality',
-      header: 'Nacionalidad',
+      header: 'País',
     },
     {
       id: 'acciones',
       header: 'Acciones',
       cell: ({ row }) => (
-        <div className="flex gap-2 whitespace-nowrap">
+        <div className="flex gap-1 whitespace-nowrap">
           {row.original.deletedAt && 'Eliminado'}
-          {!row.original.deletedAt && (
+          {row.original.isBanned && 'Baneado'}
+          {!row.original.deletedAt && !row.original.isBanned && (
             <EditorAdoptersDialog
               adopter={row.original}
               onEdit={updateAdopters}
             />
           )}
-          {!row.original.deletedAt && (
+          {!row.original.deletedAt && !row.original.isBanned && (
             <AdoptersDeleteDialog
               adopter={row.original}
               onDelete={updateAdopters}
             />
           )}
-          {!row.original.deletedAt && (
+          {!row.original.deletedAt && !row.original.isBanned && (
             <EvaluationAdopterDialog
               adopter={row.original}
               onUpdated={updateAdopters}

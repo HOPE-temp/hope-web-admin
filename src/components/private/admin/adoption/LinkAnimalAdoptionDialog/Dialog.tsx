@@ -30,12 +30,23 @@ import {
   DynamicCheckboxList,
 } from '@/components/shared/Input/DynamicCheckboxList';
 import { AnimalSearch } from '@/components/shared/AnimalSearch';
-import { findManyIdsAnimals } from '@/services/hopeBackend/animals';
+import {
+  findAllAnimals,
+  findManyIdsAnimals,
+} from '@/services/hopeBackend/animals';
+import { effect } from 'zod';
 
 interface Props {
   adoption: Adoption;
   onUpdated?: () => void;
 }
+
+const statusAnimal: Record<StatusAnimal, string> = {
+  in_adoption: 'En adopción',
+  in_observation: 'En observación',
+  adopted: 'Adoptado',
+  dead: 'Muerto',
+};
 
 export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
   const { axios } = useAuth();
@@ -45,20 +56,10 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      animalsIds: [],
+      animalsIds: adoption.animalsTemp,
       reviewRequestNotes: adoption.reviewRequestNotes ?? '',
     },
   });
-
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        animalsIds: [],
-        reviewRequestNotes: adoption.reviewRequestNotes ?? '',
-      });
-      getIdAnimals();
-    }
-  }, [open, adoption]);
 
   const onSubmit = async ({ animalsIds, reviewRequestNotes }: FormValues) => {
     try {
@@ -75,12 +76,15 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
       if (isAxiosError(error)) {
         const status = error.response?.status;
         if (status === 409) {
-          toast.error('Ya existe un adoption con ese nombre.');
+          toast.error(
+            'El estado del animal debe ser "En adopción" ó "En observación"'
+          );
         }
       }
     }
   };
-  const handleSearch = (data: PaginationResponse<Animal>) => {
+  const getAnimalsOptions = async (params?: FilterAnimalDto) => {
+    const data = await findAllAnimals(axios, { ...params, limit: 5 });
     const { items } = data;
     let ckecks: CheckboxItem[] = [];
     if (items.length > 0) {
@@ -89,31 +93,35 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
           id: animal.id,
           image: animal.images[0],
           name: animal.nickname,
-          description: animal.descriptionHistory,
+          description: `${statusAnimal[animal.status]} - ${
+            animal.descriptionHistory
+          }`,
         };
       });
     }
     setCheckOptions(ckecks);
   };
 
-  const getIdAnimals = async () => {
-    const items = await findManyIdsAnimals(axios, {
-      ids: adoption.animalsTemp,
+  const handleSearch = async ({ nickname }: { nickname?: string }) => {
+    const status: StatusAnimal[] = ['in_adoption', 'in_observation'];
+    await getAnimalsOptions({
+      nickname,
+      status,
     });
+  };
 
-    let ckecks: CheckboxItem[] = [];
-    if (items.length > 0) {
-      ckecks = items.map(animal => {
-        return {
-          id: animal.id,
-          image: animal.images[0],
-          name: animal.nickname,
-          description: animal.descriptionHistory,
-        };
+  useEffect(() => {
+    if (open) {
+      //oreden importante
+      getAnimalsOptions({
+        animalId: adoption.animalsTemp,
+      });
+      form.reset({
+        animalsIds: adoption.animalsTemp,
+        reviewRequestNotes: adoption.reviewRequestNotes ?? '',
       });
     }
-    setCheckOptions(ckecks);
-  };
+  }, [open, adoption.animalsTemp]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -131,7 +139,6 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
         </DialogHeader>
         <div className="max-h-[80vh] overflow-scroll">
           <AnimalSearch onSearch={handleSearch} />
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid grid-cols-1  gap-4 mt-2">

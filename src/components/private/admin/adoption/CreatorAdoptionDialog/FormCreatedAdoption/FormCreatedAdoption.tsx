@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
@@ -55,17 +55,26 @@ export function FormCreatedAdoption(
       if (isAxiosError(error)) {
         const status = error.response?.status;
         if (status === 409) {
-          toast.error('Ya existe un adoption con ese nombre.');
+          toast.error('Conflicto al crear la adopcion.');
         }
         toast.error(error.message);
       }
     }
   };
-  adopter?.id && form.setValue('adopterId', adopter.id);
-  form.setValue(
-    'animalsIds',
-    animals.map(({ id }) => id)
-  );
+  useEffect(() => {
+    if (adopter) {
+      adopter?.id && form.setValue('adopterId', adopter.id);
+    }
+  }, [adopter]);
+
+  useEffect(() => {
+    if (animals) {
+      form.setValue(
+        'animalsIds',
+        animals.map(({ id }) => id)
+      );
+    }
+  }, [animals]);
 
   return (
     <>

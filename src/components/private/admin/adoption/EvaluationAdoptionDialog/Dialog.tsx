@@ -25,6 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormValues, schema } from './schema';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
+import { EvaluationAdopterAccordion } from '@/components/shared/EvaluationAdopterAccordion/EvaluationAdopterAccordion';
 
 interface Props {
   adoption: Adoption;
@@ -69,7 +70,7 @@ export function EvaluationAdoptionDialog({ adoption, onUpdated }: Props) {
       if (isAxiosError(error)) {
         const status = error.response?.status;
         if (status === 409) {
-          toast.error('Ya existe un adoption con ese nombre.');
+          toast.error('Conflicto al evaluar la adopcion');
         }
       }
     }
@@ -89,6 +90,7 @@ export function EvaluationAdoptionDialog({ adoption, onUpdated }: Props) {
             Evaluación de Solicitud de Adopción
           </DialogTitle>
         </DialogHeader>
+        <EvaluationAdopterAccordion id={adoption.adopter.id} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">

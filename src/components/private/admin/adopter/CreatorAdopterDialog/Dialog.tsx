@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -21,8 +20,8 @@ import {
 import { Form } from '@/components/ui/form';
 
 import {
+  FormComboboxCustom,
   FormInputCustom,
-  FormSelectSearchableCustom,
 } from '@/components/shared/Input/InputCustom';
 import { createAdopters } from '@/services/hopeBackend/adopters';
 
@@ -33,8 +32,8 @@ import { FormValues, schema } from './schema';
 import { useAdopter } from '@/context/AdopterContext';
 
 //JSON
-import optionCountries from './DataCountry.json';
-import optionDistrict from './DataDistrict.json';
+import optionCountries from '../common/DataCountry.json';
+import optionDistrict from '../common/DataDistrict.json';
 
 type CreatorAdopterDialogProps = {
   onCreated?: (id: number) => void;
@@ -81,7 +80,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
           Registrar Adopter
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="p-4 sm:p-6">
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Registrar Adopter</DialogTitle>
           <DialogDescription>
@@ -90,7 +89,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 overflow-scroll sm:overflow-auto max-h-96 sm:max-h-max md:overflow-auto md:grid-cols-2 gap-4 p-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[65vh] overflow-y-scroll sm:overflow-auto ">
               <FormInputCustom
                 control={form.control}
                 label="Nombre"
@@ -101,7 +100,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
                 label="Apellido"
                 name="lastName"
               />
-              <FormSelectSearchableCustom
+              <FormComboboxCustom
                 control={form.control}
                 label="Nacionalidad"
                 name="nationality"
@@ -123,7 +122,7 @@ export function CreatorAdopterDialog({ onCreated }: CreatorAdopterDialogProps) {
                 label="Celular"
                 name="phone"
               />
-              <FormSelectSearchableCustom
+              <FormComboboxCustom
                 control={form.control}
                 label="Distrito"
                 name="district"

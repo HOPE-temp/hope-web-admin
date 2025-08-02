@@ -14,9 +14,9 @@ interface UpdateAnimalDto extends Omit<CreateAnimalDto, 'type' | 'status'> {}
 interface UpdateStatusAnimalDto extends Pick<CreateAnimalDto, 'status'> {}
 
 interface FilterAnimalDto extends PaginationDto {
-  status?: StatusAnimal;
+  status?: StatusAnimal | StatusAnimal[];
   nickname?: string;
-  animalId?: number;
+  animalId?: number | number[];
   adopterName?: string;
   adopterDNI?: string;
 }
