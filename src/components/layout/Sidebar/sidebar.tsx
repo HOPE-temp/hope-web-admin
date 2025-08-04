@@ -10,13 +10,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { navbarItems } from './Menu';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function AppSidebar() {
   const { role } = useAuth();
+  const { toggleSidebar, isMobile } = useSidebar();
+
+  const router = useRouter();
+
+  function handleClick(href: string) {
+    if (isMobile) {
+      toggleSidebar();
+    }
+    router.push('/destino');
+  }
 
   const items = useMemo(() => {
     if (role) {
@@ -43,7 +55,10 @@ export function AppSidebar() {
                 items.map(item => (
                   <SidebarMenuItem key={item.label}>
                     <SidebarMenuButton asChild>
-                      <Link href={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => handleClick(item.href)}
+                      >
                         <item.icon className="h-4 w-4" />
                         <span>{item.label}</span>
                       </Link>
