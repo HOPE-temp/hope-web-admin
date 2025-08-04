@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
+
+//component
 import { Badge } from '@/components/ui/badge';
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import { FormField, FormMessage } from '@/components/ui/form';
+import { FormField } from '@/components/ui/form';
+import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 export interface InputAdopter extends Partial<Adopter> {}
 
@@ -19,6 +22,7 @@ export interface InputRadioAdopterListProps<T extends FieldValues> {
 interface CheckboxCardObjectProps {
   item: InputAdopter;
   selected: boolean;
+  classname?: string;
   onClick: (id: InputAdopter) => void;
 }
 
@@ -30,15 +34,21 @@ export function CheckboxCardObject({
   item,
   selected,
   onClick,
+  classname,
 }: CheckboxCardObjectProps) {
   const { id, evaluations, firstName, lastName, isBanned, documentNumber } =
     item;
   return (
     <Card
       key={id}
-      className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-        selected ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-muted/50'
-      }`}
+      className={cn(
+        `cursor-pointer transition-all duration-200`,
+        `hover:shadow-md min-w-40`,
+        `${
+          selected ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-muted/50'
+        }`,
+        `${classname}`
+      )}
       onClick={() => onClick(item)}
     >
       <CardContent className="p-4">
@@ -52,15 +62,20 @@ export function CheckboxCardObject({
                 <p className="text-xs text-muted-foreground line-clamp-3">
                   {documentNumber}
                 </p>
-                {evaluations && (
-                  <span>
-                    <Badge variant={'default'}>
-                      {' '}
-                      {evaluations.length} Eval
-                    </Badge>
-                  </span>
-                )}
-                {isBanned && <Badge variant={'default'}> Baneado</Badge>}
+                <div className="flex flex-col sm:flex-row gap-1">
+                  {evaluations && (
+                    <span>
+                      <Badge variant={'default'}>
+                        {evaluations.length} Eval
+                      </Badge>
+                    </span>
+                  )}
+                  {isBanned && (
+                    <span>
+                      <Badge variant={'default'}> Baneado</Badge>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -78,10 +93,10 @@ export function InputRadioAdopterList<T extends FieldValues>({
   columns = 3,
 }: InputRadioAdopterListProps<T>) {
   const gridCols = {
-    1: 'grid-cols-2',
-    2: 'grid-cols-2 md:grid-cols-4',
-    3: 'grid-cols-2 md:grid-cols-4 lg:grid-cols-5',
-    4: 'grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
+    1: 'grid-cols-1',
+    2: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
+    3: 'grid-rows-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5',
+    4: 'grid-rows-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6',
   };
 
   const [selectedItem, setSelectedItem] = useState<InputAdopter | undefined>();
@@ -117,8 +132,22 @@ export function InputRadioAdopterList<T extends FieldValues>({
 
           return (
             <div className="">
+              {selectedItem && (
+                <div className="flex gap-2 my-2 sm:hidden">
+                  <span>
+                    <b>{`${selectedItem.firstName} ${selectedItem.lastName}`}</b>
+                  </span>
+                  <span>{`${selectedItem.documentNumber}`}</span>
+                </div>
+              )}
               <div
-                className={`grid gap-2 sm:gap-4 p-1 sm:p-2 ${gridCols[columns]} max-h-72 overflow-hidden overflow-y-scroll`}
+                className={cn(
+                  `grid gap-2 sm:gap-4`,
+                  `grid-flow-col sm:grid-flow-row`,
+                  `${gridCols[columns]} `,
+                  `p-1 sm:p-2 max-h-72`,
+                  `overflow-x-scroll sm:overflow-y-scroll`
+                )}
               >
                 {selectedItem && (
                   <CheckboxCardObject

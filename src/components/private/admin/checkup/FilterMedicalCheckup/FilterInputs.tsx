@@ -11,6 +11,7 @@ import {
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
+import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';
 
 type FilterInputMedicalCheckupProps = {
   onGetData: (data: FormValues) => void;
@@ -67,11 +68,13 @@ export function FilterInputMedicalCheckup({
             ]}
           />
 
-          <div className="grid justify-center content-end">
-            <Button type="submit">Buscar</Button>
-          </div>
-          <div className="grid justify-center content-end">
+          <div className="flex justify-around content-end mt-auto mb-0 ">
+            <Button type="submit">
+              <SearchCheckIcon />
+              Buscar
+            </Button>
             <Button type="submit" onClick={handleClickReset}>
+              <TimerResetIcon />
               Resetear
             </Button>
           </div>

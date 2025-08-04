@@ -10,7 +10,6 @@ import { FilterActivityValues, filterActivitySchema } from './schema';
 import {
   FormCheckboxCustom,
   FormInputCustom,
-  FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
 
 type FilterInputActivityProps = {
@@ -66,7 +65,6 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
   }, [debouncedSearchValue, finishedValue, adminValue]);
 
   const onSubmit = async (data: FilterActivityValues) => {
-    console.log('Datos del filtro de actividades enviados:', data);
     const processedData = {
       ...data,
       finished: data.finished,
@@ -77,20 +75,17 @@ export function FilterInputs({ onGetData }: FilterInputActivityProps) {
       .filter(([_, value]) => value !== undefined && value !== '')
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-    console.log('Datos filtrados enviados (actividades):', filteredData);
     onGetData(filteredData as FilterActivityValues);
   };
 
   const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(ev.key);
     if (ev.key === 'Enter') {
-      form.handleSubmit(onSubmit)();
+      form.handleSubmit(onSubmit);
     }
   };
 
   const handleClickReset = () => {
     form.reset(defaultValues);
-    console.log('Filtros de actividades reseteados');
     onGetData(defaultValues);
   };
 

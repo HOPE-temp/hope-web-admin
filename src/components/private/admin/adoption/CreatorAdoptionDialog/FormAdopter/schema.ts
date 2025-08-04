@@ -9,7 +9,13 @@ export const schema = z.object({
     evaluations: z
       .array(z.any())
       .min(1, 'Debe tener por lo menos una evaluacion'),
-    isBanned: z.boolean(),
+    isBanned: z.boolean().refine(
+      value => {
+        if (value) return false;
+        return true;
+      },
+      { message: 'No puede estar baneado' }
+    ),
   }),
 });
 

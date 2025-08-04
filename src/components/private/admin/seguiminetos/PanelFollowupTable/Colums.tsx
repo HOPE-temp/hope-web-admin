@@ -32,7 +32,7 @@ export function createFollowupsColumns({
       accessorKey: 'animal',
       header: 'Fecha seguimiento',
       cell: ({ row }) => {
-        return row.original.activities[0].scheduleStartAt;
+        return row.original?.activities[0]?.scheduleStartAt;
       },
     },
     {

@@ -54,6 +54,8 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
             type="number"
             label="Id adoptante"
             name="idAdopter"
+            onKeyUp={handleKeyUpEnter}
+            onBlur={() => form.handleSubmit(onSubmit)()}
           />
 
           <FormSelectCustom
@@ -67,6 +69,8 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
               { label: 'Cancelado', value: 'cancelled' },
               { label: 'Completado', value: 'adoption_completed' },
             ]}
+            onKeyUp={handleKeyUpEnter}
+            onBlur={() => form.handleSubmit(onSubmit)()}
           />
 
           <FormSelectCustom
@@ -79,12 +83,16 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
               { label: 'Rechazado', value: 'rejected' },
               { label: 'Banneado', value: 'banned' },
             ]}
+            onKeyUp={handleKeyUpEnter}
+            onBlur={() => form.handleSubmit(onSubmit)()}
           />
 
           <FormInputCustom
             control={form.control}
             label="DNI"
             name="documentNumber"
+            onKeyUp={handleKeyUpEnter}
+            onBlur={() => form.handleSubmit(onSubmit)()}
           />
           <div className="flex justify-around content-end mt-auto mb-0 ">
             <Button type="submit">

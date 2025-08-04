@@ -11,6 +11,7 @@ import {
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
+import { SearchCheckIcon, TimerResetIcon } from 'lucide-react';
 
 type FilterInputAnimalProps = {
   onGetData: (data: FormValues) => void;
@@ -29,6 +30,14 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
     resolver: zodResolver(schema),
     defaultValues,
   });
+
+  // Observar todos los valores del formulario
+  const status = form.watch('status');
+
+  React.useEffect(() => {
+    // Ejecutar submit cada vez que cambien los valores
+    form.handleSubmit(onSubmit)();
+  }, [status]);
 
   const onSubmit = async (data: FormValues) => {
     onGetData(data);
@@ -89,11 +98,13 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             type="number"
             onKeyUp={handleKeyUpEnter}
           />
-          <div className="grid justify-center content-end">
-            <Button type="submit">Buscar</Button>
-          </div>
-          <div className="grid justify-center content-end">
-            <Button type="button" onClick={handleClickReset}>
+          <div className="flex justify-around content-end mt-auto mb-0 ">
+            <Button type="submit">
+              <SearchCheckIcon />
+              Buscar
+            </Button>
+            <Button type="submit" onClick={handleClickReset}>
+              <TimerResetIcon />
               Resetear
             </Button>
           </div>

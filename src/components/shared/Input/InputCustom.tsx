@@ -118,13 +118,14 @@ type Option = {
   value: string;
 };
 
-type FormSelectCustomProps<T extends FieldValues> = {
+interface FormSelectCustomProps<T extends FieldValues>
+  extends React.ComponentProps<'input'> {
   control: Control<T>;
   name: FieldPath<T>;
   label: string;
   options: Option[];
   placeholder?: string;
-};
+}
 
 export function FormSelectCustom<T extends FieldValues>({
   control,
@@ -132,6 +133,7 @@ export function FormSelectCustom<T extends FieldValues>({
   label,
   options,
   placeholder = 'Seleccionar',
+  ...props
 }: FormSelectCustomProps<T>) {
   return (
     <FormField
@@ -140,10 +142,10 @@ export function FormSelectCustom<T extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <FormControl>
+          <FormControl {...props}>
             <Select
               value={field.value}
-              onValueChange={field.onChange}
+              onValueChange={ev => field.onChange(ev)}
               key={field.value ?? 'empty'}
               defaultValue={field.value}
             >

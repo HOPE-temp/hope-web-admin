@@ -42,7 +42,7 @@ export function CheckboxCard({ item, selected, onClick }: CheckboxCardProps) {
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-4 mb-2">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mb-0 sm:mb-2">
               {image && (
                 <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                   <Image
@@ -79,10 +79,10 @@ export function DynamicCheckboxList<T extends FieldValues>({
   columns = 3,
 }: DynamicCheckboxListProps<T>) {
   const gridCols = {
-    1: 'grid-cols-1',
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+    1: 'grid-cols-2',
+    2: 'grid-cols-2 sm:grid-cols-2',
+    3: 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3',
+    4: 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
   };
 
   const [selectedItems, setSelectedItems] = useState<CheckboxItem[]>([]);

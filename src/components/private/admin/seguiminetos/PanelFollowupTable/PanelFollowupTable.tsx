@@ -25,11 +25,13 @@ import PaginationTable from '@/components/shared/PaginationTable';
 import { useFollowup } from '@/context/FollowupContext';
 import { FilterInputFollowup } from '../FilterFollowup';
 
-interface FollowupTableProps<TData extends RowData> {}
+interface FollowupTableProps<TData extends RowData> {
+  filter: { id?: string };
+}
 
-export function PanelFollowupsTable<
-  TData extends RowData
->({}: FollowupTableProps<TData>) {
+export function PanelFollowupsTable<TData extends RowData>({
+  filter,
+}: FollowupTableProps<TData>) {
   const {
     followups,
     loading,
@@ -58,6 +60,7 @@ export function PanelFollowupsTable<
     <div className="w-full">
       <div className="py-4">
         <FilterInputFollowup
+          defaultFilter={filter}
           onGetData={params =>
             updateParams({ ...params, limit: 10, offset: 0 })
           }

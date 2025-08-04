@@ -46,6 +46,13 @@ export function CreatorAdoptionDialog({
   const [adopter, setAdopter] = React.useState<Partial<Adopter>>();
   const [open, setOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    if (open) {
+      setAdopter(undefined);
+      setAnimals([]);
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -56,7 +63,7 @@ export function CreatorAdoptionDialog({
       </DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="max-w-5xl p-4 sm:p-6"
+        className="max-w-5xl p-4 sm:p-6 max-h-screen"
       >
         <DialogHeader>
           <DialogTitle>Registrar Adoption</DialogTitle>

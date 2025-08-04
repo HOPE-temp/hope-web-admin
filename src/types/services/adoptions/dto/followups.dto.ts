@@ -4,6 +4,7 @@ interface CreateFollowupDto {
 }
 
 interface FilterFollowupDto extends PaginationDto {
+  readonly id?: string;
   readonly statusFolloup?: StatusFollowupAdoptedAnimal;
 }
 

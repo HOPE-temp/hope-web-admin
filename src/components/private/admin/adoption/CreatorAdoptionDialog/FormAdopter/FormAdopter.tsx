@@ -83,7 +83,10 @@ export function FormAdopter(
       <FilterInputAdopter onGetData={handleSearch} />
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4 max-h-[10wh]"
+        >
           <div className="grid grid-cols-1 gap-4 mt-6">
             <InputRadioAdopterList
               control={form.control}

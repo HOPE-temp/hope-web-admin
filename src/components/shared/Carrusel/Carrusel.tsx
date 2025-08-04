@@ -38,13 +38,13 @@ export const CarouselDinamic = <T,>({
   const indices = Array.from({ length: slidesCount }, (_, i) => i);
 
   return (
-    <div className="relative w-full mx-auto overflow-hidden">
+    <div className="relative w-full mx-auto overflow-y-scroll max-h-[80vh]">
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {indices.map(index => (
-          <div key={index} className="flex-shrink-0 w-full h-full  sm:p-2">
+          <div key={index} className="flex-shrink-0 w-full h-full sm:p-2 ">
             <div className=" flex flex-col items-center justify-center">
               {renders[index](index, { prevSlide, setSlide }, context)}
             </div>

@@ -1,10 +1,12 @@
 'use client';
 
-import { CreatorAdoptionDialog } from '@/components/private/admin/adoption/CreatorAdoptionDialog';
 import { PanelFollowupsTable } from '@/components/private/admin/seguiminetos/PanelFollowupTable';
 import { FollowupProvider } from '@/context/FollowupContext';
+import { useSearchParams } from 'next/navigation';
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
   return (
     <FollowupProvider>
       <div className="min-h-screen bg-gray-100 p-6">
@@ -12,7 +14,7 @@ export default function Page() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Seguimiento</h2>
           </div>
-          <PanelFollowupsTable />
+          <PanelFollowupsTable filter={{ id: id || undefined }} />
         </div>
       </div>
     </FollowupProvider>
