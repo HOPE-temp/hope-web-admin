@@ -26,18 +26,16 @@ import {
   FormDescription,
 } from '@/components/ui/form';
 import { useActivity } from '@/context/ActivityContext';
-import {
-  createActivity,
-} from '@/services/hopeBackend/activities';
+import { createActivity } from '@/services/hopeBackend/activities';
 import { useAuth } from '@/context/AuthContext';
 
 import { schema, FormValues } from './schema';
 
 type Props = {};
 
-export function ActivitiesCreateDialog({ }: Props) {
+export function ActivitiesCreateDialog({}: Props) {
   const { axios } = useAuth();
-  const { refreshActivities } = useActivity(); 
+  const { refreshActivities } = useActivity();
   const [open, setOpen] = React.useState(false);
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
 
@@ -72,7 +70,8 @@ export function ActivitiesCreateDialog({ }: Props) {
         setFormSuccess(null);
       }, 1500);
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Error desconocido';
+      const errorMessage =
+        err.response?.data?.message || err.message || 'Error desconocido';
       form.setError('root', { message: errorMessage });
     }
   };
@@ -122,7 +121,7 @@ export function ActivitiesCreateDialog({ }: Props) {
                           {...field}
                           placeholder="Nombre de la actividad"
                           maxLength={100}
-                          onChange={(e) => {
+                          onChange={e => {
                             field.onChange(e.target.value);
                             if (form.formState.errors.title) {
                               form.clearErrors('title');
@@ -182,7 +181,6 @@ export function ActivitiesCreateDialog({ }: Props) {
                           <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                           <Input
                             {...field}
-                            type="url"
                             placeholder="https://..."
                             className="pl-10"
                           />

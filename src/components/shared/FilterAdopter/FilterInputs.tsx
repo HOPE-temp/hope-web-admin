@@ -28,13 +28,21 @@ export function FilterInputAdopter({ onGetData }: FilterInputAdopterProps) {
     defaultValues,
   });
 
+  const documentNumber = form.watch('documentNumber');
+  const firstName = form.watch('firstName');
+  const lastName = form.watch('lastName');
+
   const onSubmit = async (data: FormValues) => {
     onGetData(data);
   };
 
   const handleClickReset = () => {
-    form.reset();
+    form.reset(defaultValues); // Resetea el formulario
+    onGetData(defaultValues); // Limpia filtros en el componente padre
   };
+  React.useEffect(() => {
+    form.handleSubmit(onSubmit)();
+  }, [documentNumber, firstName, lastName]);
 
   return (
     <Form {...form}>
@@ -44,23 +52,22 @@ export function FilterInputAdopter({ onGetData }: FilterInputAdopterProps) {
             control={form.control}
             label="DNI"
             name="documentNumber"
+            debounceMs={300}
           />
           <FormInputCustom
             control={form.control}
             label="Nombre"
             name="firstName"
+            debounceMs={500}
           />
           <FormInputCustom
             control={form.control}
             label="Apellido"
             name="lastName"
+            debounceMs={500}
           />
           <div className="flex justify-around content-end mt-auto mb-0">
-            <Button type="submit">
-              <SearchCheckIcon />
-              Buscar
-            </Button>
-            <Button type="submit" onClick={handleClickReset}>
+            <Button type="button" onClick={handleClickReset}>
               <TimerResetIcon />
               Resetear
             </Button>

@@ -9,6 +9,7 @@ interface CreateActivityDto {
 interface UpdateActivityDto extends Partial<CreateActivityDto> {}
 
 interface FilterActivityDto extends PaginationDto {
+  title?: string;
   finished?: boolean;
-  admin?: true;
+  admin?: boolean;
 }

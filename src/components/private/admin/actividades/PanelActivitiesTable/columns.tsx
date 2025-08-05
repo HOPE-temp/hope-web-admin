@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { ActivitiesEditDialog } from '../ActivitiesEditDialog';
 import { ActivitiesDeleteDialog } from '../ActivitiesDeleteDialog';
 import { ActivitiesFinishDialog } from '../ActivitiesFinishDialog';
+import Link from 'next/link';
 
 interface ActivityColumnsProps {
   updateActivities: () => void;
@@ -46,14 +47,13 @@ export function createActivityColumns({
       cell: ({ row }) => {
         const url = row.original.resourceUrl;
         return url ? (
-          <a
+          <Link
             href={url}
-            target="_blank"
             rel="noopener noreferrer"
             className="underline text-blue-600 flex items-center gap-1"
           >
             <Link2 className="w-4 h-4" /> Ver recurso
-          </a>
+          </Link>
         ) : (
           '-'
         );
@@ -118,7 +118,14 @@ export function createActivityColumns({
       header: 'Creado',
       cell: ({ row }) => {
         const date = row.original.createdAt;
-        return date ? new Date(date).toLocaleDateString() : '-';
+        return date ? (
+          <span className="flex items-center gap-1">
+            <CalendarCheck2 className="w-4 h-4" />
+            {new Date(date).toLocaleDateString()}
+          </span>
+        ) : (
+          '-'
+        );
       },
     },
     {
@@ -126,30 +133,35 @@ export function createActivityColumns({
       header: 'Actualizada',
       cell: ({ row }) => {
         const date = row.original.updatedAt;
-        return date ? new Date(date).toLocaleDateString() : '-';
+        return date ? (
+          <span className="flex items-center gap-1">
+            <CalendarCheck2 className="w-4 h-4" />
+            {new Date(date).toLocaleDateString()}
+          </span>
+        ) : (
+          '-'
+        );
       },
     },
     {
       id: 'acciones',
       header: 'Acciones',
       cell: ({ row }) => (
-        <div className="flex gap-2">
-          <div className="flex gap-2">
-            <ActivitiesFinishDialog
+        <div className="flex gap-2 justify-end">
+          <ActivitiesFinishDialog
+            activity={row.original}
+            onFinish={updateActivities}
+          />
+          <ActivitiesEditDialog
+            activity={row.original}
+            onEdit={updateActivities}
+          />
+          {
+            <ActivitiesDeleteDialog
               activity={row.original}
-              onFinish={updateActivities}
+              onDelete={updateActivities}
             />
-            <ActivitiesEditDialog
-              activity={row.original}
-              onEdit={updateActivities}
-            />
-            {
-              <ActivitiesDeleteDialog
-                activity={row.original}
-                onDelete={updateActivities}
-              />
-            }
-          </div>
+          }
         </div>
       ),
       enableSorting: false,

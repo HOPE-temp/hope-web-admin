@@ -32,28 +32,24 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
   });
 
   // Observar todos los valores del formulario
+  const adopterDNI = form.watch('adopterDNI');
+  const adopterName = form.watch('adopterName');
+  const animalId = form.watch('animalId');
+  const nickname = form.watch('nickname');
   const status = form.watch('status');
-
-  React.useEffect(() => {
-    // Ejecutar submit cada vez que cambien los valores
-    form.handleSubmit(onSubmit)();
-  }, [status]);
 
   const onSubmit = async (data: FormValues) => {
     onGetData(data);
   };
 
-  const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    if (ev.key === 'Enter') {
-      form.handleSubmit(onSubmit)();
-    }
-  };
-
   const handleClickReset = () => {
-    form.reset();
-    onGetData(defaultValues);
+    form.reset(defaultValues); // Resetea el formulario
+    onGetData(defaultValues); // Limpia filtros en el componente padre
   };
 
+  React.useEffect(() => {
+    form.handleSubmit(onSubmit)();
+  }, [adopterDNI, adopterName, animalId, nickname, status]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -62,7 +58,7 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             control={form.control}
             label="Nombre"
             name="nickname"
-            onKeyUp={handleKeyUpEnter}
+            debounceMs={300}
           />
 
           <FormSelectCustom
@@ -81,14 +77,14 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             control={form.control}
             label="DNI de adoptante"
             name="adopterDNI"
-            onKeyUp={handleKeyUpEnter}
+            debounceMs={300}
           />
 
           <FormInputCustom
             control={form.control}
             label="Nombre del adoptante"
             name="adopterName"
-            onKeyUp={handleKeyUpEnter}
+            debounceMs={300}
           />
 
           <FormInputCustom
@@ -96,14 +92,10 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             label="Id del animal"
             name="animalId"
             type="number"
-            onKeyUp={handleKeyUpEnter}
+            debounceMs={300}
           />
           <div className="flex justify-around content-end mt-auto mb-0 ">
-            <Button type="submit">
-              <SearchCheckIcon />
-              Buscar
-            </Button>
-            <Button type="submit" onClick={handleClickReset}>
+            <Button type="button" onClick={handleClickReset}>
               <TimerResetIcon />
               Resetear
             </Button>

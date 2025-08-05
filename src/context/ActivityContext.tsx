@@ -9,15 +9,6 @@ import {
 import { useAuth } from './AuthContext';
 import { findAllActivities } from '@/services/hopeBackend/activities';
 
-
-type FilterActivityDto = {
-  search?: string;
-  finished?: boolean;
-  admin?: boolean;
-  limit?: number;
-  offset?: number;
-};
-
 type ActivityContextType = {
   activities: Activity[];
   allActivities: Activity[];
@@ -44,46 +35,12 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const [offset, setOffset] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(false);
-  const filterActivities = (filters: FilterActivityDto) => {
-    console.log('Aplicando filtros de actividades:', filters);
-    let filtered = [...allActivities];
-    const hasActiveFilters = (filters.search && filters.search.trim() !== '') || 
-                            (filters.finished !== undefined) ||
-                            (filters.admin !== undefined);
-    
-    if (!hasActiveFilters) {
-      console.log('No hay filtros activos, mostrando todas las actividades');
-      setActivities(filtered);
-      setTotal(filtered.length);
-      return;
-    }
-    if (filters.search && filters.search.trim() !== '') {
-      const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(activity => 
-        activity.title?.toLowerCase().includes(searchTerm)
-      );
-    }
 
-    if (filters.finished !== undefined) {
-      filtered = filtered.filter(activity => activity.finished === filters.finished);
-    }
-
-    if (filters.admin !== undefined) {
-      filtered = filtered.filter(activity => activity.admin === filters.admin);
-    }
-
-    console.log('Actividades después del filtro:', filtered.length, 'de', allActivities.length);
-    setActivities(filtered);
-    setTotal(filtered.length);
-  };
-
-  const getActivity = async () => {
+  const getActivity = async (param?: FilterAdopterDto) => {
     setLoading(true);
-    console.log('Cargando todas las actividades...');
-    
+
     try {
-      const res = await findAllActivities(axios); // Sin parámetros
-      console.log('Respuesta exitosa del backend (actividades):', res);
+      const res = await findAllActivities(axios, params); // Sin parámetros
       if (res) {
         setAllActivities(res.items);
         setActivities(res.items); // Inicialmente mostrar todas
@@ -92,9 +49,6 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         setTotal(res.items.length);
       }
     } catch (error: any) {
-      console.error('Error completo (actividades):', error);
-      console.error('Response data:', error.response?.data);
-      console.error('Status code:', error.response?.status);
       throw error;
     } finally {
       setLoading(false);
@@ -106,20 +60,15 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   };
 
   const updateActivities = () => {
-    console.log('Re-aplicando filtros actuales de actividades...');
-    filterActivities(params);
+    getActivity(params);
   };
 
   useEffect(() => {
-    getActivity();
-  }, []);
+    getActivity(params);
+  }, [params]);
 
-  const updateParams = (filter?: FilterActivityDto) => {
-    console.log('Parámetros de filtro de actividades actualizados:', filter);
-    console.log('Parámetros anteriores:', params);
-    const newParams = { ...params, ...filter };
-    setParams(newParams);
-    filterActivities(newParams);
+  const updateParams = (filter?: FilterAdopterDto) => {
+    setParams({ ...params, ...filter });
   };
 
   return (

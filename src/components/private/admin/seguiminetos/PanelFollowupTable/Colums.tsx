@@ -19,7 +19,9 @@ export function createFollowupsColumns({
       accessorKey: 'adopter',
       header: 'Adopter',
       cell: ({ row }) => {
-        return row.original.adoption.id;
+        return (
+          <p className=" truncate w-32 sm:w-auto">{row.original.adoption.id}</p>
+        );
       },
     },
     {
@@ -44,7 +46,6 @@ export function createFollowupsColumns({
             ) : (
               '-'
             );
-            formatDate(scheduleStartAt);
           })
         ) : (
           <Badge className="bg-gray-500">Sin Seguimineto</Badge>
@@ -85,18 +86,16 @@ export function createFollowupsColumns({
       header: 'Acciones',
       cell: ({ row }) => (
         <div className="flex gap-2 whitespace-nowrap">
-          {!(
-            row.original.statusFollowup === 'cancelled' ||
-            row.original.statusFollowup === 'verified'
+          {!['cancelled', 'verified', 'scheduled_sterilization'].includes(
+            row.original.statusFollowup
           ) && (
             <CheckupFollowupDialog
               followup={row.original}
               onCheckup={updateFollowups}
             />
           )}
-          {!(
-            row.original.statusFollowup === 'cancelled' ||
-            row.original.statusFollowup === 'verified'
+          {!['cancelled', 'verified', 'scheduled_sterilization'].includes(
+            row.original.statusFollowup
           ) && (
             <RescheduleFollowupDialog
               followup={row.original}
@@ -104,9 +103,8 @@ export function createFollowupsColumns({
             />
           )}
 
-          {!(
-            row.original.statusFollowup === 'cancelled' ||
-            row.original.statusFollowup === 'verified'
+          {!['cancelled', 'verified', 'scheduled_sterilization'].includes(
+            row.original.statusFollowup
           ) && (
             <FollowupCompleteDialog
               followup={row.original}

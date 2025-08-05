@@ -30,20 +30,22 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
     defaultValues,
   });
 
+  const idAdopter = form.watch('idAdopter');
+  const statusRequest = form.watch('statusRequest');
+  const statusResult = form.watch('statusResult');
+  const documentNumber = form.watch('documentNumber');
+
   const onSubmit = async (data: FormValues) => {
     onGetData(data);
   };
 
-  const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(ev.key);
-    if (ev.key === 'Enter') {
-      form.handleSubmit(onSubmit);
-    }
-  };
-
   const handleClickReset = () => {
-    form.reset();
+    form.reset(defaultValues); // Resetea el formulario
+    onGetData(defaultValues); // Limpia filtros en el componente padre
   };
+  React.useEffect(() => {
+    form.handleSubmit(onSubmit)();
+  }, [idAdopter, statusRequest, statusResult, documentNumber]);
 
   return (
     <Form {...form}>
@@ -54,8 +56,7 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
             type="number"
             label="Id adoptante"
             name="idAdopter"
-            onKeyUp={handleKeyUpEnter}
-            onBlur={() => form.handleSubmit(onSubmit)()}
+            debounceMs={600}
           />
 
           <FormSelectCustom
@@ -69,8 +70,6 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
               { label: 'Cancelado', value: 'cancelled' },
               { label: 'Completado', value: 'adoption_completed' },
             ]}
-            onKeyUp={handleKeyUpEnter}
-            onBlur={() => form.handleSubmit(onSubmit)()}
           />
 
           <FormSelectCustom
@@ -83,23 +82,16 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
               { label: 'Rechazado', value: 'rejected' },
               { label: 'Banneado', value: 'banned' },
             ]}
-            onKeyUp={handleKeyUpEnter}
-            onBlur={() => form.handleSubmit(onSubmit)()}
           />
 
           <FormInputCustom
             control={form.control}
             label="DNI"
             name="documentNumber"
-            onKeyUp={handleKeyUpEnter}
-            onBlur={() => form.handleSubmit(onSubmit)()}
+            debounceMs={600}
           />
           <div className="flex justify-around content-end mt-auto mb-0 ">
-            <Button type="submit">
-              <SearchCheckIcon />
-              Buscar
-            </Button>
-            <Button type="submit" onClick={handleClickReset}>
+            <Button type="button" onClick={handleClickReset}>
               <TimerResetIcon />
               Resetear
             </Button>

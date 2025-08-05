@@ -22,6 +22,7 @@ type FilterInputFollowupProps = {
 };
 
 const defaultValues = {
+  id: undefined,
   statusFolloup: undefined,
   activitiesFinished: undefined,
 };
@@ -32,28 +33,31 @@ export function FilterInputFollowup({
 }: FilterInputFollowupProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { ...defaultValues, id },
+    defaultValues: defaultValues,
   });
 
   React.useEffect(() => {
     if (id) {
-      form.handleSubmit(onSubmit)();
+      form.reset({ ...defaultValues, id });
+      onGetData({ id });
     }
   }, [id]);
+
+  const idValue = form.watch('id');
+  const statusFolloup = form.watch('statusFolloup');
 
   const onSubmit = async (data: FormValues) => {
     onGetData(data);
   };
 
-  const handleKeyUpEnter = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    if (ev.key === 'Enter') {
-      form.handleSubmit(onSubmit)();
-    }
+  const handleClickReset = () => {
+    form.reset(defaultValues); // Resetea el formulario
+    onGetData(defaultValues); // Limpia filtros en el componente padre
   };
 
-  const handleClickReset = () => {
-    form.reset();
-  };
+  React.useEffect(() => {
+    form.handleSubmit(onSubmit)();
+  }, [idValue, statusFolloup]);
 
   return (
     <Form {...form}>
@@ -63,7 +67,7 @@ export function FilterInputFollowup({
             control={form.control}
             name="id"
             label="Id seguimiento"
-            onKeyUp={handleKeyUpEnter}
+            debounceMs={400}
           />
           <FormSelectCustom
             control={form.control}
@@ -81,11 +85,7 @@ export function FilterInputFollowup({
           />
 
           <div className="flex justify-around content-end mt-auto mb-0 ">
-            <Button type="submit">
-              <SearchCheckIcon />
-              Buscar
-            </Button>
-            <Button type="submit" onClick={handleClickReset}>
+            <Button type="button" onClick={handleClickReset}>
               <TimerResetIcon />
               Resetear
             </Button>

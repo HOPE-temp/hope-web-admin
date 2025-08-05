@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
 export const filterActivitySchema = z.object({
-  search: z
+  title: z
     .string()
     .optional()
     .transform(val => (val === '' ? undefined : val)),
+
   finished: z.boolean().optional(),
   admin: z.boolean().optional(),
 });

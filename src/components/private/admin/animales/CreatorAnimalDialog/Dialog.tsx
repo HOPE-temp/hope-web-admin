@@ -35,6 +35,7 @@ import { useAuth } from '@/context/AuthContext';
 import { FormValues, schema } from './schema';
 import { today } from '../common/schema';
 import { useAnimal } from '@/context/AnimalContext';
+import { cn } from '@/lib/utils';
 
 type CreatorAnimalDialogProps = {
   onCreated?: () => void;
@@ -114,7 +115,13 @@ export function CreatorAnimalDialog({ onCreated }: CreatorAnimalDialogProps) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 max-w-[90vw] "
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-scroll sm:overflow-auto">
+            <div
+              className={cn(
+                'grid grid-cols-1 md:grid-cols-2 gap-4',
+                'max-h-[60vh] overflow-y-scroll sm:overflow-auto',
+                'p-1'
+              )}
+            >
               <FormInputCustom
                 control={form.control}
                 label="Nombre"
