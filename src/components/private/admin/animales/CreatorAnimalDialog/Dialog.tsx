@@ -99,7 +99,10 @@ export function CreatorAnimalDialog({ onCreated }: CreatorAnimalDialogProps) {
           Registrar Animal
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-w-5xl p-4 sm:p-6 max-h-[90vh]"
+      >
         <DialogHeader>
           <DialogTitle>Registrar Animal</DialogTitle>
           <DialogDescription>
@@ -107,8 +110,11 @@ export function CreatorAnimalDialog({ onCreated }: CreatorAnimalDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 max-w-[90vw] "
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-scroll sm:overflow-auto">
               <FormInputCustom
                 control={form.control}
                 label="Nombre"

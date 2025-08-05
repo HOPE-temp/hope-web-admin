@@ -5,6 +5,7 @@ import { FollowupCompleteDialog } from '../FollowupCompleteDialog';
 import { FollowupCancelDialog } from '../FollowupCancelDialog';
 import { RescheduleFollowupDialog } from '../RescheduleFollowupDialog';
 import { CheckupFollowupDialog } from '../CheckupFollowupDialog';
+import { CalendarCheck2 } from 'lucide-react';
 
 interface FollowupsColumnsProps {
   updateFollowups: () => void;
@@ -29,10 +30,25 @@ export function createFollowupsColumns({
       },
     },
     {
-      accessorKey: 'animal',
+      accessorKey: 'scheduleStartAt',
       header: 'Fecha seguimiento',
       cell: ({ row }) => {
-        return row.original?.activities[0]?.scheduleStartAt;
+        return row.original.activities.length > 0 ? (
+          row.original.activities.map(({ scheduleStartAt }) => {
+            const date = scheduleStartAt;
+            return date ? (
+              <span className="flex items-center gap-1">
+                <CalendarCheck2 className="w-4 h-4" />
+                {new Date(date).toLocaleString()}
+              </span>
+            ) : (
+              '-'
+            );
+            formatDate(scheduleStartAt);
+          })
+        ) : (
+          <Badge className="bg-gray-500">Sin Seguimineto</Badge>
+        );
       },
     },
     {
@@ -49,9 +65,9 @@ export function createFollowupsColumns({
           verified: { name: 'Verificado', color: 'bg-green-200' },
           scheduled_sterilization: {
             name: 'Esterilizacion agendada',
-            color: 'bg-red-200',
+            color: 'bg-orange-200',
           },
-          cancelled: { name: 'Cancelado', color: 'bg-red-800' },
+          cancelled: { name: 'Cancelado', color: 'bg-red-300' },
         };
         return (
           <Badge

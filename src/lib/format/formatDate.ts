@@ -1,4 +1,4 @@
-export function formatDate(dateString?: string) {
+export function formatDate(dateString?: string | Date) {
   if (!dateString) {
     return 'Sin Fecha';
   }

@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/format/formatDate';
+import { CalendarCheck2 } from 'lucide-react';
 
 interface MedicalCheckupsColumnsProps {
   updateMedicalCheckups: () => void;
@@ -35,22 +36,43 @@ export function createMedicalCheckupsColumns({
       },
     },
     {
+      accessorKey: 'title',
+      header: 'Titulo',
+    },
+    {
       accessorKey: 'scheduleStartAt',
       header: 'Fecha Inicio',
+      cell: ({ row }) => {
+        const date = row.original.scheduleStartAt;
+        return date ? (
+          <span className="flex items-center gap-1">
+            <CalendarCheck2 className="w-4 h-4" />
+            {new Date(date).toLocaleString()}
+          </span>
+        ) : (
+          '-'
+        );
+      },
     },
     {
       accessorKey: 'scheduleEndAt',
       header: 'Fecha Fin',
+      cell: ({ row }) => {
+        const date = row.original.scheduleEndAt;
+        return date ? (
+          <span className="flex items-center gap-1">
+            <CalendarCheck2 className="w-4 h-4" />
+            {new Date(date).toLocaleString()}
+          </span>
+        ) : (
+          '-'
+        );
+      },
     },
     {
       accessorKey: 'animal.id',
       header: 'Mascotas',
     },
-    // {
-    //   accessorKey: 'statusRequest',
-    //   header: 'Solicitud',
-    //
-    // },
 
     {
       id: 'acciones',
