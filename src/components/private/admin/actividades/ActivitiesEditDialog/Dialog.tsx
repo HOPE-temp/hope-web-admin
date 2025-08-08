@@ -31,6 +31,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useActivity } from '@/context/ActivityContext';
 
 import { schema, FormValues } from './schema';
+import { FormCheckboxCustom, FormInputCustom } from '@/components/shared/Input';
+import { ContainerForm } from '@/components/shared/Containers';
 
 type Props = {
   activity: Activity;
@@ -151,154 +153,93 @@ export function ActivitiesEditDialog({ activity, onEdit }: Props) {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">Estado Actual</h3>
-                  <div className="flex gap-2">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        activity.admin
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {activity.admin ? 'Solo Admin' : 'Regular'}
-                    </span>
+            <ContainerForm>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium">Estado Actual</h3>
+                    <div className="flex gap-2">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          activity.admin
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {activity.admin ? 'Solo Admin' : 'Regular'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Información Básica</h3>
-
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Título *</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Nombre de la actividad"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="admin"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <input
-                            type="checkbox"
-                            checked={field.value}
-                            onChange={e => field.onChange(e.target.checked)}
-                            className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>Actividad de administración</FormLabel>
-                          <FormDescription>
-                            Solo administradores pueden finalizarla
-                          </FormDescription>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-medium">Recursos Multimedia</h3>
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="resourceUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>URL de Recurso</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                            <Input
-                              {...field}
-                              placeholder="https://..."
-                              className="pl-10"
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Enlace a redes sociales, páginas web, seguimientos,
-                          etc.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <h3 className="text-lg font-medium">Programación</h3>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Información Básica</h3>
+                    <FormInputCustom
                       control={form.control}
-                      name="scheduleStartAt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Fecha y Hora de Inicio</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="datetime-local" />
-                          </FormControl>
-                          <FormDescription>
-                            Cuándo debe comenzar la actividad
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      name="title"
+                      label="Titulo"
+                      placeholder="Nombre de la actividad"
                     />
-
-                    <FormField
+                    <FormCheckboxCustom
                       control={form.control}
-                      name="scheduleEndAt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Fecha y Hora de Fin</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="datetime-local" />
-                          </FormControl>
-                          <FormDescription>
-                            Cuándo debe finalizar la actividad
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      name="admin"
+                      label="Actividad de administración"
+                      description="Solo los administradores podrán marcar esta
+                    actividad como finalizada"
                     />
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-medium">
+                        Recursos Multimedia
+                      </h3>
+                    </div>
+                    <FormInputCustom
+                      control={form.control}
+                      name="resourceUrl"
+                      label="URL de Recurso"
+                      description="Enlace a redes sociales, páginas web, seguimientos, etc."
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <h3 className="text-lg font-medium">Programación</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormInputCustom
+                        control={form.control}
+                        name="scheduleStartAt"
+                        type="datetime-local"
+                        label="Fecha y Hora de Inicio"
+                        description="Cuándo debe comenzar la actividad."
+                      />
+                      <FormInputCustom
+                        control={form.control}
+                        name="scheduleEndAt"
+                        type="datetime-local"
+                        label="Fecha y Hora de Fin"
+                        description="Cuándo debe finalizar la actividad."
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </ContainerForm>
 
             {form.formState.errors.root && (
               <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">

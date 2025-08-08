@@ -24,6 +24,7 @@ import { createAnimalsColumns } from './Colums';
 import { Loader } from 'lucide-react';
 import { useAnimal } from '@/context/AnimalContext';
 import PaginationTable from '../../../../shared/PaginationTable';
+import { LoadingTable } from '@/components/shared/Table/LoadingTable';
 
 interface AnimalTableProps<TData extends RowData> {}
 
@@ -82,18 +83,6 @@ export function PanelAnimalsTable<
             ))}
           </TableHeader>
           <TableBody>
-            {loading && (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <span className="flex justify-center">
-                    <Loader className="animate-[spin_1.5s_ease-in-out_infinite]" />
-                  </span>
-                </TableCell>
-              </TableRow>
-            )}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
@@ -108,14 +97,7 @@ export function PanelAnimalsTable<
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
+              <LoadingTable loading={loading} columns={columns} />
             )}
           </TableBody>
         </Table>

@@ -6,8 +6,8 @@ export const filterActivitySchema = z.object({
     .optional()
     .transform(val => (val === '' ? undefined : val)),
 
-  finished: z.boolean().optional(),
-  admin: z.boolean().optional(),
+  finished: z.enum(['true', 'false']).optional(),
+  admin: z.enum(['true', 'false']).optional(),
 });
 
 export type FilterActivityValues = z.input<typeof filterActivitySchema>;

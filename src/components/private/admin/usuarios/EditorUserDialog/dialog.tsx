@@ -29,6 +29,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useUser } from '@/context/UserContext';
 import { updatePrivateUser } from '@/services/hopeBackend/users';
 import { FormValues, schema } from './schema';
+import { ContainerForm } from '@/components/shared/Containers';
 
 type EditorUserDialogProps = {
   user: User;
@@ -49,7 +50,8 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
       email: user.info?.email ?? '',
       phone: user.info?.phone ?? '',
       address: user.info?.address ?? '',
-      rol: user.info?.rol as "admin" | "volunteer" | "veterinarian" ?? "admin",
+      rol:
+        (user.info?.rol as 'admin' | 'volunteer' | 'veterinarian') ?? 'admin',
     },
   });
 
@@ -85,7 +87,7 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ContainerForm>
               <FormInputCustom
                 control={form.control}
                 label="Nombre"
@@ -122,7 +124,7 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
                   { label: 'Veterinario', value: 'veterinarian' },
                 ]}
               />
-            </div>
+            </ContainerForm>
             {form.formState.errors.root && (
               <div className="text-red-500 text-sm">
                 {form.formState.errors.root.message}

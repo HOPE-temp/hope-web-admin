@@ -29,6 +29,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useUser } from '@/context/UserContext';
 import { createUser } from '@/services/hopeBackend/users';
 import { FormValues, schema } from './schema';
+import { cn } from '@/lib/utils';
+import { ContainerForm } from '@/components/shared/Containers';
 
 type CreatorUserDialogProps = {
   onCreated?: () => void;
@@ -94,8 +96,11 @@ export function CreatorUserDialog({ onCreated }: CreatorUserDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 max-w-[90vw] "
+          >
+            <ContainerForm>
               <FormInputCustom
                 control={form.control}
                 label="Usuario"
@@ -153,7 +158,7 @@ export function CreatorUserDialog({ onCreated }: CreatorUserDialogProps) {
                   { label: 'Veterinario', value: 'veterinarian' },
                 ]}
               />
-            </div>
+            </ContainerForm>
             {form.formState.errors.root && (
               <div className="text-red-500 text-sm">
                 {form.formState.errors.root.message}

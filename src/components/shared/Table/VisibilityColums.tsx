@@ -8,7 +8,6 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { RowData } from '@tanstack/react-table';
-import { table } from 'console';
 import { ChevronDown, Filter } from 'lucide-react';
 import React from 'react';
 

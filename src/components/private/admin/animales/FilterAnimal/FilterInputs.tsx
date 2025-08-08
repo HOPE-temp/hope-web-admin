@@ -48,8 +48,13 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
   };
 
   React.useEffect(() => {
-    form.handleSubmit(onSubmit)();
+    const handler = setTimeout(() => {
+      form.handleSubmit(onSubmit)();
+    }, 500); // espera 500ms desde el último cambio
+
+    return () => clearTimeout(handler); // limpia el timeout si cambia algo antes de los 500ms
   }, [adopterDNI, adopterName, animalId, nickname, status]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -58,7 +63,6 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             control={form.control}
             label="Nombre"
             name="nickname"
-            debounceMs={300}
           />
 
           <FormSelectCustom
@@ -77,14 +81,12 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             control={form.control}
             label="DNI de adoptante"
             name="adopterDNI"
-            debounceMs={300}
           />
 
           <FormInputCustom
             control={form.control}
             label="Nombre del adoptante"
             name="adopterName"
-            debounceMs={300}
           />
 
           <FormInputCustom
@@ -92,7 +94,6 @@ export function FilterInputAnimal({ onGetData }: FilterInputAnimalProps) {
             label="Id del animal"
             name="animalId"
             type="number"
-            debounceMs={300}
           />
           <div className="flex justify-around content-end mt-auto mb-0 ">
             <Button type="button" onClick={handleClickReset}>

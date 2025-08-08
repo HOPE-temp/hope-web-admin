@@ -28,6 +28,7 @@ import VisibilityColums from '@/components/shared/Table/VisibilityColums';
 import MedicalCheckupCalendar from '../MedicalCheckupCalendar';
 import { Calendar, CalendarEvent } from '@/components/ui/full-calendar';
 import { useRouter } from 'next/navigation';
+import { LoadingTable } from '@/components/shared/Table/LoadingTable';
 
 interface MedicalCheckupTableProps<TData extends RowData> {}
 
@@ -109,18 +110,6 @@ export function PanelMedicalCheckupsTable<
             ))}
           </TableHeader>
           <TableBody>
-            {loading && (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <span className="flex justify-center">
-                    <Loader className="animate-[spin_1.5s_ease-in-out_infinite]" />
-                  </span>
-                </TableCell>
-              </TableRow>
-            )}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
@@ -135,14 +124,7 @@ export function PanelMedicalCheckupsTable<
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
+              <LoadingTable loading={loading} columns={columns} />
             )}
           </TableBody>
         </Table>

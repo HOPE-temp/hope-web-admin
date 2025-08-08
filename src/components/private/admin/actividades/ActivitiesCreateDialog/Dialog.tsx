@@ -30,8 +30,18 @@ import { createActivity } from '@/services/hopeBackend/activities';
 import { useAuth } from '@/context/AuthContext';
 
 import { schema, FormValues } from './schema';
+import { ContainerForm } from '@/components/shared/Containers';
+import { FormCheckboxCustom, FormInputCustom } from '@/components/shared/Input';
 
 type Props = {};
+
+const defaultValues = {
+  title: undefined,
+  resourceUrl: undefined,
+  scheduleStartAt: undefined,
+  scheduleEndAt: undefined,
+  admin: false,
+};
 
 export function ActivitiesCreateDialog({}: Props) {
   const { axios } = useAuth();
@@ -41,13 +51,7 @@ export function ActivitiesCreateDialog({}: Props) {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      title: '',
-      resourceUrl: '',
-      scheduleStartAt: '',
-      scheduleEndAt: '',
-      admin: false,
-    },
+    defaultValues,
   });
 
   const onSubmit = async (data: FormValues) => {
@@ -79,7 +83,7 @@ export function ActivitiesCreateDialog({}: Props) {
   const handleDialogChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (!newOpen) {
-      form.reset();
+      form.reset(defaultValues);
       setFormSuccess(null);
     }
   };
@@ -92,10 +96,7 @@ export function ActivitiesCreateDialog({}: Props) {
           Nueva Actividad
         </Button>
       </DialogTrigger>
-      <DialogContent
-        aria-describedby={undefined}
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
-      >
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Crear Nueva Actividad</DialogTitle>
           <DialogDescription>
@@ -106,140 +107,67 @@ export function ActivitiesCreateDialog({}: Props) {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="border rounded-lg p-6 space-y-4">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Información Básica</h3>
-
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Título *</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Nombre de la actividad"
-                          maxLength={100}
-                          onChange={e => {
-                            field.onChange(e.target.value);
-                            if (form.formState.errors.title) {
-                              form.clearErrors('title');
-                            }
-                          }}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        {field.value?.length || 0}/100 caracteres
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="admin"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <input
-                          type="checkbox"
-                          checked={field.value}
-                          onChange={e => field.onChange(e.target.checked)}
-                          className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>Actividad de administración</FormLabel>
-                        <FormDescription>
-                          Solo los administradores podrán marcar esta actividad
-                          como finalizada
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="border rounded-lg p-6 space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Upload className="w-4 h-4" />
-                  <h3 className="text-lg font-medium">Recursos Multimedia</h3>
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="resourceUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>URL de Recurso</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input
-                            {...field}
-                            placeholder="https://..."
-                            className="pl-10"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormDescription>
-                        Enlace a redes sociales, páginas web, seguimientos, etc.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="border rounded-lg p-6 space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <h3 className="text-lg font-medium">Programación</h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
+            <ContainerForm>
+              <div className="border rounded-lg p-6 space-y-4">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Información Básica</h3>
+                  <FormInputCustom
                     control={form.control}
-                    name="scheduleStartAt"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Fecha y Hora de Inicio</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="datetime-local" />
-                        </FormControl>
-                        <FormDescription>
-                          Cuándo debe comenzar la actividad
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    name="title"
+                    label="Titulo"
+                    placeholder="Nombre de la actividad"
                   />
-
-                  <FormField
+                  <FormCheckboxCustom
                     control={form.control}
-                    name="scheduleEndAt"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Fecha y Hora de Fin</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="datetime-local" />
-                        </FormControl>
-                        <FormDescription>
-                          Cuándo debe finalizar la actividad
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    name="admin"
+                    label="Actividad de administración"
+                    description="Solo los administradores podrán marcar esta
+                    actividad como finalizada"
                   />
                 </div>
               </div>
-            </div>
+
+              <div className="border rounded-lg p-6 space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Upload className="w-4 h-4" />
+                    <h3 className="text-lg font-medium">Recursos Multimedia</h3>
+                  </div>
+                  <FormInputCustom
+                    control={form.control}
+                    name="resourceUrl"
+                    label="URL de Recurso"
+                    description="Enlace a redes sociales, páginas web, seguimientos, etc."
+                  />
+                </div>
+              </div>
+
+              <div className="border rounded-lg p-6 space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    <h3 className="text-lg font-medium">Programación</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormInputCustom
+                      control={form.control}
+                      name="scheduleStartAt"
+                      type="datetime-local"
+                      label="Fecha y Hora de Inicio"
+                      description="Cuándo debe comenzar la actividad."
+                    />
+                    <FormInputCustom
+                      control={form.control}
+                      name="scheduleEndAt"
+                      type="datetime-local"
+                      label="Fecha y Hora de Fin"
+                      description="Cuándo debe finalizar la actividad."
+                    />
+                  </div>
+                </div>
+              </div>
+            </ContainerForm>
 
             {form.formState.errors.root && (
               <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">

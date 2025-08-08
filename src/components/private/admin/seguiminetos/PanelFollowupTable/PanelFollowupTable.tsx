@@ -24,6 +24,7 @@ import { Loader } from 'lucide-react';
 import PaginationTable from '@/components/shared/PaginationTable';
 import { useFollowup } from '@/context/FollowupContext';
 import { FilterInputFollowup } from '../FilterFollowup';
+import { LoadingTable } from '@/components/shared/Table/LoadingTable';
 
 interface FollowupTableProps<TData extends RowData> {
   filter: { id?: string };
@@ -86,18 +87,6 @@ export function PanelFollowupsTable<TData extends RowData>({
             ))}
           </TableHeader>
           <TableBody>
-            {loading && (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <span className="flex justify-center">
-                    <Loader className="animate-[spin_1.5s_ease-in-out_infinite]" />
-                  </span>
-                </TableCell>
-              </TableRow>
-            )}
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow key={row.id}>
@@ -112,14 +101,7 @@ export function PanelFollowupsTable<TData extends RowData>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
+              <LoadingTable loading={loading} columns={columns} />
             )}
           </TableBody>
         </Table>

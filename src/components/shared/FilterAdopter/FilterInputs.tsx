@@ -41,7 +41,11 @@ export function FilterInputAdopter({ onGetData }: FilterInputAdopterProps) {
     onGetData(defaultValues); // Limpia filtros en el componente padre
   };
   React.useEffect(() => {
-    form.handleSubmit(onSubmit)();
+    const handler = setTimeout(() => {
+      form.handleSubmit(onSubmit)();
+    }, 500); // espera 500ms desde el último cambio
+
+    return () => clearTimeout(handler); // limpia el timeout si cambia algo antes de los 500ms
   }, [documentNumber, firstName, lastName]);
 
   return (
@@ -52,19 +56,16 @@ export function FilterInputAdopter({ onGetData }: FilterInputAdopterProps) {
             control={form.control}
             label="DNI"
             name="documentNumber"
-            debounceMs={300}
           />
           <FormInputCustom
             control={form.control}
             label="Nombre"
             name="firstName"
-            debounceMs={500}
           />
           <FormInputCustom
             control={form.control}
             label="Apellido"
             name="lastName"
-            debounceMs={500}
           />
           <div className="flex justify-around content-end mt-auto mb-0">
             <Button type="button" onClick={handleClickReset}>

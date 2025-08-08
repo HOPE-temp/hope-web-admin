@@ -44,7 +44,11 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
     onGetData(defaultValues); // Limpia filtros en el componente padre
   };
   React.useEffect(() => {
-    form.handleSubmit(onSubmit)();
+    const handler = setTimeout(() => {
+      form.handleSubmit(onSubmit)();
+    }, 500); // espera 500ms desde el último cambio
+
+    return () => clearTimeout(handler); // limpia el timeout si cambia algo antes de los 500ms
   }, [idAdopter, statusRequest, statusResult, documentNumber]);
 
   return (
@@ -56,7 +60,6 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
             type="number"
             label="Id adoptante"
             name="idAdopter"
-            debounceMs={600}
           />
 
           <FormSelectCustom
@@ -88,7 +91,6 @@ export function FilterInputAdoption({ onGetData }: FilterInputAdoptionProps) {
             control={form.control}
             label="DNI"
             name="documentNumber"
-            debounceMs={600}
           />
           <div className="flex justify-around content-end mt-auto mb-0 ">
             <Button type="button" onClick={handleClickReset}>

@@ -17,6 +17,7 @@ import {
 
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -39,30 +40,16 @@ interface FormInputCustomProps<T extends FieldValues>
   extends React.ComponentProps<'input'> {
   control: Control<T>;
   name: FieldPath<T>;
-  label: string;
-
-  // Milisegundos para retrasar el update (debounce), opcional
-  debounceMs?: number;
+  label?: string;
+  description?: string;
 }
-
-const valueInterceptor = (type: string, internalValue: string | undefined) => {
-  if (!internalValue) {
-    return undefined;
-  }
-
-  return type === 'number' && internalValue === ''
-    ? undefined
-    : type === 'number'
-    ? +internalValue
-    : internalValue;
-};
 
 export function FormInputCustom<T extends FieldValues>({
   control,
   name,
   label,
+  description,
   type = 'text',
-  debounceMs,
   ...props
 }: FormInputCustomProps<T>): JSX.Element {
   return (
@@ -70,51 +57,18 @@ export function FormInputCustom<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field }) => {
-        // Estado interno para manejar valor visible en el input
-        const [internalValue, setInternalValue] = React.useState<
-          string | undefined
-        >(field.value ?? undefined);
-
-        // Sincronizar internalValue si cambia el valor externo (field.value)
-        React.useEffect(() => {
-          setInternalValue(field.value ?? undefined);
-        }, [field.value]);
-
-        React.useEffect(() => {
-          if (debounceMs === undefined) {
-            // Si no hay debounce, cambiar valor inmediatamente
-            const valueToSet = valueInterceptor(type, internalValue);
-
-            field.onChange(valueToSet);
-            return;
-          }
-
-          // Con debounce: espera debounceMs milisegundos para disparar onChange
-          const timer = setTimeout(() => {
-            const valueToSet = valueInterceptor(type, internalValue);
-
-            field.onChange(valueToSet);
-          }, debounceMs);
-
-          // Limpia timeout si internalValue cambia antes del debounce
-          return () => clearTimeout(timer);
-        }, [internalValue, debounceMs, field, type]);
-
-        // Actualiza internalValue inmediatamente al escribir
-        const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-          setInternalValue(e.target.value);
-        };
-
-        const inputProps =
-          type === 'number'
+        const inputProps = {
+          ...field,
+          ...(type === 'number'
             ? {
-                value: internalValue,
-                onChange: onChangeHandler,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  const val = e.target.value;
+                  field.onChange(val === '' ? undefined : +val); // convierte a number
+                },
+                value: field.value ?? '', // evita que sea undefined
               }
-            : {
-                value: internalValue,
-                onChange: onChangeHandler,
-              };
+            : {}),
+        };
 
         return (
           <FormItem>
@@ -122,6 +76,7 @@ export function FormInputCustom<T extends FieldValues>({
             <FormControl>
               <Input {...inputProps} type={type} {...props} />
             </FormControl>
+            <FormDescription>{description}</FormDescription>
             <FormMessage />
           </FormItem>
         );

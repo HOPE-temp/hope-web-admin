@@ -56,7 +56,11 @@ export function FilterInputFollowup({
   };
 
   React.useEffect(() => {
-    form.handleSubmit(onSubmit)();
+    const handler = setTimeout(() => {
+      form.handleSubmit(onSubmit)();
+    }, 500); // espera 500ms desde el último cambio
+
+    return () => clearTimeout(handler); // limpia el timeout si cambia algo antes de los 500ms
   }, [idValue, statusFolloup]);
 
   return (
@@ -67,7 +71,6 @@ export function FilterInputFollowup({
             control={form.control}
             name="id"
             label="Id seguimiento"
-            debounceMs={400}
           />
           <FormSelectCustom
             control={form.control}
