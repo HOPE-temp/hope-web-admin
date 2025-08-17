@@ -29,8 +29,8 @@ import { updateAdopter } from '@/services/hopeBackend/adopters';
 import { useAuth } from '@/context/AuthContext';
 
 //JSON
-import optionCountries from '../common/DataCountry.json';
-import optionDistrict from '../common/DataDistrict.json';
+import optionCountries from '@/components/private/admin/common/DataCountry.json';
+import optionDistrict from '@/components/private/admin/common/DataDistrict.json';
 
 type Props = {
   onEdit?: () => void;

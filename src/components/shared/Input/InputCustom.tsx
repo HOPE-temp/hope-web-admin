@@ -126,7 +126,7 @@ interface FormSelectCustomProps<T extends FieldValues>
   extends React.ComponentProps<'input'> {
   control: Control<T>;
   name: FieldPath<T>;
-  label: string;
+  label?: string;
   options: Option[];
   placeholder?: string;
 }

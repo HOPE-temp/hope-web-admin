@@ -32,8 +32,8 @@ import { FormValues, schema } from './schema';
 import { useAdopter } from '@/context/AdopterContext';
 
 //JSON
-import optionCountries from '../common/DataCountry.json';
-import optionDistrict from '../common/DataDistrict.json';
+import optionCountries from '@/components/private/admin/common/DataCountry.json';
+import optionDistrict from '@/components/private/admin/common/DataCountry.json';
 
 type CreatorAdopterDialogProps = {
   onCreated?: (id: number) => void;

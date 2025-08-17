@@ -21,6 +21,7 @@ import {
 import { Form } from '@/components/ui/form';
 
 import {
+  FormComboboxCustom,
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
@@ -29,8 +30,9 @@ import { useAuth } from '@/context/AuthContext';
 import { useUser } from '@/context/UserContext';
 import { createUser } from '@/services/hopeBackend/users';
 import { FormValues, schema } from './schema';
-import { cn } from '@/lib/utils';
 import { ContainerForm } from '@/components/shared/Containers';
+
+import optionDistrict from '@/components/private/admin/common/DataDistrict.json';
 
 type CreatorUserDialogProps = {
   onCreated?: () => void;
@@ -143,10 +145,11 @@ export function CreatorUserDialog({ onCreated }: CreatorUserDialogProps) {
                 label="Número de documento"
                 name="documentNumber"
               />
-              <FormInputCustom
+              <FormComboboxCustom
                 control={form.control}
-                label="Ubicación"
+                label="Distrito"
                 name="location"
+                options={optionDistrict}
               />
               <FormSelectCustom
                 control={form.control}

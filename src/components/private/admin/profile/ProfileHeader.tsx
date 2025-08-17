@@ -1,9 +1,11 @@
 import React from 'react';
 import { ProfileBadge } from './ProfileBadge';
+import { useProfile } from '@/context/ProfileContext';
 
-type Props = { rol: string };
+type Props = {};
 
-const ProfileHeader = ({ rol }: Props) => {
+const ProfileHeader = () => {
+  const { user } = useProfile();
   return (
     <div className="flex items-center justify-between">
       <div>
@@ -12,7 +14,7 @@ const ProfileHeader = ({ rol }: Props) => {
           Gestiona tu información personal
         </p>
       </div>
-      <ProfileBadge rol={rol} />
+      {user?.rol && <ProfileBadge rol={user?.rol} />}
     </div>
   );
 };

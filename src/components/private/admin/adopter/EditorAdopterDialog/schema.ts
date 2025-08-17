@@ -11,8 +11,8 @@ import {
 } from '../common/schema';
 
 //JSON
-import optionCountries from '../common/DataCountry.json';
-import optionDistricts from '../common/DataDistrict.json';
+import optionCountries from '@/components/private/admin/common/DataCountry.json';
+import optionDistricts from '@/components/private/admin/common/DataDistrict.json';
 
 export const schema = z.object({
   firstName: firstName.nonempty('Campo requerido'),
