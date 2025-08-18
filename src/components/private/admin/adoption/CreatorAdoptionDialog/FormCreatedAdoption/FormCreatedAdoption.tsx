@@ -30,15 +30,15 @@ export function FormCreatedAdoption(
     resolver: zodResolver(schema),
     defaultValues: {
       adopterId: undefined,
-      animalsIds: undefined,
+      animalIds: undefined,
     },
   });
 
-  const onSubmit = async ({ adopterId, animalsIds }: FormValues) => {
+  const onSubmit = async ({ adopterId, animalIds }: FormValues) => {
     try {
       const adoption = await createAdoption(axios, {
         adopterId,
-        animalsIds,
+        animalIds,
       });
       if (adoption) {
         toast.success(`Mascota #${adoption.id} guardada`);
@@ -70,7 +70,7 @@ export function FormCreatedAdoption(
   useEffect(() => {
     if (animals) {
       form.setValue(
-        'animalsIds',
+        'animalIds',
         animals.map(({ id }) => id)
       );
     }
@@ -113,7 +113,7 @@ export function FormCreatedAdoption(
             )}
             <FormField
               control={form.control}
-              name="animalsIds"
+              name="animalIds"
               render={() => {
                 return (
                   <FormItem>

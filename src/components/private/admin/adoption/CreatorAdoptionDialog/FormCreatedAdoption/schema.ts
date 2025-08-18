@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { idAdopter, animalsIds } from '../../common/schema';
+import { idAdopter, animalIds } from '../../common/schema';
 
 export const schema = z.object({
   adopterId: idAdopter,
-  animalsIds: animalsIds.min(
+  animalIds: animalIds.min(
     1,
     'Es necesario que eligas por lo menos una mascota'
   ),

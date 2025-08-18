@@ -33,7 +33,7 @@ import { useAdopter } from '@/context/AdopterContext';
 
 //JSON
 import optionCountries from '@/components/private/admin/common/DataCountry.json';
-import optionDistrict from '@/components/private/admin/common/DataCountry.json';
+import optionDistrict from '@/components/private/admin/common/DataDistrict.json';
 
 type CreatorAdopterDialogProps = {
   onCreated?: (id: number) => void;

@@ -50,15 +50,15 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      animalsIds: adoption.animalsTemp,
+      animalIds: adoption.animalsTemp,
       reviewRequestNotes: adoption.reviewRequestNotes ?? '',
     },
   });
 
-  const onSubmit = async ({ animalsIds, reviewRequestNotes }: FormValues) => {
+  const onSubmit = async ({ animalIds, reviewRequestNotes }: FormValues) => {
     try {
       await linkAnimalAdoption(axios, adoption.id, {
-        animalsIds: animalsIds,
+        animalIds: animalIds,
         reviewRequestNotes,
       });
       toast.success(`Evaluacion de la solicitud ${adoption.id}`);
@@ -111,7 +111,7 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
         animalId: adoption.animalsTemp,
       });
       form.reset({
-        animalsIds: adoption.animalsTemp,
+        animalIds: adoption.animalsTemp,
         reviewRequestNotes: adoption.reviewRequestNotes ?? '',
       });
     }
@@ -139,7 +139,7 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
                 <DynamicCheckboxList
                   control={form.control}
                   title="Animal"
-                  name="animalsIds"
+                  name="animalIds"
                   items={checkOptions}
                 />
                 <FormTextareaCustom

@@ -103,7 +103,7 @@ export function EvaluationAdopterDialog({
       <DialogContent aria-describedby={undefined} className="min-w-[50vw]">
         <DialogHeader>
           <DialogTitle className="text-center w-full">
-            Evaluación de Solicitud de Adopción
+            Evaluación del adoptante
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>

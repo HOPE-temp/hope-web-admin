@@ -126,9 +126,13 @@ export function createUserColumns({
             name: 'Administrador',
             color: 'bg-green-100 text-green-800',
           },
-          moderator: {
-            name: 'Moderador',
+          volunteer: {
+            name: 'Voluntario',
             color: 'bg-yellow-100 text-yellow-800',
+          },
+          veterinarian: {
+            name: 'Veterinario',
+            color: 'bg-orange-100 text-orange-800',
           },
         };
         return (

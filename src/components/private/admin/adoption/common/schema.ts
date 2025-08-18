@@ -5,7 +5,7 @@ export const idAdopter = z
   .number({ message: 'El ID debe ser un numero' })
   .positive('El Id debe ser positivo');
 
-export const animalsIds = z.array(z.number().min(1, 'Id minimo 1'));
+export const animalIds = z.array(z.number().min(1, 'Id minimo 1'));
 
 export const statusResult = z.enum(
   ['not_evaluated', 'approved', 'rejected', 'banned'],
@@ -30,7 +30,7 @@ export const statusRequest = z
   .optional();
 export const reviewRequestNotes = z
   .string()
-  .min(3, 'La nombre debe tener al menos 3 caracteres');
+  .min(5, 'La nombre debe tener al menos 5 caracteres');
 
 export const documentNumber = z
   .string()

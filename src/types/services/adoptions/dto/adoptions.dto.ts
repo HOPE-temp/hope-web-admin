@@ -1,6 +1,6 @@
 interface CreateAdoptionDto {
   adopterId: number;
-  animalsIds: number[];
+  animalIds: number[];
 }
 
 interface FilterAdoptionDto extends PaginationDto {
@@ -22,7 +22,7 @@ interface UpdateAdoptionEvaluateDto {
 }
 
 interface UpdateLinkAnimalWithAdoption {
-  animalsIds: number[];
+  animalIds: number[];
   reviewRequestNotes: string;
 }
 interface UpdateCompleteRequestAdoption {
