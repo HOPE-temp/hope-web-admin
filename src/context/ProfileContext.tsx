@@ -1,42 +1,55 @@
 'use client';
 import { createContext, useContext, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
-import { findAllUsers } from '@/services/hopeBackend/users';
 import { useLocalStorage } from '@/hooks/useLocalStogare';
+import { findMe } from '@/services/hopeBackend/profileMe';
 
 type ProfileContextType = {
-  user?: PrivateUser;
-  updateUser: (user: PrivateUser) => void;
-  loading: boolean;
+  user: UserInfo;
+  updateUser: () => void;
+  loaded: boolean;
 };
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
-  const { axios } = useAuth();
-
-  const [user, setUser, loading] = useLocalStorage<PrivateUser>('user', null);
+  const { axios, user, setUser, loaded } = useAuth();
 
   const getUsers = async () => {
     try {
-      const res = await findAllUsers(axios);
+      const res = await findMe(axios);
+      if (res) {
+        setUser(res);
+      } else {
+        setUser(null);
+      }
     } catch (error: any) {
       throw error;
     } finally {
     }
   };
 
-  const updateUser = (user: PrivateUser) => {
-    setUser(user);
+  const updateUser = () => {
     getUsers();
   };
 
   return (
     <ProfileContext.Provider
       value={{
-        user: user || undefined,
+        user: user || {
+          username: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          address: '',
+          district: '',
+          documentNumber: '',
+          avatar: '',
+          rol: 'admin',
+        },
         updateUser,
-        loading,
+        loaded,
       }}
     >
       {children}

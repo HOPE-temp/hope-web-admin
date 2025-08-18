@@ -21,15 +21,12 @@ export async function createUser(axios: AxiosInstance, body?: CreateUserDto) {
   return res.data;
 }
 
-export async function updatePublicUser(
+export async function updateUser(
   axios: AxiosInstance,
   id: number,
   body: UpdateUserDto
 ) {
-  const res = await axios.put<User>(
-    hopeBackendUrl.users.updatePublic(id),
-    body
-  );
+  const res = await axios.patch<User>(hopeBackendUrl.users.update(id), body);
   return res.data;
 }
 
@@ -57,14 +54,14 @@ export async function deleteUser(axios: AxiosInstance, id: number) {
       message: string;
     } = {
       response: null,
-      message: 'Error al eliminar usuario'
+      message: 'Error al eliminar usuario',
     };
 
     if (error.response) {
       cleanError.response = {
         data: error.response.data,
         status: error.response.status,
-        statusText: error.response.statusText
+        statusText: error.response.statusText,
       };
     }
 

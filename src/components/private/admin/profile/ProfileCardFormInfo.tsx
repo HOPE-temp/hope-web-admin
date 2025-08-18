@@ -7,60 +7,70 @@ import { Camera, Edit, Save, X } from 'lucide-react';
 import { CardDescription } from './ProfileCard';
 import { Form } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
-import { FormInputCustom, FormSelectCustom } from '@/components/shared/Input';
-import { ProfileBadge } from './ProfileBadge';
+import {
+  FormComboboxCustom,
+  FormInputCustom,
+  FormSelectCustom,
+} from '@/components/shared/Input/InputCustom';
 import { useForm } from 'react-hook-form';
-import { FilterProfileValues, filterProfileSchema } from './schema';
+import { FormValues, schema } from './schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useProfile } from '@/context/ProfileContext';
 
+import optionDistrict from '@/components/private/admin/common/DataDistrict.json';
+import { updateMe } from '@/services/hopeBackend/profileMe';
+import { useAuth } from '@/context/AuthContext';
+import { isAxiosError } from 'axios';
+import toast from 'react-hot-toast';
+
 type Props = {};
 
-const defaultValues = {
-  firstName: 'Juan Carlos',
-  lastName: 'García López',
-  username: 'jgarcia',
-  phone: '+51 987 654 321',
-  address: 'Av. Principal 123, Urb. Los Jardines',
-  district: 'Miraflores',
-  rol: 'Administrador',
-};
-
 export const ProfileCardFormInfo = (props: Props) => {
+  const { axios } = useAuth();
+  const { user: profileData, updateUser } = useProfile();
+
   const [isEditing, setIsEditing] = useState(false);
-  const { user: defaultValues } = useProfile();
-  const [profileData, setProfileData] = useState(defaultValues);
-  const [editData, setEditData] = useState(profileData);
-  const form = useForm<FilterProfileValues>({
-    resolver: zodResolver(filterProfileSchema),
-    defaultValues,
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: profileData,
   });
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditData(profileData);
   };
 
   const handleSave = () => {
-    setProfileData(editData);
     setIsEditing(false);
+    updateUser();
   };
 
   const handleCancel = () => {
-    setEditData(profileData);
     setIsEditing(false);
   };
   const getInitials = (nombre: string, apellido: string) => {
     return `${nombre.charAt(0)}${apellido.charAt(0)}`.toUpperCase();
   };
 
-  const onSubmit = async (data: FilterProfileValues) => {
-    // onGetData(data);
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await updateMe(axios, data);
+      setTimeout(() => {
+        handleSave();
+      }, 1200);
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const status = error.response?.status;
+
+        if (status === 409) {
+          toast.error('Ya existe un adopteante con ese nombre.');
+        }
+      }
+    }
   };
 
   useEffect(() => {
-    form.reset(defaultValues);
-  }, [defaultValues]);
+    form.reset(profileData);
+  }, [profileData]);
 
   return (
     <Card>
@@ -94,7 +104,7 @@ export const ProfileCardFormInfo = (props: Props) => {
                     {profileData.firstName} {profileData.lastName}
                   </CardTitle>
                   <CardDescription className="text-base">
-                    @{profileData.firstName}
+                    @{profileData.username}
                   </CardDescription>
                 </>
               )}
@@ -114,7 +124,7 @@ export const ProfileCardFormInfo = (props: Props) => {
               </>
             ) : (
               <>
-                <Button onClick={handleSave} size="sm">
+                <Button onClick={() => form.handleSubmit(onSubmit)()} size="sm">
                   <Save className="h-4 w-4 mr-2" />
                   Guardar
                 </Button>
@@ -196,10 +206,10 @@ export const ProfileCardFormInfo = (props: Props) => {
               {/* Distrito */}
               <div className="space-y-2">
                 <Label htmlFor="district">Distrito</Label>
-                <FormSelectCustom
+                <FormComboboxCustom
                   control={form.control}
                   name="district"
-                  options={[{ label: 'Miraflores', value: 'Miraflores' }]}
+                  options={optionDistrict}
                   disabled={!isEditing}
                 />
               </div>
@@ -221,7 +231,7 @@ export const ProfileCardFormInfo = (props: Props) => {
             </div>
 
             {/* Action Buttons */}
-            {!isEditing && (
+            {/* {!isEditing && (
               <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                 <Button onClick={handleEdit} className="flex-1 sm:flex-none">
                   <Edit className="h-4 w-4 mr-2" />
@@ -232,7 +242,7 @@ export const ProfileCardFormInfo = (props: Props) => {
                   Cambiar Foto de Perfil
                 </Button>
               </div>
-            )}
+            )} */}
           </form>
         </Form>
       </CardContent>

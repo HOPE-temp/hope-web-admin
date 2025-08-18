@@ -1,11 +1,20 @@
-import { User2, Mail, Phone, MapPin, BadgeInfo, Image as ImageIcon, Edit, Trash2 } from "lucide-react"
-import { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
-import { EditorUserDialog } from "../EditorUserDialog"
-import { UserDeleteDialog } from "../UserDeleteDialog"
+import {
+  User2,
+  Mail,
+  Phone,
+  MapPin,
+  BadgeInfo,
+  Image as ImageIcon,
+  Edit,
+  Trash2,
+} from 'lucide-react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Badge } from '@/components/ui/badge';
+import { EditorUserDialog } from '../EditorUserDialog';
+import { UserDeleteDialog } from '../UserDeleteDialog';
 
 interface UserColumnsProps {
-  updateUsers: () => void
+  updateUsers: () => void;
 }
 
 export function createUserColumns({
@@ -13,17 +22,17 @@ export function createUserColumns({
 }: UserColumnsProps): ColumnDef<any>[] {
   return [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessorKey: 'id',
+      header: 'ID',
       enableHiding: true,
     },
     {
-      accessorKey: "Avatar",
-      header: "Avatar",
+      accessorKey: 'Avatar',
+      header: 'Avatar',
       enableHiding: true,
       cell: ({ row }) => {
-        const avatar = row.original.info?.avatar
-        const username = row.original.info?.username
+        const avatar = row.original.info?.avatar;
+        const username = row.original.info?.username;
         return (
           <div className="flex items-center justify-center w-10 h-10">
             {avatar ? (
@@ -32,9 +41,11 @@ export function createUserColumns({
                 alt={username}
                 className="w-10 h-10 rounded-full object-cover"
                 onError={e => {
-                  e.currentTarget.style.display = "none"
+                  e.currentTarget.style.display = 'none';
                   if (e.currentTarget.nextElementSibling) {
-                    (e.currentTarget.nextElementSibling as HTMLElement).style.display = "flex"
+                    (
+                      e.currentTarget.nextElementSibling as HTMLElement
+                    ).style.display = 'flex';
                   }
                 }}
               />
@@ -44,24 +55,24 @@ export function createUserColumns({
               </div>
             )}
           </div>
-        )
+        );
       },
     },
     {
-      accessorKey: "Nombre",
-      header: "Nombre",
+      accessorKey: 'Nombre',
+      header: 'Nombre',
       enableHiding: true,
       cell: ({ row }) => row.original.info?.firstName,
     },
     {
-      accessorKey: "Apellido",
-      header: "Apellido",
+      accessorKey: 'Apellido',
+      header: 'Apellido',
       enableHiding: true,
       cell: ({ row }) => row.original.info?.lastName,
     },
     {
-      accessorKey: "Email",
-      header: "Email",
+      accessorKey: 'Email',
+      header: 'Email',
       enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
@@ -71,8 +82,8 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "Teléfono",
-      header: "Teléfono",
+      accessorKey: 'Teléfono',
+      header: 'Teléfono',
       enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
@@ -82,8 +93,8 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "Usuario",
-      header: "Usuario",
+      accessorKey: 'Usuario',
+      header: 'Usuario',
       enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
@@ -93,8 +104,8 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "DNI",
-      header: "DNI",
+      accessorKey: 'DNI',
+      header: 'DNI',
       enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
@@ -104,65 +115,74 @@ export function createUserColumns({
       ),
     },
     {
-      accessorKey: "Rol",
-      header: "Rol",
+      accessorKey: 'Rol',
+      header: 'Rol',
       enableHiding: true,
       cell: ({ row }) => {
-        const rol = row.original.info?.rol as keyof typeof rolDict | undefined
+        const rol = row.original.info?.rol as keyof typeof rolDict | undefined;
         const rolDict = {
-          user: { name: "Usuario", color: "bg-blue-100 text-blue-800" },
-          admin: { name: "Administrador", color: "bg-green-100 text-green-800" },
-          moderator: { name: "Moderador", color: "bg-yellow-100 text-yellow-800" },
-        }
+          user: { name: 'Usuario', color: 'bg-blue-100 text-blue-800' },
+          admin: {
+            name: 'Administrador',
+            color: 'bg-green-100 text-green-800',
+          },
+          moderator: {
+            name: 'Moderador',
+            color: 'bg-yellow-100 text-yellow-800',
+          },
+        };
         return (
-          <Badge className={rol && rolDict[rol]?.color ? rolDict[rol].color : "bg-gray-100 text-gray-800"}>
+          <Badge
+            className={
+              rol && rolDict[rol]?.color
+                ? rolDict[rol].color
+                : 'bg-gray-100 text-gray-800'
+            }
+          >
             {rol && rolDict[rol]?.name ? rolDict[rol].name : rol}
           </Badge>
-        )
+        );
       },
     },
     {
-      accessorKey: "Dirección",
-      header: "Dirección",
+      accessorKey: 'Dirección',
+      header: 'Dirección',
       enableHiding: true,
       cell: ({ row }) => (
         <span className="flex items-center gap-1">
           <MapPin className="w-4 h-4" />
-          {row.original.info?.address || "-"}
+          {row.original.info?.address || '-'}
         </span>
       ),
     },
     {
-      accessorKey: "Ubicación",
-      header: "Ubicación",
+      accessorKey: 'Ubicación',
+      header: 'Ubicación',
       enableHiding: true,
-      cell: ({ row }) => row.original.info?.location || "-",
+      cell: ({ row }) => row.original.info?.district || '-',
     },
     {
-      accessorKey: "Creado",
-      header: "Creado",
+      accessorKey: 'Creado',
+      header: 'Creado',
       enableHiding: true,
       cell: ({ row }) => {
-        const date = row.original.createdAt
-        return date ? new Date(date).toLocaleDateString() : "-"
+        const date = row.original.createdAt;
+        return date ? new Date(date).toLocaleDateString() : '-';
       },
     },
     {
-      id: "acciones",
-      header: "Acciones",
+      id: 'acciones',
+      header: 'Acciones',
       enableHiding: false,
       cell: ({ row }) => (
         <div className="flex gap-2">
           <div className="flex gap-2">
-            <EditorUserDialog
-              user={row.original} onEdit={updateUsers}
-            />
+            <EditorUserDialog user={row.original} onEdit={updateUsers} />
             <UserDeleteDialog user={row.original} onDelete={updateUsers} />
           </div>
         </div>
-
       ),
       enableSorting: false,
     },
-  ]
+  ];
 }

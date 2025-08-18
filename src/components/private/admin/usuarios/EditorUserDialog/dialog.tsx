@@ -21,15 +21,17 @@ import {
 import { Form } from '@/components/ui/form';
 
 import {
+  FormComboboxCustom,
   FormInputCustom,
   FormSelectCustom,
 } from '@/components/shared/Input/InputCustom';
 
 import { useAuth } from '@/context/AuthContext';
 import { useUser } from '@/context/UserContext';
-import { updatePrivateUser } from '@/services/hopeBackend/users';
+import { updateUser } from '@/services/hopeBackend/users';
 import { FormValues, schema } from './schema';
 import { ContainerForm } from '@/components/shared/Containers';
+import optionDistrict from '@/components/private/admin/common/DataDistrict.json';
 
 type EditorUserDialogProps = {
   user: User;
@@ -45,11 +47,13 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
+      username: user.info?.username ?? '',
       firstName: user.info?.firstName ?? '',
       lastName: user.info?.lastName ?? '',
       email: user.info?.email ?? '',
       phone: user.info?.phone ?? '',
       address: user.info?.address ?? '',
+      district: user.info?.district ?? '',
       rol:
         (user.info?.rol as 'admin' | 'volunteer' | 'veterinarian') ?? 'admin',
     },
@@ -57,18 +61,19 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await updatePrivateUser(axios, user.id, data);
+      await updateUser(axios, user.id, data);
       toast.success('Usuario actualizado');
       if (onEdit) onEdit();
+      setTimeout(() => {
+        setOpen(false);
+      }, 1200);
     } catch (error) {
       if (isAxiosError(error)) {
         toast.error('Error al editar usuario');
       }
+    } finally {
+      updateUsers();
     }
-    updateUsers();
-    setTimeout(() => {
-      setOpen(false);
-    }, 1200);
   };
 
   return (
@@ -90,6 +95,11 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
             <ContainerForm>
               <FormInputCustom
                 control={form.control}
+                label="Usuario publico"
+                name="username"
+              />
+              <FormInputCustom
+                control={form.control}
                 label="Nombre"
                 name="firstName"
               />
@@ -108,6 +118,12 @@ export function EditorUserDialog({ user, onEdit }: EditorUserDialogProps) {
                 control={form.control}
                 label="Teléfono"
                 name="phone"
+              />
+              <FormComboboxCustom
+                control={form.control}
+                label="Distrito"
+                name="district"
+                options={optionDistrict}
               />
               <FormInputCustom
                 control={form.control}

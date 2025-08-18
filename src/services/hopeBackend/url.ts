@@ -71,10 +71,17 @@ export const hopeBackendUrl = {
     find: (params?: FilterUserDto) =>
       generateUrlWithParms<FilterUserDto>(`/users`, params),
     findOne: (id: number) => `/users/${id}`,
-    updatePublic: (id: number) => `/users/${id}`,
+    update: (id: number) => `/users/${id}`,
     updatePrivate: (id: number) => `/users/${id}/private`,
     // uploadImage: (id: number) => `/users/${id}/upload_image`,
     delete: (id: number) => `/users/${id}`,
+  },
+  profileMe: {
+    findMe: `/profile-me`,
+    updateMe: `/profile-me`,
+    changePassword: `/profile-me/change-password`,
+    recoverPassword: `/profile-me/recover-password`,
+    resetPassword: `/profile-me/reset-password`,
   },
 
   reports: {

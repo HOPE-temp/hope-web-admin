@@ -55,7 +55,7 @@ export function CreatorUserDialog({ onCreated }: CreatorUserDialogProps) {
       phone: '',
       address: '',
       documentNumber: '',
-      location: '',
+      district: '',
       rol: 'admin',
     },
   });
@@ -148,7 +148,7 @@ export function CreatorUserDialog({ onCreated }: CreatorUserDialogProps) {
               <FormComboboxCustom
                 control={form.control}
                 label="Distrito"
-                name="location"
+                name="district"
                 options={optionDistrict}
               />
               <FormSelectCustom

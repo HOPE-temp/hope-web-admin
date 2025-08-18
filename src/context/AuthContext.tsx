@@ -15,15 +15,16 @@ import { LoadingPerritos } from '@/components/layout/Loading/Loading';
 type UserAuth = {
   newToken: string;
   newRole: RoleUser;
-  newUser: PrivateUser;
+  newUser: UserInfo;
   newExpirate: number;
 };
 type AuthContextType = {
   token: string | null;
   role: RoleUser | null;
-  user: PrivateUser | null;
+  user: UserInfo | null;
   expirate: number | null;
   saveAuth: (auth: UserAuth) => void;
+  setUser: (value: UserInfo | null) => void;
   loaded: boolean;
   axios: AxiosInstance;
 };
@@ -37,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     null
   );
   const [role, setRole] = useLocalStorage<RoleUser>('rol', null);
-  const [user, setUser] = useLocalStorage<PrivateUser>('user', null);
+  const [user, setUser] = useLocalStorage<UserInfo>('user', null);
   const [expirate, setExpirate] = useLocalStorage<number>('expirate', null);
   const router = useRouter();
 
@@ -71,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         expirate,
         saveAuth,
+        setUser,
         loaded,
         axios: axios.axiosInstance,
       }}

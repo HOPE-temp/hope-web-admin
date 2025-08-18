@@ -353,19 +353,21 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-type FormComboboxCustomProps<T extends FieldValues> = {
+interface FormComboboxCustomProps<T extends FieldValues>
+  extends React.ComponentProps<'input'> {
   control: Control<T>;
   name: FieldPath<T>;
-  label: string;
+  label?: string;
   description?: string;
   options: string[]; // Solo array de strings
-};
+}
 
 export function FormComboboxCustom<T extends FieldValues>({
   control,
   name,
   label,
   description,
+  disabled,
   options,
 }: FormComboboxCustomProps<T>) {
   const {
@@ -392,6 +394,7 @@ export function FormComboboxCustom<T extends FieldValues>({
                   className="w-full justify-between"
                   ref={ref}
                   id={name}
+                  disabled={disabled}
                 >
                   {value ? value : 'Select...'}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

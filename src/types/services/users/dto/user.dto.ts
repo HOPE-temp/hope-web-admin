@@ -1,7 +1,7 @@
 interface CreatePublicUserDto {
   readonly username: string;
   // readonly avatar: string;
-  readonly location: string;
+  readonly district: string;
 }
 
 interface CreatePrivateUserDto {
@@ -17,23 +17,23 @@ interface CreatePrivateUserDto {
 
 interface UpdatePrivateUserDto {
   readonly firstName: string;
-  readonly lastName: string;  
+  readonly lastName: string;
   readonly email: string;
   readonly phone: string;
-  readonly address: string;  
+  readonly address: string;
   readonly rol: RoleUser;
 }
 
-interface CreateUserDto{
+interface CreateUserDto {
   readonly username: string;
   readonly firstName: string;
-  readonly lastName: string;  
+  readonly lastName: string;
   readonly password: string;
   readonly phone: string;
   readonly email: string;
   readonly documentNumber: string;
   readonly rol: RoleUser;
-  readonly location: string;
+  readonly district: string;
   readonly address: string;
 }
 
@@ -58,5 +58,5 @@ interface UpdateResetPasswordUserDto
 interface FilterUserDto extends PaginationDto {
   username?: string;
   email?: string;
-  rol?: string;  
+  rol?: string;
 }

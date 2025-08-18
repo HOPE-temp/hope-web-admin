@@ -25,7 +25,7 @@ interface PublicUser {
   user: User;
   //  username: string;
   avatar: string;
-  location: string;
+  district: string;
   updatedAt?: Date;
 }
 
@@ -34,11 +34,11 @@ interface UserInfo {
   firstName: string;
   email: string;
   phone: string;
-  address: string | null;
+  address: string;
   documentNumber: string;
-  rol: string;
+  rol: RoleUser;
   updatedAt?: string;
   username: string;
-  avatar: string | null;
-  location: string | null;
+  avatar: string;
+  district: string;
 }
