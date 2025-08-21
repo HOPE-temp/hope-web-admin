@@ -12,14 +12,6 @@ export async function findAllAnimals(
   const { data } = await axios.get<PaginationResponse<Animal>>(
     hopeBackendUrl.animals.find(params)
   );
-  const items = data.items.map(item => {
-    if (item.images.length == 0) {
-      item.images.push('/images/avatar-dog.png');
-    }
-    return item;
-  });
-
-  data.items = items;
   return data;
 }
 
@@ -31,13 +23,7 @@ export async function findManyIdsAnimals(
     hopeBackendUrl.animals.findManyIds,
     body
   );
-  const items = data.map(item => {
-    if (item.images.length == 0) {
-      item.images.push('/images/avatar-dog.png');
-    }
-    return item;
-  });
-  return items;
+  return data;
 }
 
 export async function createAnimal(
@@ -92,5 +78,16 @@ export async function uploadImageAnimal(
 
 export async function deleteAnimal(axios: AxiosInstance, id: number) {
   const res = await axios.delete<Adopter>(hopeBackendUrl.animals.delete(id));
+  return res.data;
+}
+
+export async function deleteAnimalImage(
+  axios: AxiosInstance,
+  body: DeleteAnimalImageDto
+) {
+  const res = await axios.post<Adopter>(
+    hopeBackendUrl.animals.deleteImage,
+    body
+  );
   return res.data;
 }

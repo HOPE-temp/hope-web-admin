@@ -41,7 +41,7 @@ interface Animal {
   descriptionHistory: string;
   status: StatusAnimal;
   isSterilized: boolean;
-  images: string[];
+  images: Pick<AnimalImage, 'id' | 'url' | 'publicId'>[];
   createdAt: Date;
   updatedAt?: Date;
   deletedAt?: Date;

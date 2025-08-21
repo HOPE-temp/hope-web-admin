@@ -70,7 +70,7 @@ export function EvaluationAdopterAccordion({
       <DialogContent aria-describedby={undefined} className="min-w-[50vw]">
         <DialogHeader>
           <DialogTitle className="text-center w-full">
-            Evaluación de Solicitud de Adopción
+            Lista de evaluaciones del adoptante
           </DialogTitle>
           <Accordion
             type="single"
@@ -80,7 +80,7 @@ export function EvaluationAdopterAccordion({
           >
             {evals.length > 0 ? (
               evals.map((item, idx) => (
-                <AccordionItem value={`item-${idx}`}>
+                <AccordionItem value={`item-${idx}`} key={`item-${idx}`}>
                   <AccordionTrigger className="bg-slate-200 p-2 my-2 rounded-sm">
                     <b className="text-lg">
                       {idx === 0 ? 'Ultima evaluación' : 'Evaluación'} -{' '}

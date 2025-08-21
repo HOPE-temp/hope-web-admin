@@ -85,7 +85,7 @@ export function LinkAnimalAdoptionDialog({ adoption, onUpdated }: Props) {
       ckecks = items.map(animal => {
         return {
           id: animal.id,
-          image: animal.images[0],
+          image: animal.images[0].url,
           name: animal.nickname,
           description: `${statusAnimal[animal.status]} - ${
             animal.descriptionHistory

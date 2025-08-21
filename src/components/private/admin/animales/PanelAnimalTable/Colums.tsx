@@ -3,7 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { EditorAnimalsDialog } from '../EditorAnimalDialog';
 import { AnimalsDeleteDialog } from '../AnimalsDeleteDialog';
-import { UploaderAnimalImageDialog } from '../UploaderAnimalImageDialog';
+import { BatchImageManager } from '../UploaderAnimalImageDialog';
 import { AnimalsEditStatusDialog } from '../AnimalsUpdateStatusDialog';
 
 interface AnimalsColumnsProps {
@@ -19,7 +19,10 @@ export function createAnimalsColumns({
       accessorKey: 'imageUrl',
       header: 'Imagen',
       cell: ({ row }) => {
-        const imageUrl = row.original.images ? row.original.images[0] : '';
+        const imageUrl =
+          row.original.images.length > 0
+            ? row.original.images[0].url
+            : '/images/avatar-dog.png';
         const nickname = row.original.nickname as string;
         return (
           <div className="flex items-center justify-center w-12 h-12 whitespace-nowrap">
@@ -171,10 +174,7 @@ export function createAnimalsColumns({
               animal={row.original}
               onDelete={updateAnimals}
             />
-            <UploaderAnimalImageDialog
-              animal={row.original}
-              onUpload={updateAnimals}
-            />
+            <BatchImageManager animal={row.original} onSave={updateAnimals} />
             <AnimalsEditStatusDialog
               animal={row.original}
               onUpload={updateAnimals}

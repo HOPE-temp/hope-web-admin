@@ -54,6 +54,7 @@ export const hopeBackendUrl = {
     updateStatus: (id: number) => `/animals/${id}/status`,
     uploadImage: (id: number) => `/animals/${id}/upload_image`,
     delete: (id: number) => `/animals/${id}`,
+    deleteImage: `/animals/upload_image`,
   },
 
   medical_checkups: {

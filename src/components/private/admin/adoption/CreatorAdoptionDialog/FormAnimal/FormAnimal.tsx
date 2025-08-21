@@ -54,7 +54,10 @@ export function FormAnimal(
       ckecks = items.map(animal => {
         return {
           id: animal.id,
-          image: animal.images[0],
+          image:
+            animal.images.length > 0
+              ? animal?.images[0]?.url
+              : '/images/avatar-dog.png',
           name: animal.nickname,
           description: `${statusAnimal[animal.status]} - ${
             animal.descriptionHistory

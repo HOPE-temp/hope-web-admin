@@ -24,3 +24,8 @@ interface FilterAnimalDto extends PaginationDto {
 interface GetByIdsAnimalDto {
   ids: number[];
 }
+
+interface DeleteAnimalImageDto {
+  id: number;
+  publicIds: string[];
+}
