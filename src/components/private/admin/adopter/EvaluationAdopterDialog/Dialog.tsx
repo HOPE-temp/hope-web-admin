@@ -22,7 +22,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormValues, schema } from './schema';
 import toast from 'react-hot-toast';
-import { isAxiosError } from 'axios';
 import { createEvaluation } from '@/services/hopeBackend/evaluations';
 import { Button } from '@/components/ui/button';
 
